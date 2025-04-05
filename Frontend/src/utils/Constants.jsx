@@ -6,4 +6,8 @@ export const APP_ROUTER = {
     AUTH: "auth",
     LOGIN: "/auth/login",
     REGISTER: "/auth/register",
+    // manager
+    MANAGER: "/manager",
+    ORDER: "/order"
+    //client
 };

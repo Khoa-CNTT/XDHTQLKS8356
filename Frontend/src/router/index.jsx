@@ -6,6 +6,8 @@ import BookingPage from "../page/Booking/BookingPage";
 import Login from "../page/Auth/Login/Login";
 import Register from "../page/Auth/Register/Register";
 import AuthLayout from "../layout/Auth/AuthLayout";
+import ManagementLayout from "../layout/Main/ManagementLayout";
+import ListOrder from "../page/Management/Order";
 
 
 const router = createBrowserRouter([
@@ -31,9 +33,19 @@ const router = createBrowserRouter([
                 path: APP_ROUTER.BOOKING,
                 element: <BookingPage />,
             },
+            {
+                path: APP_ROUTER.MANAGER,
+                element: <ManagementLayout />,
+               
+            },
+            {
+                path: APP_ROUTER.ORDER,
+                element: <ListOrder />,
+               
+            },
         ],
     },
-
+  
     {
         path: APP_ROUTER.AUTH,
         element: <AuthLayout />,

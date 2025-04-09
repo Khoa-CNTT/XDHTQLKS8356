@@ -1,25 +1,17 @@
-import { createBrowserRouter, redirect } from "react-router-dom";
+import { createBrowserRouter} from "react-router-dom";
 import { APP_ROUTER } from "../utils/Constants";
 import MainLayout from "../layout/Main/MainLayout";
 import HomePage from "../page/Home/HomePage";
-import BookingPage from "../page/Booking/BookingPage";
 import Login from "../page/Auth/Login/Login";
 import Register from "../page/Auth/Register/Register";
-import AuthLayout from "../layout/Auth/AuthLayout";
 import ManagementLayout from "../layout/Main/ManagementLayout";
 import ListOrder from "../page/Management/Order";
+import PrivateRoutes from "./PrivateRoutes";
+import AuthLayout from "../layout/Auth/AuthLayout";
+import Error from "../components/Error";
 
 
 const router = createBrowserRouter([
-    {
-        path: "/",
-        loader: () => {
-            if (!localStorage.getItem("user")) {
-                throw redirect(APP_ROUTER.HOME);
-            }
-            return null;
-        },
-    },
     {
         path: "/",
         element: <MainLayout />,
@@ -29,23 +21,41 @@ const router = createBrowserRouter([
                 element: <HomePage />,
                 index: true,
             },
-            {
-                path: APP_ROUTER.BOOKING,
-                element: <BookingPage />,
-            },
-            {
-                path: APP_ROUTER.MANAGER,
-                element: <ManagementLayout />,
-               
-            },
+            // {
+            //     path: APP_ROUTER.BOOKING,
+            //     element: <BookingPage />,
+            // },
+            // {
+            //     path: `${APP_ROUTER.HOTELDETAIL}/:hotelId`,
+            //     element: <HotelDetail />,
+            // },
+        ],
+    },
+    {
+        path: APP_ROUTER.USER,
+        element: <PrivateRoutes role="customer" />,
+        children: [         
+            // {
+            //     path: APP_ROUTER.ORDER,
+            //     element: <Order />,
+            // },
+        ],
+    },
+    {
+        path: APP_ROUTER.ADMIN,
+        element: (
+            <PrivateRoutes role="admin">
+                <ManagementLayout />
+            </PrivateRoutes>
+        ),
+        children: [           
             {
                 path: APP_ROUTER.ORDER,
                 element: <ListOrder />,
-               
+                index: true,
             },
         ],
     },
-  
     {
         path: APP_ROUTER.AUTH,
         element: <AuthLayout />,
@@ -59,7 +69,16 @@ const router = createBrowserRouter([
                 path: APP_ROUTER.REGISTER,
                 element: <Register />,
             },
+           
         ],
+    },
+    {
+        path: APP_ROUTER.ERROR,
+        element: <Error />,
+    },
+    {
+        path: "*",
+        element: <Error />
     },
 ]);
 

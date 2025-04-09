@@ -1,17 +1,11 @@
 import React, { useEffect, useState } from "react";
-
-import { AiFillPrinter } from "react-icons/ai";
-import { MdAddCircleOutline } from "react-icons/md";
-import { MdFormatListBulletedAdd } from "react-icons/md";
-import { GiConfirmed } from "react-icons/gi";
-// import phieuNhapData from "./data"; // Dữ liệu phiếu nhập
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Table from "../../../components/Table";
+import { orderServices } from "../../../service/orderServices";
+
 
 const ListOrder = () => {
     const [expandedRow, setExpandedRow] = useState([]);
-
     const columns = [
         { key: "booking_id", label: "Mã đặt phòng" },
         { key: "booking_status", label: "Trạng thái", isFilterable: true},
@@ -25,30 +19,14 @@ const ListOrder = () => {
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
     const defaultStartDate = sevenDaysAgo.toISOString().split("T")[0];
-    const [startDate, setStartDate] = useState(defaultStartDate); // Ngày bắt đầu
+    const [startDate, setStartDate] = useState(defaultStartDate); 
     const [endDate, setEndDate] = useState(today);
     const [data, setData] = useState([]);
     const fetchStores = async (startDate, endDate) => {
-        console.log(startDate, endDate);
-        // if (startDate && endDate) {
-        //     try {
-        //         const response = await axios.get(
-        //             `http://localhost:8080/api/receptionist/booking?start='${startDate}'&end='${endDate}'`,
-        //             {
-        //                 withCredentials: true,
-        //             }
-        //         );
-
-        //         if (response.data.status === true) {
-        //             console.log("11111")
-        //             setData(response.data.room);
-        //             console.log("đã set", response.data.room);
-        //         }
-        //     } catch (error) {
-        //         console.error(error);
-        //     }
-        // }
+        const result = await orderServices.getOrders(startDate, endDate);
+        setData(result);
     };
+
     useEffect(() => {
         fetchStores(startDate, endDate);
     }, [startDate, endDate]);

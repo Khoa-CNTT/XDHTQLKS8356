@@ -1,13 +1,15 @@
 export const APP_ROUTER = {
     INDEX: "/",
     HOME: "/home",
+    ERROR: "/error",
     COMPONENT: "/component",
     BOOKING: "/booking",
     AUTH: "auth",
     LOGIN: "/auth/login",
     REGISTER: "/auth/register",
-    // manager
-    MANAGER: "/manager",
-    ORDER: "/order"
+    // admin, manager
+    ADMIN: "/admin",
+    ORDER: "/admin/order"
     //client
+    
 };

@@ -9,6 +9,7 @@ import ListOrder from "../page/Management/Order";
 import PrivateRoutes from "./PrivateRoutes";
 import AuthLayout from "../layout/Auth/AuthLayout";
 import Error from "../components/Error";
+import RoomDetail from "../page/RoomDetail";
 
 
 const router = createBrowserRouter([
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
             //     path: `${APP_ROUTER.HOTELDETAIL}/:hotelId`,
             //     element: <HotelDetail />,
             // },
+            {
+                path: APP_ROUTER.ROOM_DETAIL,
+                element: <RoomDetail/>
+            }
         ],
     },
     {

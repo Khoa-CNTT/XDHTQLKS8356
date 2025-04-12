@@ -8,8 +8,7 @@ const MainLayout = () => {
         <div className="mx-auto w-full" style={{ maxWidth: "100vw" }}>
             <Header></Header>
             <main>
-                <Outlet />
-                Main layout
+                <Outlet />       
             </main>
             <Footer></Footer>
         </div>

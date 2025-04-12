@@ -9,7 +9,7 @@ export const APP_ROUTER = {
     REGISTER: "/auth/register",
     // admin, manager
     ADMIN: "/admin",
-    ORDER: "/admin/order"
+    ORDER: "/admin/order",
     //client
     
 };

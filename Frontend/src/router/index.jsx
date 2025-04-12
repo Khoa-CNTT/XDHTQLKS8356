@@ -9,6 +9,7 @@ import ListOrder from "../page/Management/Order";
 import PrivateRoutes from "./PrivateRoutes";
 import AuthLayout from "../layout/Auth/AuthLayout";
 import Error from "../components/Error";
+import SearchRoom from "../page/Search";
 
 
 const router = createBrowserRouter([

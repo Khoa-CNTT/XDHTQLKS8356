@@ -7,6 +7,7 @@ export const APP_ROUTER = {
     AUTH: "auth",
     LOGIN: "/auth/login",
     REGISTER: "/auth/register",
+    ROOM_DETAIL: "/room_detail",
     // admin, manager
     ADMIN: "/admin",
     ORDER: "/admin/order"

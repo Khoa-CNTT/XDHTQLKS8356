@@ -10,7 +10,7 @@ export const APP_ROUTER = {
     ROOM_DETAIL: "/room_detail",
     // admin, manager
     ADMIN: "/admin",
-    ORDER: "/admin/order"
+    ORDER: "/admin/order",
     //client
     
 };

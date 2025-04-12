@@ -10,6 +10,7 @@ import PrivateRoutes from "./PrivateRoutes";
 import AuthLayout from "../layout/Auth/AuthLayout";
 import Error from "../components/Error";
 import RoomDetail from "../page/RoomDetail";
+import SearchRoom from "../page/Search";
 
 
 const router = createBrowserRouter([

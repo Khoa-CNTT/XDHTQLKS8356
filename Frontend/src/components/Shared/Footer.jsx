@@ -8,21 +8,21 @@ const Footer = () => {
             <div className="bg-black/95 pt-8 pb-3 ">
                 <div className="text-white w-full text-base max-w-6xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
                     <div>
-                        <ul className="space-y-2">
+                        <ul className="space-y-6">
                             <li><a href="#" className="hover:underline">Thông tin</a></li>
                             <li><a href="#" className="hover:underline">Liên hệ</a></li>
                             <li><a href="#" className="hover:underline">Vị trí</a></li>
                         </ul>
                     </div>
                     <div>
-                        <ul className="space-y-2">
+                        <ul className="space-y-6">
                             <li><a href="#" className="hover:underline">Câu hỏi thường gặp</a></li>
                             <li><a href="#" className="hover:underline">Điều khoản sử dụng</a></li>
                             <li><a href="#" className="hover:underline">Chính sách riêng tư</a></li>
                         </ul>
                     </div>
                     <div>
-                        <ul className="space-y-2">
+                        <ul className="space-y-6">
                             <li><a href="#" className="hover:underline">Dịch vụ</a></li>
                             <li><a href="#" className="hover:underline">Tiện ích</a></li>
                             <li><a href="#" className="hover:underline">Hướng dẫn đặt phòng</a></li>
@@ -34,7 +34,7 @@ const Footer = () => {
                         </Link>
                     </div>
                 </div>
-                <hr className='bg-white text-white mt-4 mb-2 w-3/4 mx-auto'/>
+                <hr className='bg-white text-white mt-8 mb-6 w-3/4 mx-auto'/>
                 <div className='flex justify-center'><div className='text-white text-sm'>© Copyright Booking Hotels. All right reserved.</div></div>
             </div>
         </div>

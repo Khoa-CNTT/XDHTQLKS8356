@@ -1,106 +1,328 @@
 import React, { useState } from "react";
-import Lightbox from "yet-another-react-lightbox";
-import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
-import Zoom from "yet-another-react-lightbox/plugins/zoom";
-import "yet-another-react-lightbox/styles.css";
-import "yet-another-react-lightbox/plugins/thumbnails.css";
-
-const HotelImage = ({ src, alt, onClick }) => (
-  <div className="aspect-[3/2] overflow-hidden rounded-lg cursor-pointer" onClick={onClick}>
-    <img src={src} alt={alt} className="w-full h-full object-cover" />
-  </div>
-);
+import { LuBedDouble } from "react-icons/lu";
+import { Icon } from "@iconify/react";
+import SlickImages from "../../components/SlickImages";
 
 const ImageHotel = ({ images }) => {
   const [isModalOpen, setModalOpen] = useState(false);
-  const imageArray = images;
 
-  const openImages = imageArray.slice(0, 5); // Tối đa 7 ảnh hiển thị
-  const extraCount = imageArray.length - 5;
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  const slides = imageArray.map((src) => ({
-  src,
-  width: 800,
-  height: 533, // 👈 giữ tỷ lệ 3:2
-  imageFit: "cover"
-}));
+  const openImages = images.slice(0, 3);
+  const [indexImg, setIndexImg] = useState(0);
+  const slides = images.map((src) => ({ src }));
 
   return (
-    <div>
-      <div className="grid gap-2 sm:gap-3 lg:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-        {openImages.map((img, i) =>
-          i === 4 && extraCount > 0 ? (
-            <button
-              key={i}
-              onClick={() => setModalOpen(true)}
-              className="relative aspect-[3/2] overflow-hidden rounded-lg cursor-pointer"
-            >
-              <img
-                src={img}
-                alt="Extra Hotel"
-                className="w-full h-full object-cover opacity-60"
-              />
-              <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white font-bold text-xl">
-                +{extraCount} hình
-              </div>
-            </button>
-          ) : (
-            <HotelImage
-              key={i}
-              src={img}
-              alt={`Hotel Image ${i + 1}`}
-              className="cursor-pointer"
-              onClick={() => {
-                setCurrentIndex(i);
-                setModalOpen(true);
-              }}
-            />
-          )
-        )}
-      </div>
-
-      <Lightbox
-        open={isModalOpen}
-        close={() => setModalOpen(false)}
-        slides={slides}
-        index={currentIndex}
-        on={{
-          view: ({ index }) => setCurrentIndex(index),
-        }}
-        plugins={[Thumbnails, Zoom]}
-        styles={{
-          container: {
-            background: "rgba(255,255,255,0.7)",
-            backdropFilter: "blur(8px)",
-          },
-          thumbnail: {
-            background:"rgba(255,255,255,0.7)",
-          }
-        }}
+    // <div
+    //   className={`w-full mb-20 aspect-[2/1] grid gap-2 sm:gap-3 lg:gap-4 grid-cols-1 ${
+    //     images.length === 2
+    //       ? "md:grid-cols-2"
+    //       : images.length >= 3
+    //       ? "md:grid-cols-3"
+    //       : ""
+    //   }`}
+    // >
+    //   {openImages.map((img, i) => (
+    //     <div
+    //       className={`w-full h-full rounded-lg cursor-pointer overflow-hidden  ${
+    //         i === 0 && images.length >= 3 ? "col-span-2 row-span-2" : ""
+    //       }`}
+    //       onClick={() => {
+    //         setIndexImg(i);
+    //         setModalOpen(true);
+    //       }}
+    //     >
+    //       {i === 2 && images.length > 3 ? (
+    //         <div
+    //           className={`relative h-full w-full after:content-["Xem_thêm"] after:absolute after:inset-0 after:flex after:justify-center after:items-center after:bg-black after:opacity-60 after:underline after:text-gray-300 after:text-xl after:font-semibold hover:after:font-bold`}
+    //         >
+    //           <img
+    //             src={img}
+    //             alt='Extra Hotel'
+    //             className='w-full h-full object-cover opacity-60'
+    //           />
+    //         </div>
+    //       ) : (
+    //         <img src={img} alt={""} className='w-full h-full object-cover' />
+    //       )}
+    //     </div>
+    //   ))}
+    // </div>
+    <div className='my-10'>
+      <SlickImages
+        images={images}
+        isDotImage={true}
+        cssSlide={"w-[70%] mx-auto lg:h-[500px] md:h-[450px] sm:h-[350px]"}
+        cssButtonL={"left-10 top-[40%] text-gray-700"}
+        cssButtonR={"right-10 top-[40%] text-gray-700"}
       />
     </div>
   );
 };
 
+const DetailRoom = () => {
+  return (
+    <div>
+      <div className='flex gap-20'>
+        <div className='basis-2/3'>
+          <div className='font-semibold text-4xl mb-10'>Name room</div>
+          <div className='flex gap-4 flex-wrap'>
+            <div className='w-40 aspect-[1/1] bg-neutral-100 text-neutral-500 rounded-lg flex gap-1 flex-col justify-center items-center'>
+              <LuBedDouble className='text-6xl ' />
+              <div className='text-sm font-semibold tracking-widest'>
+                2 Bedrooms
+              </div>
+            </div>
+            <div className='w-40 aspect-[1/1] bg-neutral-100 text-neutral-500 rounded-lg flex gap-1 flex-col justify-center items-center'>
+              <LuBedDouble className='text-6xl ' />
+              <div className='text-sm font-semibold tracking-widest'>
+                2 Bedrooms
+              </div>
+            </div>
+            <div className='w-40 aspect-[1/1] bg-neutral-100 text-neutral-500 rounded-lg flex gap-1 flex-col justify-center items-center'>
+              <LuBedDouble className='text-6xl ' />
+              <div className='text-sm font-semibold tracking-widest'>
+                2 Bedrooms
+              </div>
+            </div>
+            <div className='w-40 [&_>slick]:bg-black aspect-[1/1] bg-neutral-100 text-neutral-500 rounded-lg flex gap-1 flex-col justify-center items-center'>
+              <LuBedDouble className='text-6xl ' />
+              <div className='text-sm font-semibold tracking-widest'>
+                2 Bedrooms
+              </div>
+            </div>
+            <div className='w-40 aspect-[1/1] bg-neutral-100 text-neutral-500 rounded-lg flex gap-1 flex-col justify-center items-center'>
+              <LuBedDouble className='text-6xl ' />
+              <div className='text-sm font-semibold tracking-widest'>
+                2 Bedrooms
+              </div>
+            </div>
+            <div className='w-40 aspect-[1/1] bg-neutral-100 text-neutral-500 rounded-lg flex gap-1 flex-col justify-center items-center'>
+              <LuBedDouble className='text-6xl ' />
+              <div className='text-sm font-semibold tracking-widest'>
+                2 Bedrooms
+              </div>
+            </div>
+          </div>
+          <div className='mt-10 mb-5 font-semibold text-2xl'>
+            Mô tả chi tiết phòng
+          </div>
+          <p className='text-neutral-400'>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
+            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+            aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet,
+            consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+            labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+            exercitation ullamco laboris nisi ut aliquip ex ea commodo
+            consequat.
+          </p>
+          <div className='mt-10 mb-5 font-semibold text-2xl'>
+            Tiện ích khách sạn
+          </div>
+          <div className='grid grid-cols-2 gap-4 mb-10'>
+            <div className='flex items-center gap-5 bg-white text-neutral-600 text-base font-medium'>
+              <Icon icon='game-icons:knife-fork' width={24} height={24} />
+              <p>Kitchen</p>
+            </div>
+            <div className='flex items-center gap-5 bg-white text-neutral-600 text-base font-medium'>
+              <Icon icon='material-symbols:wifi' width={24} height={24} />
+              <p>Wifi</p>
+            </div>
+            <div className='flex items-center gap-5 bg-white text-neutral-600 text-base font-medium'>
+              <Icon icon='hugeicons:snow' width={24} height={24} />
+              <p>Air conditioner</p>
+            </div>
+            <div className='flex items-start gap-5 bg-white text-neutral-600 text-base font-medium'>
+              <Icon icon='hugeicons:study-desk' width={24} height={24} />
+              <p>Desk</p>
+            </div>
+          </div>
+
+          <iframe
+            src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30670.739956011443!2d108.12927067279816!3d16.073661115257337!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x314218d68dff9545%3A0x714561e9f3a7292c!2zVHLGsOG7nW5nIMSQ4bqhaSBo4buNYyBCw6FjaCBLaG9hIC0gxJDhuqFpIGjhu41jIMSQw6AgTuG6tW5n!5e0!3m2!1svi!2s!4v1745419770359!5m2!1svi!2s'
+            className='w-[600px] h-[450px] border-0'
+            allowfullscreen=''
+            loading='lazy'
+            referrerpolicy='no-referrer-when-downgrade'
+          ></iframe>
+        </div>
+        <div className='basis-1/3 shadow rounded-2xl border-1 border-neutral-100 p-5 text-neutral-500 h-fit'>
+          <div className='w-full pb-5 border-b border-b-neutral-300 text-neutral-600 font-bold text-2xl'>
+            500.000VNĐ/ĐÊM
+          </div>
+          <div className='flex flex-col gap-4 my-6'>
+            <p>Thời gian ở: 01/10/2025 - 10/10/2025</p>
+            <p>Số đêm: 10 đêm</p>
+            <p>Khách: 3 người lớn - 1 trẻ em</p>
+          </div>
+          <button className='font-bold text-lg text-white p-4 w-full text-center bg-black rounded-full'>
+            Đặt ngay
+          </button>
+        </div>
+      </div>
+      <div className='mt-10'>
+        <div className='flex items-center gap-10 font-semibold text-2xl'>
+          <div>Đánh giá</div>
+          <span className='flex items-center justify-center gap-1 '>
+            5{" "}
+            <Icon
+              icon='material-symbols:star-rounded'
+              width={30}
+              height={30}
+              className='text-yellow-300'
+            />
+          </span>
+        </div>
+        <div className='grid grid-cols-2 gap-x-40 gap-y-8 my-10'>
+          <div>
+            <div className='flex items-start justify-between'>
+              <div className='flex items-center gap-5'>
+                <img
+                  src={`data:image/png;base64,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`}
+                  alt='Extra Hotel'
+                  className='w-16 h-16 object-cover rounded-full'
+                />
+                <div>
+                  <div className='mb-1 font-bold'>UserName</div>
+                  <span className='flex text-neutral-600'>
+                    <Icon icon='material-symbols:star' width={18} height={18} />
+                    <Icon icon='material-symbols:star' width={18} height={20} />
+                    <Icon icon='material-symbols:star' width={18} height={18} />
+                    <Icon icon='material-symbols:star' width={18} height={18} />
+                    <Icon
+                      icon='material-symbols:star-outline'
+                      width={18}
+                      height={18}
+                    />
+                  </span>
+                </div>
+              </div>
+              <div className='text-sm text-neutral-400 font-semibold'>
+                12/03/2020
+              </div>
+            </div>
+            <p className='text-neutral-500 mt-6'>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            </p>
+          </div>
+          <div>
+            <div className='flex items-start justify-between'>
+              <div className='flex items-center gap-5'>
+                <img
+                  src={`data:image/png;base64,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`}
+                  alt='Extra Hotel'
+                  className='w-16 h-16 object-cover rounded-full'
+                />
+                <div>
+                  <div className='mb-1 font-bold'>UserName</div>
+                  <span className='flex text-neutral-600'>
+                    <Icon icon='material-symbols:star' width={18} height={18} />
+                    <Icon icon='material-symbols:star' width={18} height={20} />
+                    <Icon icon='material-symbols:star' width={18} height={18} />
+                    <Icon icon='material-symbols:star' width={18} height={18} />
+                    <Icon
+                      icon='material-symbols:star-outline'
+                      width={18}
+                      height={18}
+                    />
+                  </span>
+                </div>
+              </div>
+              <div className='text-sm text-neutral-400 font-semibold'>
+                12/03/2020
+              </div>
+            </div>
+            <p className='text-neutral-500 mt-6'>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            </p>
+          </div>
+          <div>
+            <div className='flex items-start justify-between'>
+              <div className='flex items-center gap-5'>
+                <img
+                  src={`data:image/png;base64,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`}
+                  alt='Extra Hotel'
+                  className='w-16 h-16 object-cover rounded-full'
+                />
+                <div>
+                  <div className='mb-1 font-bold'>UserName</div>
+                  <span className='flex text-neutral-600'>
+                    <Icon icon='material-symbols:star' width={18} height={18} />
+                    <Icon icon='material-symbols:star' width={18} height={20} />
+                    <Icon icon='material-symbols:star' width={18} height={18} />
+                    <Icon icon='material-symbols:star' width={18} height={18} />
+                    <Icon
+                      icon='material-symbols:star-outline'
+                      width={18}
+                      height={18}
+                    />
+                  </span>
+                </div>
+              </div>
+              <div className='text-sm text-neutral-400 font-semibold'>
+                12/03/2020
+              </div>
+            </div>
+            <p className='text-neutral-500 mt-6'>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            </p>
+          </div>
+          <div>
+            <div className='flex items-start justify-between'>
+              <div className='flex items-center gap-5'>
+                <img
+                  src={`data:image/png;base64,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`}
+                  alt='Extra Hotel'
+                  className='w-16 h-16 object-cover rounded-full'
+                />
+                <div>
+                  <div className='mb-1 font-bold'>UserName</div>
+                  <span className='flex text-neutral-600'>
+                    <Icon icon='material-symbols:star' width={18} height={18} />
+                    <Icon icon='material-symbols:star' width={18} height={20} />
+                    <Icon icon='material-symbols:star' width={18} height={18} />
+                    <Icon icon='material-symbols:star' width={18} height={18} />
+                    <Icon
+                      icon='material-symbols:star-outline'
+                      width={18}
+                      height={18}
+                    />
+                  </span>
+                </div>
+              </div>
+              <div className='text-sm text-neutral-400 font-semibold'>
+                12/03/2020
+              </div>
+            </div>
+            <p className='text-neutral-500 mt-6'>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 const RoomDetail = () => {
   const images = [
     "https://naidecor.vn/wp-content/uploads/2023/09/landscape_photography_tips_featured_image_1024x1024.webp",
-    "https://naidecor.vn/wp-content/uploads/2023/09/landscape_photography_tips_featured_image_1024x1024.webp",
-    "https://naidecor.vn/wp-content/uploads/2023/09/landscape_photography_tips_featured_image_1024x1024.webp",
-    "https://naidecor.vn/wp-content/uploads/2023/09/landscape_photography_tips_featured_image_1024x1024.webp",
-    "https://naidecor.vn/wp-content/uploads/2023/09/landscape_photography_tips_featured_image_1024x1024.webp",
-    "https://naidecor.vn/wp-content/uploads/2023/09/landscape_photography_tips_featured_image_1024x1024.webp",
-    "https://naidecor.vn/wp-content/uploads/2023/09/landscape_photography_tips_featured_image_1024x1024.webp",
-    "https://naidecor.vn/wp-content/uploads/2023/09/landscape_photography_tips_featured_image_1024x1024.webp",
-    "https://naidecor.vn/wp-content/uploads/2023/09/landscape_photography_tips_featured_image_1024x1024.webp",
-    "https://naidecor.vn/wp-content/uploads/2023/09/landscape_photography_tips_featured_image_1024x1024.webp",
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS31qZj9VmsHL0-dTRbu_uAXHl5sD-vqVl7lg&s",
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTk0NYedLQuQzSscd55slcdttLtvILyfvZJw&s",
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf-Adp1Cnvcly1lb9E3_9x0iMdWeqnxa2nUA&s",
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSM8MyajtJunf-jP0Hz_C1qvwE3pBTI-jR36A&s",
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQOrsv_8A1N-YCfper_JSBvOrKwKVLrBq3Y0w&s",
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSSGDIGjjxegM9-yqtRVrMyM0yuzjpkl3ztWQ&s",
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGMvEQPKYQhv8HGhKYOzgvYTRcnWeHw_H0gg&s",
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_0Y4v6ydo20lKUG3bVwO4XiscP5OH4TdrJg&s",
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoQohFfSAzpkZnCDCAa8_uriU4xssikFwhzg&s",
   ];
-
   return (
     <div>
-      HomePage
       <ImageHotel images={images} />
+      <DetailRoom />
     </div>
   );
 };

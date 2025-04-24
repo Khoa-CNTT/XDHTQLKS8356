@@ -1,0 +1,9 @@
+/* Ẩn biểu tượng mặc định cho input date */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    display: none;
+}
+input[type="date"] {
+    -moz-appearance: textfield; 
+    position: relative; 
+    background: transparent;
+}

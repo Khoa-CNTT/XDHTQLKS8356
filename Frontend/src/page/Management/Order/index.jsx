@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Table from "../../../components/Table";
 import { orderServices } from "../../../service/orderServices";
-
+import { MdDeleteForever } from "react-icons/md";
+import GeneralTable from "../../../components/GeneralTable";
 
 const ListOrder = () => {
-    const [expandedRow, setExpandedRow] = useState([]);
     const columns = [
         { key: "booking_id", label: "Mã đặt phòng" },
         { key: "booking_status", label: "Trạng thái", isFilterable: true},
@@ -13,14 +11,23 @@ const ListOrder = () => {
         { key: "checkin", label: "Thời gian nhận phòng" },
         { key: "checkout", label: "Thời gian trả phòng" },
         { key: "fullname", label: "Khách hàng", isFilterable: true },
-        { key: "total_price", label: "Tổng tiền hàng" }
+        { key: "total_price", label: "Tổng tiền hàng" },
+        {
+            key: "button",
+            label: "Xóa",
+            render: (row) => (
+                <button
+                    onClick={(event) => handleDeleteOrder(event, row)}
+                    className="z-10 text-center mx-auto p-2 hover:bg-slate-200 hover:rounded-md"
+                >
+                    <MdDeleteForever className="h-6 w-6" />
+                </button>
+            ),
+        },
     ];
-    const today = new Date().toISOString().split("T")[0];
-    const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-    const defaultStartDate = sevenDaysAgo.toISOString().split("T")[0];
-    const [startDate, setStartDate] = useState(defaultStartDate); 
-    const [endDate, setEndDate] = useState(today);
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+    const [searchData, setSearchData] = useState('');
     const [data, setData] = useState([]);
     const fetchStores = async (startDate, endDate) => {
         const result = await orderServices.getOrders(startDate, endDate);
@@ -34,38 +41,12 @@ const ListOrder = () => {
         setStartDate(newStartDate);
         setEndDate(newEndDate);
     };
-    const handleRowClick = (index) => {
-        if (expandedRow.includes(index)) {
-            setExpandedRow(
-                expandedRow.filter((rowIndex) => rowIndex !== index)
-            );
-        } else {
-            setExpandedRow([...expandedRow, index]);
-        }
+    const handleSearchChange = (value) => {
+        setSearchData(value)
     };
-
-    const handleIsFilters = () => {
-        setExpandedRow([]);
-    };
-
-    const handlePrint = (row) => {
-        console.log("In phiếu nhập:", row.maPhieu);
-    };
-
-    const handlePageChange = () => {
-        setExpandedRow([]);
-    };
-
     const renderExpandedRow = (row) => {
-        console.log("hàng", row);
         return (
-            <div
-                className={`transition-all duration-300 ${
-                    expandedRow === null
-                        ? "animate-fade-out"
-                        : "animate-fade-in-down"
-                }`}
-            >
+            <div>
                  <div className="">
                     <h3 className="font-bold text-lg mb-2">Chi tiết đặt phòng:</h3>
                     <div className="overflow-x-auto">
@@ -81,38 +62,35 @@ const ListOrder = () => {
                             <tbody>
                                 {row.details.map((detail, detailIndex) => (
                                 <>
-                                    <tr
-                                    key={`${detail}-room`}
-                                    className="bg-blue-100/70"
-                                    >
-                                    <td className="border border-gray-300 px-4 py-2">
-                                        {detail.room_name} (Số phòng: {detail.room_number})
-                                    </td>
-                                    <td className="border border-gray-300 px-4 py-2 text-center">1</td>
-                                    <td className="border border-gray-300 px-4 py-2 text-right">
-                                        {detail.price.toLocaleString()} VND
-                                    </td>
-                                    <td className="border border-gray-300 px-4 py-2 text-right">
-                                        {detail.price.toLocaleString()} VND
-                                    </td>
+                                    <tr key={`${detail}-room`} className="bg-blue-100/70">
+                                        <td className="border border-gray-300 px-4 py-2">
+                                            {detail.room_name} (Số phòng: {detail.room_number})
+                                        </td>
+                                        <td className="border border-gray-300 px-4 py-2 text-center">1</td>
+                                        <td className="border border-gray-300 px-4 py-2 text-right">
+                                            {detail.price.toLocaleString()} VND
+                                        </td>
+                                        <td className="border border-gray-300 px-4 py-2 text-right">
+                                            {detail.price.toLocaleString()} VND
+                                        </td>
                                     </tr>
                                     {detail.services && detail.services.map((service, serviceIndex) => (
                                         <tr
                                             key={`${detail}-room`}
                                         className="bg-white"
                                         >
-                                        <td className="border border-gray-300 px-4 py-2 ">
-                                            {service.service_name}
-                                        </td>
-                                        <td className="border border-gray-300 px-4 py-2 text-center">
-                                            {service.quantity}
-                                        </td>
-                                        <td className="border border-gray-300 px-4 py-2 text-right">
-                                            {service.price.toLocaleString()} VND
-                                        </td>
-                                        <td className="border border-gray-300 px-4 py-2 text-right">
-                                            {service.total_price.toLocaleString()} VND
-                                        </td>
+                                            <td className="border border-gray-300 px-4 py-2 ">
+                                                {service.service_name}
+                                            </td>
+                                            <td className="border border-gray-300 px-4 py-2 text-center">
+                                                {service.quantity}
+                                            </td>
+                                            <td className="border border-gray-300 px-4 py-2 text-right">
+                                                {service.price.toLocaleString()} VND
+                                            </td>
+                                            <td className="border border-gray-300 px-4 py-2 text-right">
+                                                {service.total_price.toLocaleString()} VND
+                                            </td>
                                         </tr>
                                     ))}
                                 </>
@@ -120,12 +98,8 @@ const ListOrder = () => {
                             </tbody>
                             <tfoot>
                                 <tr className="font-bold">
-                                    <td colSpan="3" className="border border-gray-300 px-4 py-2 text-right">
-                                    Tổng cộng:
-                                    </td>
-                                    <td className="border border-gray-300 px-4 py-2 text-right">
-                                    {row.total_price.toLocaleString()} VND
-                                    </td>
+                                    <td colSpan="3" className="border border-gray-300 px-4 py-2 text-right">Tổng cộng:</td>
+                                    <td className="border border-gray-300 px-4 py-2 text-right">{row.total_price.toLocaleString()} VND</td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -134,29 +108,24 @@ const ListOrder = () => {
             </div>
         );
     };
-    const navigate = useNavigate();
-    const handleAdd = () => {
-        navigate("/store-receipt");
+    const handleDeleteOrder = (event, row) => {
+        event.stopPropagation();
+        console.log("Editing service for booking:", row.booking_id);
+       
     };
     return (
         <>
-            <Table
-                title="Đơn đặt phòng"
-                // contentButton="Thêm phiếu nhập"
-                // handleAdd={handleAdd}
+            <GeneralTable
+                datas={data}
                 columns={columns}
-                labelFilter="Lọc"
-                handleFetch={fetchStores}
-                data={data}
-                expandedRow={expandedRow}
-                onRowClick={handleRowClick}
-                onPageChange={handlePageChange}
                 renderExpandedRow={renderExpandedRow}
-                handleIsFilters={handleIsFilters}
-                startDate={startDate}
-                endDate={endDate}
                 onDateChange={handleDateChange}
-            />
+                onSearchChange={handleSearchChange}
+                placeholderSearch="Nhập đơn hàng"
+                functionButton="Thêm đơn hàng"
+                onDelete={handleDeleteOrder}
+            >
+            </GeneralTable>
         </>
     );
 };

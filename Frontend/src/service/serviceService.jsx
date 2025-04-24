@@ -17,7 +17,6 @@ export const putServices  = async(data) => {
       console.log("Error putServices: " + error)
    }
 }
-
 export const serviceService = {
    getServices,
    putServices

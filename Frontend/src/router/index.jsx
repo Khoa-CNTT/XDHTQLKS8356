@@ -11,7 +11,8 @@ import AuthLayout from "../layout/Auth/AuthLayout";
 import Error from "../components/Error";
 import RoomDetail from "../page/RoomDetail";
 import SearchRoom from "../page/Search";
-
+import Services from "../page/Management/Services";
+import Room from "../page/Management/Room";
 
 const router = createBrowserRouter([
     {
@@ -58,6 +59,16 @@ const router = createBrowserRouter([
             {
                 path: APP_ROUTER.ORDER,
                 element: <ListOrder />,
+                index: true,
+            },
+            {
+                path: APP_ROUTER.SERVICE,
+                element: <Services />,
+                index: true,
+            },
+            {
+                path: APP_ROUTER.ROOM,
+                element: <Room />,
                 index: true,
             },
         ],

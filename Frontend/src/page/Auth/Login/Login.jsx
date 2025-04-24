@@ -39,8 +39,7 @@ function Login() {
                         navigate("/home")
                     }else {
                         navigate("/admin");
-                    }
-                    
+                    }  
                 } else {
                     console.error("Đăng nhập không thành công");
                     toast.error("Bạn không phải là người dùng", { duration: 2000 });

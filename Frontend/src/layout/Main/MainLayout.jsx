@@ -7,7 +7,7 @@ const MainLayout = () => {
     return (
         <div className="mx-auto w-full" style={{ maxWidth: "100vw" }}>
             <Header></Header>
-            <main>
+            <main className='w-[85%] mx-auto'>
                 <Outlet />       
             </main>
             <Footer></Footer>

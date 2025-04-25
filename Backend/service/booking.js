@@ -301,4 +301,5 @@ const updateBooking = async (id, data) => {
 
 
 
+
 module.exports = {createBooking, getBookingById, getAllBookingForAdmin, getAllBookingForCustomer, deleteBooking, updateBooking}

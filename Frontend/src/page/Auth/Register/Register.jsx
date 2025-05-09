@@ -6,6 +6,7 @@ import { PiEyeSlash, PiEye } from "react-icons/pi";
 import { Link, useNavigate } from "react-router-dom";
 import toast from 'react-hot-toast';
 import axios from "axios";
+import Loading from "../../../components/Loading";
 function Register() {
     const [formData, setFormData] = useState({
         email: "",
@@ -32,6 +33,7 @@ function Register() {
         isFocusedRole: false,
         role: "",
         roleError: "",
+        loading: false
     });
     const navigate = useNavigate();
     const otpRefs = useRef([]);
@@ -183,7 +185,6 @@ function Register() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         setFormData((prevState) => ({
             ...prevState,
             nameError: "",
@@ -193,8 +194,8 @@ function Register() {
             phoneError: "",
             otpError: "",
         }));
-
         if (IsValidate()) {
+            setFormData({...formData,loading: true});
             const requestBody = {
                 // role: formData.role,
                 fullname: formData.name,
@@ -216,6 +217,7 @@ function Register() {
                         ...prevState,
                         token: data.token,
                         isOtpSent: true,
+                        loading: false
                     }));
                 }
             } catch (error) {
@@ -223,6 +225,7 @@ function Register() {
                 setFormData((prevState) => ({
                     ...prevState,
                     emailError: "Email đã tồn tại!",
+                    loading: false
                 }));
             }
         }
@@ -234,6 +237,7 @@ function Register() {
         console.log("codes",codes);
         console.log("response", formData.token);
         if (codes.length === 6) {
+            setFormData({...formData,loading: true});
             try {
                 const response = await axios.post(
                     "http://localhost:8080/api/customer/active",
@@ -252,6 +256,7 @@ function Register() {
                         email: "",
                         password: "",
                         confirmPassword: "",
+                        loading: false
                     }));
                     navigate("/auth/login");
                 }
@@ -260,6 +265,7 @@ function Register() {
                 setFormData((prevState) => ({
                     ...prevState,
                     otpError: "Mã xác thực sai. Vui lòng nhập lại mã xác thực!",
+                    loading: false
                 }));
             }
         } else {
@@ -267,6 +273,7 @@ function Register() {
             setFormData((prevState) => ({
                 ...prevState,
                 otpError: "Vui lòng nhập đầy đủ mã xác thực!",
+                loading: false
             }));
         }
     };
@@ -459,8 +466,11 @@ function Register() {
                             {formData.roleError}
                         </div>
                         */}
-                        <button className="mt-3 mb-2 rounded-md bg-black px-4 py-3 text-sm text-white hover:bg-blue-600 hover:text-white hover:transition-all" type="submit">
-                            Đăng ký
+                        <button
+                            type="submit"
+                            className={`mt-2 rounded-md bg-black px-4 py-3 text-sm text-white hover:bg-blue-600 hover:text-white hover:transition-all ${formData.loading ? 'flex items-center justify-center cursor-not-allowed' : ''}`}
+                            disabled={formData.loading}>
+                            {formData.loading ? (<Loading></Loading>) : ('Đăng ký')}
                         </button>
                     </div>
                     <Link to={"/auth/login"} className="cursor-pointer text-sm font-medium text-blue-700 hover:text-black">
@@ -478,7 +488,7 @@ function Register() {
                                     <button
                                         type="button"
                                         className="absolute right-0 top-0 flex h-8 w-8 items-center justify-center rounded-lg rounded-tr-xl bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900"
-                                        onClick={() =>setFormData((prevState) => ({...prevState, isOtpSent: false}))}
+                                        onClick={() =>setFormData((prevState) => ({...prevState, isOtpSent: false, otp: ["", "", "", "", "", ""]}))}
                                     >
                                         <svg
                                             className="h-4 w-4"
@@ -518,7 +528,7 @@ function Register() {
                                         <div className="flex flex-col items-center justify-between gap-4">
                                             {formData.otpError && (<div className="mt-1 text-sm text-rose-500">{formData.otpError}</div>)}
                                             <button
-                                                className="rounded-xl bg-blue-700 px-4 py-2 text-white hover:bg-blue-600"
+                                                className="cursor-pointer rounded-xl bg-blue-700 px-4 py-2 text-white hover:bg-blue-600"
                                                 onClick={handleVerifyOTP}
                                                 // onKeyDown={(e) => {
                                                 //     if (e.key === "enter") {

@@ -16,6 +16,9 @@ import Room from "../page/Management/Room";
 import Chat from "../page/Management/Chat";
 import RoomType from "../page/Management/RoomType";
 import Booking from "../page/Booking/Booking";
+import ServicesPage from "../page/Services";
+import AllBooking from "../page/User/AllBooking";
+import Information from "../page/User/Information";
 
 const router = createBrowserRouter([
     {
@@ -38,19 +41,34 @@ const router = createBrowserRouter([
             {
                 path: APP_ROUTER.ROOM_DETAIL,
                 element: <RoomDetail/>
-            }
+            },
+            {
+                path: APP_ROUTER.SERVICESPAGE,
+                element: <ServicesPage />,
+            },
+            
+            {
+                path: APP_ROUTER.SEARCH,
+                element: <SearchRoom />,
+            },
+            {
+                path: APP_ROUTER.USER,
+                element: <PrivateRoutes role="customer" />,
+                children: [         
+                    {
+                        path: APP_ROUTER.INFORMATION,
+                        element: <Information />,
+                    },
+                    {
+                        path: APP_ROUTER.ALLBOOKING,
+                        element: <AllBooking />,
+                    },
+                ],
+            },
+           
         ],
     },
-    {
-        path: APP_ROUTER.USER,
-        element: <PrivateRoutes role="customer" />,
-        children: [         
-            // {
-            //     path: APP_ROUTER.ORDER,
-            //     element: <Order />,
-            // },
-        ],
-    },
+   
     {
         path: APP_ROUTER.ADMIN,
         element: (

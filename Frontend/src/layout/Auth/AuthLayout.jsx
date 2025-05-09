@@ -1,12 +1,17 @@
-import React from 'react';
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
+import PageTransitionWrapper from '../../components/PageTransition';
+
+
 const AuthLayout = () => {
+    const location = useLocation();
+
     return (
-        <div>
-            <main>
+        <AnimatePresence mode="wait">
+            <PageTransitionWrapper key={location.pathname}>
                 <Outlet />
-            </main>
-        </div>
+            </PageTransitionWrapper>
+        </AnimatePresence>
     );
 };
 

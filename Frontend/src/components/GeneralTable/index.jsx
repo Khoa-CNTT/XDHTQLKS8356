@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useState } from 'react';
 import { FaCalendarDays } from "react-icons/fa6";
 import { format } from "date-fns";
 import "./customStyles.css"
-const GeneralTable = ({ datas, columns, renderExpandedRow, onDateChange, onSearchChange, placeholderSearch, functionButton, onEdit, onDelete}) => {
+const GeneralTable = ({ datas, columns, renderExpandedRow, onDateChange, onSearchChange, placeholderSearch, functionButton, onEdit, onDelete, handleButton}) => {
     const today = new Date().toISOString().split("T")[0];
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
@@ -100,6 +100,7 @@ const GeneralTable = ({ datas, columns, renderExpandedRow, onDateChange, onSearc
                             className="peer h-full w-full outline-none text-sm text-gray-700 pr-2"
                             type="text"
                             id="search"
+                            autocomplete="off"
                             placeholder={placeholderSearch}
                             onChange={handleSearchChange}
                         />
@@ -137,7 +138,7 @@ const GeneralTable = ({ datas, columns, renderExpandedRow, onDateChange, onSearc
                             </div>
                         </div>
                     </div>}
-                    {functionButton && <button className='cursor-pointer bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white h-12 px-4 border border-blue-500 hover:border-transparent rounded'>
+                    {functionButton && <button onClick={handleButton} className='cursor-pointer bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white h-12 px-4 border border-blue-500 hover:border-transparent rounded'>
                         {functionButton}
                     </button>}
                 </div>

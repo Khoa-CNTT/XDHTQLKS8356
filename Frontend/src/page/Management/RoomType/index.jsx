@@ -3,13 +3,14 @@ import GeneralTable from '../../../components/GeneralTable';
 import { roomDetailService } from '../../../service/roomDetailService';
 import { FaEdit } from "react-icons/fa";
 import { MdDeleteForever } from "react-icons/md";
-import { serviceService } from '../../../service/serviceService';
-import ModalServices from './ModalServices';
-const Services = () => {
+import ModalRoomType from './ModalRoomType';
+import { roomService } from '../../../service/roomService';
+const RoomType = () => {
     const columns = [
-        { key: "id", label: "Mã dịch vụ"},
-        { key: "service_name", label: "Tên dịch vụ" },
-        { key: "price", label: "Giá dịch vụ" },
+        { key: "room_name", label: "Tên loại phòng", isFilterable: true },
+        { key: "room_count", label: "Tổng số phòng" },
+        { key: "adult_count", label: "Số người" },
+        { key: "price_per_night", label: "Giá phòng" },
         {
             key: "edit",
             label: "Chỉnh sửa",
@@ -35,13 +36,14 @@ const Services = () => {
             ),
         },
     ];
-    const [modalAdd, setModalAdd] = useState(false)
+    const [modalAddType, setModalAddType] = useState(false)
     const [searchData, setSearchData] = useState('');
     const [data, setData] = useState([]);
     const fetchRooms = async () => {
-        const result = await serviceService.getServices();
+        const result = await roomService.getRoomType();
         setData(result);
     };
+
     useEffect(() => {
         fetchRooms();
     }, []);
@@ -77,25 +79,26 @@ const Services = () => {
                 columns={columns}
                 renderExpandedRow={renderExpandedRow}
                 onSearchChange={handleSearchChange}
-                functionButton="Thêm dịch vụ"
+                placeholderSearch="Nhập mã loại phòng"
+                functionButton="Thêm loại phòng"
                 onDelete={handleDeleteRoom}
                 onEdit={handleEditRoom}
-                handleButton={() => {setModalAdd(true)}}
+                handleButton={() => {setModalAddType(true)}}
             >
             </GeneralTable>
-            {modalAdd && (
+            {modalAddType && (
                     <div
-                        onClick={() => {setModalAdd(false)}}
+                        onClick={()=>{setModalAddType(false)}}
                         className="fixed inset-0 bg-gray-800/50 flex justify-center items-center z-50"
                     >
                         <div
-                            className="bg-white rounded-lg w-[50%] relative"
+                            className="bg-white rounded-lg w-[50%] h-[80%] relative"
                             onClick={(e) => e.stopPropagation()}
                         >
-                            <ModalServices
-                                onClose={() => { setModalAdd(false) }}
+                            <ModalRoomType
+                                handleClose={()=>{setModalAddType(false)}}
                                 handleFetch={()=> {}}
-                            ></ModalServices>
+                            ></ModalRoomType>
                         </div>
                     </div>
                 )}
@@ -103,4 +106,4 @@ const Services = () => {
     );
 };
 
-export default Services;
+export default RoomType;

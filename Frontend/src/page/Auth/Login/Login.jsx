@@ -31,6 +31,7 @@ function Login() {
         if (validate()) {
             try {
                 const login = await authService.login(formData.email, formData.password)
+                console.log("login ", login)
                 if(login?.success){
                     toast.success('Đăng nhập thành công', { duration: 2000 });
                     const role = Cookies.get('role')

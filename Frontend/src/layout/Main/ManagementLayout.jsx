@@ -44,7 +44,7 @@ const ManagementLayout = () => {
     const items = [
         getItem(<Link to={APP_ROUTER.HOME}>Trang chủ</Link>, "1", <HomeOutlined />),
         getItem(<Link to={APP_ROUTER.INFORHOTEL}>Thông tin khách sạn</Link>, "2", <FundViewOutlined />),
-        getItem(<Link to={APP_ROUTER.INFORHOTEL}>Loại phòng</Link>, "3", <HddOutlined />),
+        getItem(<Link to={APP_ROUTER.ROOMTYPE}>Loại phòng</Link>, "3", <HddOutlined />),
         getItem(<Link to={APP_ROUTER.INFORHOTEL}>Phòng</Link>, "sub1", <LayoutOutlined />, 
             [
                 getItem(<Link to={APP_ROUTER.ROOM}>Tất cả phòng</Link>, "12", <ProductOutlined />),

@@ -13,6 +13,9 @@ import RoomDetail from "../page/RoomDetail";
 import SearchRoom from "../page/Search";
 import Services from "../page/Management/Services";
 import Room from "../page/Management/Room";
+import Chat from "../page/Management/Chat";
+import RoomType from "../page/Management/RoomType";
+import Booking from "../page/Booking/Booking";
 
 const router = createBrowserRouter([
     {
@@ -24,10 +27,10 @@ const router = createBrowserRouter([
                 element: <HomePage />,
                 index: true,
             },
-            // {
-            //     path: APP_ROUTER.BOOKING,
-            //     element: <BookingPage />,
-            // },
+            {
+                path: APP_ROUTER.BOOKING,
+                element: <Booking />,
+            },
             // {
             //     path: `${APP_ROUTER.HOTELDETAIL}/:hotelId`,
             //     element: <HotelDetail />,
@@ -59,17 +62,22 @@ const router = createBrowserRouter([
             {
                 path: APP_ROUTER.ORDER,
                 element: <ListOrder />,
-                index: true,
             },
             {
                 path: APP_ROUTER.SERVICE,
                 element: <Services />,
-                index: true,
             },
             {
                 path: APP_ROUTER.ROOM,
                 element: <Room />,
-                index: true,
+            },
+            {
+                path: APP_ROUTER.ROOMTYPE,
+                element: <RoomType />,
+            },
+            {
+                path: APP_ROUTER.CHAT,
+                element: <Chat />,
             },
         ],
     },

@@ -7,7 +7,7 @@ import Cookies from "js-cookie";
 export const login = async (email, password) => {
    try {
       const response = await apiConfig.post('/customer/login',{email, password})
-      console.log("response", response);
+      // console.log("response", response);
       setRole(response.data.role)
       setToken(response.data.token)
       if(response.data.role === "admin") {

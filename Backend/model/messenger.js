@@ -7,6 +7,7 @@ const Messenger = sequelize.define("Messenger",
             type: DataTypes.TEXT,
             allowNull: false,
         },
+        image : DataTypes.STRING,
         messageTime: {
             type: DataTypes.DATE,
             defaultValue: Sequelize.fn("NOW")

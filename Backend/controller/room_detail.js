@@ -22,10 +22,10 @@ const createRoomDetail = async (req, res) => {
 
 }
 
-
+//Xem tất cả phòng theo loại 
 const getRoomDetail = async (req, res) => {
 
-    const room = await RoomDetail.getRoomDetail();
+    const room = await RoomDetail.getRoomDetail(req.params.id);
 
     if (room == "error") {
         res.status(505).json("Lỗi hệ thống");

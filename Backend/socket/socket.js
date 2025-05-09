@@ -14,8 +14,8 @@ const io = new Server(server, {
 	},
 });
 
-const getReceiverId = (receiverId) => {
-	return userSocket[receiverId];
+const getReceiverId = (id) => {
+	return userSocket[id];
 };
 
 const userSocket = {};

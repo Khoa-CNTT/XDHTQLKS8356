@@ -7,7 +7,7 @@ const createRoom = async (req, res) => {
     if (room == -1) {
         res.status(404).json({
             status: false,
-            message: "Tên phòng khách sạn đã tồn tại"
+            message: "Tên loại phòng đã tồn tại"
         })
     }
     else if (room == "error") {
@@ -16,7 +16,7 @@ const createRoom = async (req, res) => {
     else {
         res.status(201).json({
             status: true,
-            message: "Thêm phòng khách sạn thành công"
+            message: "Thêm loại phòng thành công"
         })
     }
 
@@ -34,7 +34,7 @@ const getSuggestRoom = async (req, res) => {
     else {
         res.status(201).json({
             status: true,
-            message: "Danh sách phòng",
+            message: "Danh sách loại phòng ",
             room
         })
     }
@@ -53,7 +53,7 @@ const getAllRoom = async (req, res) => {
     else {
         res.status(201).json({
             status: true,
-            message: "Danh sách phòng",
+            message: "Danh sách loại phòng",
             room
         })
     }
@@ -63,7 +63,7 @@ const getAllRoom = async (req, res) => {
 //Tất cả phòng trống của khách sạn
 const getRoomEmpty = async (req, res) => {
 
-    const room = await Room.getRoomEmpty(req.params.id, req.query);
+    const room = await Room.getRoomEmpty(req.query);
 
     if (room == "error") {
         res.status(505).json("Lỗi hệ thống");
@@ -80,7 +80,7 @@ const getRoomEmpty = async (req, res) => {
 
 const getRoom = async (req, res) => {
 
-    const room = await Room.getRoom(req.user.id);
+    const room = await Room.getRoom();
 
     if (room == "error") {
         res.status(505).json("Lỗi hệ thống");
@@ -88,7 +88,7 @@ const getRoom = async (req, res) => {
     else {
         res.status(201).json({
             status: true,
-            message: "Danh sách phòng",
+            message: "Danh sách tất cả loại phòng",
             room
         })
     }
@@ -112,5 +112,36 @@ const getRoomById = async (req, res) => {
 
 }
 
+const updateRoom = async (req, res) => {
 
-module.exports = {createRoom, getSuggestRoom, getAllRoom, getRoom, getRoomById, getRoomEmpty}
+    const room = await Room.updateRoom(req.params.id, req.body);
+
+    if (room == "error") {
+        res.status(505).json("Lỗi hệ thống");
+    }
+    else {
+        res.status(201).json({
+            status: true,
+            message: "Sửa thành công",
+        })
+    }
+
+}
+
+const deleteRoom = async (req, res) => {
+
+    const room = await Room.deleteRoom(req.params.id);
+
+    if (room == "error") {
+        res.status(505).json("Lỗi hệ thống");
+    }
+    else {
+        res.status(201).json({
+            status: true,
+            message: "Xóa phòng thành công"
+        })
+    }
+
+}
+
+module.exports = {deleteRoom, updateRoom, createRoom, getSuggestRoom, getAllRoom, getRoom, getRoomById, getRoomEmpty}

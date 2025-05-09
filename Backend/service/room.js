@@ -1,7 +1,7 @@
 const {Room} = require("../model/room");
 const {Sequelize, Op} = require("sequelize");
-const {find_room} = require("../helper/find_room");
-const {convertData} = require("../helper/convertdata");
+//const {find_room} = require("../helper/find_room");
+//const {convertData} = require("../helper/convertdata");
 const { sequelize } = require("../config/mysql");
 
 
@@ -111,7 +111,7 @@ const getAllRoom = async (id, data) => {
     }
 }
 
-const getRoomEmpty = async (id, data) => {
+const getRoomEmpty = async (data) => {
     try {
         const sql = `WITH RECURSIVE DateRange AS (
                         SELECT DATE ${data.start} AS "date"
@@ -122,29 +122,28 @@ const getRoomEmpty = async (id, data) => {
                     )
 
                     SELECT
-                        h.name AS hotel_name,
                         JSONB_AGG(
                             DISTINCT JSONB_BUILD_OBJECT(
                                 'room_id', r.id,
                                 'count',
                                     (
                                         SELECT
-                                            COUNT(RD.ID)
+                                            COUNT(rd.id)
                                         FROM
-                                            ROOMDETAILS RD
-                                            LEFT JOIN INVENTORY I ON RD.ID = I."RoomDetailId"
-                                            AND I.INVENTORY_DATE BETWEEN ${data.start} AND  ${data.end}
+                                            room_details rd
+                                        LEFT JOIN inventory i ON rd.id = i.room_detail_id
+                                            AND i.created_at BETWEEN ${data.start} AND  ${data.end}
                                         WHERE
-                                            RD."RoomId" = R.ID
-                                            AND I."RoomDetailId" IS NULL
+                                            rd.room_id = r.id
+                                            AND i.room_detail_id IS NULL
                                     ),
-                                'room_name', r.name,
+                                'room_type', r.room_type,
                                 'adult_count', r.adult_count,
                                 'total_price', (
                                     SELECT SUM(
                                         COALESCE(
                                             (SELECT p.price FROM pricing p 
-                                            WHERE p."RoomId" = r.id AND d.date BETWEEN p.start_date AND p.end_date LIMIT 1), 
+                                            WHERE p.room_id = r.id AND d.date BETWEEN p.start_date AND p.end_date LIMIT 1), 
                                             r.price_per_night
                                         )
                                     )
@@ -153,16 +152,7 @@ const getRoomEmpty = async (id, data) => {
                             )
                         ) AS room_empty
                     FROM 
-                        roomdetails rd
-                    LEFT JOIN 
-                        inventory i ON rd.id = i."RoomDetailId" 
-                                AND i.inventory_date BETWEEN ${data.start} AND  ${data.end}
-                    JOIN
-                        room r ON r.id = rd."RoomId"
-                    WHERE
-                        i."RoomDetailId" IS NULL
-                    GROUP BY 
-                        h.name;`;
+                        room r`;
         
         const room = await sequelize.query(sql, { type: Sequelize.QueryTypes.SELECT });
 
@@ -178,7 +168,7 @@ const createRoom = async (data) => {
     try {
         const check = await Room.findOne({
             where : {
-                name : data.name
+                room_type : data.room_type
             }
         });
     
@@ -193,20 +183,19 @@ const createRoom = async (data) => {
     }
 }
 
+
 const getRoom = async (id) => {
     try {
         const sql = `SELECT 
                         r.id,
-                        r.name AS room_name,
+                        r.room_type AS room_type,
                         r.adult_count,
                         r.price_per_night,
                         COUNT(rd.id) AS room_count
                     FROM 
                         Room r
-                    JOIN
-                        Hotel h ON h.id = r."HotelId"
                     LEFT JOIN 
-                        RoomDetails rd ON rd."RoomId" = r.id
+                        room_details rd ON rd."room_id" = r.id
                     GROUP BY
                         r.id`;
         
@@ -255,4 +244,5 @@ const updateRoom = async (id, data) => {
         return "error";
     }
 }
+
 module.exports = {createRoom, getSuggestRoom, getAllRoom, getRoom, getRoomById, getRoomEmpty, deleteRoom, updateRoom}

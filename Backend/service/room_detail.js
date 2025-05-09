@@ -24,17 +24,16 @@ const createRoomDetail = async (data) => {
 
 const getRoomDetail = async (id) => {
     try {
-        const sql = `SELECT 
-                        r.id,
+        const sql = `SELECT
                         rd.room_number,
-                        r.name AS room_name,
+                        r.room_type AS room_name,
                         r.price_per_night
                     FROM 
-                        room r
+                        room_details rd
                     JOIN 
-                        hotel h ON r."HotelId" = h.id
-                    JOIN 
-                        roomdetails rd ON rd."RoomId" = r.id
+                        room r ON rd.room_id = r.id
+                    WHERE 
+                        r.id = ${id}
                     ORDER BY rd.room_number`;
         
         const room = await sequelize.query(sql, { type: Sequelize.QueryTypes.SELECT });

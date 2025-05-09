@@ -25,7 +25,7 @@ const createPricing = async (req, res) => {
 
 const getPricing = async (req, res) => {
 
-    const pricing = await Pricing.getPricing(req.user.id);
+    const pricing = await Pricing.getPricing();
 
     if (pricing == "error") {
         res.status(505).json("Lỗi hệ thống");
@@ -43,7 +43,7 @@ const getPricing = async (req, res) => {
 
 const deletePricing = async (req, res) => {
 
-    const pricing = await Pricing.deletePricing(req.user.id);
+    const pricing = await Pricing.deletePricing(req.params.id);
 
     if (pricing == "error") {
         res.status(505).json("Lỗi hệ thống");
@@ -60,7 +60,7 @@ const deletePricing = async (req, res) => {
 
 const updatePricing = async (req, res) => {
 
-    const pricing = await Pricing.updatePricing(req.user.id);
+    const pricing = await Pricing.updatePricing(req.params.id);
 
     if (pricing == "error") {
         res.status(505).json("Lỗi hệ thống");

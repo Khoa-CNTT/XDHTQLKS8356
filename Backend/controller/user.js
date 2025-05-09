@@ -43,4 +43,28 @@ const getAllUserGroup = async (req, res) => {
     });
 }
 
-module.exports = { registerUser, activeUser, loginUser, getUser, putUser, getAllUser, putUserForAdmin, findUser, getAllUserGroup }
+
+const loginUser = async (req, res) => {
+    const user = await User.loginUser(req.body);
+    if (user == -1) {
+        res.status(404).json({
+            success: false,
+            message: "Không tìm thấy email"
+        });
+    }
+    else if (user == "error") {
+        res.status(505).json("Lỗi hệ thống");
+    }
+    else if (user == -2) {
+        res.status(404).json({
+            success: false,
+            message: "Sai mật khẩu"
+        });
+    }
+    else {
+        tokenCookie(user, 200, res);
+
+    }
+}
+
+module.exports = {loginUser, getUser,  getAllUser, findUser, getAllUserGroup}

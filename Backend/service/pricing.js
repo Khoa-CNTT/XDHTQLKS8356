@@ -7,7 +7,7 @@ const createPricing = async (data) => {
         const check = await Pricing.findOne({
             where : {
                 name : data.name,
-                RoomId : data.RoomId
+                room_id : data.RoomId
             }
         });
     
@@ -15,6 +15,7 @@ const createPricing = async (data) => {
             return -1;
         }
     
+
         await Pricing.create(data);
     } catch (error) {
         console.log(error);
@@ -22,27 +23,28 @@ const createPricing = async (data) => {
     }
 }
 
-const getPricing = async (id) => {
+
+const getPricing = async () => {
     try {
         const sql = `WITH price AS (
                         SELECT
                             p.id,
-                            r.name,
+                            r.room_type,
                             p.start_date,
                             p.end_date,
                             p.price
                         FROM 
                             room r
                         JOIN 
-                            pricing p ON p."RoomId" = r.id
+                            pricing p ON p."room_id" = r.id
                         GROUP BY 
-                            p.id, r.name, p.start_date, p.end_date, p.price
+                            p.id, r.room_type, p.start_date, p.end_date, p.price
                     )
                     SELECT 
                         p.name,
                         json_agg(
                             json_build_object(
-                                'room_name', pr.name,
+                                'room_type', pr.room_type,
                                 'start_date', pr.start_date,
                                 'end_date', pr.end_date,
                                 'price', pr.price,

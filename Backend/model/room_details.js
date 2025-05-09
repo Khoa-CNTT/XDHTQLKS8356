@@ -6,7 +6,7 @@ const { Booking_Details } = require('./booking_details');
 
 const Room_Details = sequelize.define("Room_Details",
     {
-        name: DataTypes.STRING,
+        room_number: DataTypes.STRING,
         description: DataTypes.STRING
     },
     {

@@ -4,6 +4,7 @@ import { APP_ROUTER } from "../../utils/Constants";
 import { FaUser } from "react-icons/fa";
 import images from "../../assets/images";
 import SlickImages from "../../components/SlickImages";
+import SearchBar from "../../components/SearchBar";
 const HomePage = () => {
   const imgs = [images.banner1, images.banner2, images.banner3, images.banner4];
   const rooms = [
@@ -38,7 +39,10 @@ const HomePage = () => {
   return (
     <div>
       <div className='mt-10'>
-          <SlickImages cssSlide={"w-full h-[700px]"}  images={imgs} isDotImage={false} />
+          <SlickImages cssSlide={"w-full h-[600px]"}  images={imgs} isDotImage={false} />
+      </div>
+      <div className='w-4/5 mx-auto p-4'>
+        <SearchBar></SearchBar>
       </div>
       <div className='w-full bg-gray-100 py-4 mt-20'>
         <div className='w-4/5 mx-auto p-4'>

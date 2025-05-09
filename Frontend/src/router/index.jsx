@@ -13,6 +13,9 @@ import RoomDetail from "../page/RoomDetail";
 import SearchRoom from "../page/Search";
 import Services from "../page/Management/Services";
 import Room from "../page/Management/Room";
+import ServicesPage from "../page/Services";
+import AllBooking from "../page/User/AllBooking";
+import Information from "../page/User/Information";
 
 const router = createBrowserRouter([
     {
@@ -24,30 +27,37 @@ const router = createBrowserRouter([
                 element: <HomePage />,
                 index: true,
             },
-            // {
-            //     path: APP_ROUTER.BOOKING,
-            //     element: <BookingPage />,
-            // },
-            // {
-            //     path: `${APP_ROUTER.HOTELDETAIL}/:hotelId`,
-            //     element: <HotelDetail />,
-            // },
             {
                 path: APP_ROUTER.ROOM_DETAIL,
                 element: <RoomDetail/>
-            }
+            },
+            {
+                path: APP_ROUTER.SERVICESPAGE,
+                element: <ServicesPage />,
+            },
+            
+            {
+                path: APP_ROUTER.SEARCH,
+                element: <SearchRoom />,
+            },
+            {
+                path: APP_ROUTER.USER,
+                element: <PrivateRoutes role="customer" />,
+                children: [         
+                    {
+                        path: APP_ROUTER.INFORMATION,
+                        element: <Information />,
+                    },
+                    {
+                        path: APP_ROUTER.ALLBOOKING,
+                        element: <AllBooking />,
+                    },
+                ],
+            },
+           
         ],
     },
-    {
-        path: APP_ROUTER.USER,
-        element: <PrivateRoutes role="customer" />,
-        children: [         
-            // {
-            //     path: APP_ROUTER.ORDER,
-            //     element: <Order />,
-            // },
-        ],
-    },
+   
     {
         path: APP_ROUTER.ADMIN,
         element: (

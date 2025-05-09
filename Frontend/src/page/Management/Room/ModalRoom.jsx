@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Button from "../../../components/Button";
 import { BsImageFill } from "react-icons/bs";
 import axios from "axios";
-import { toast } from "react-toastify";
+import toast from 'react-hot-toast';
 const ModalRoom = ({ handleClose, handleFetch }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [imageUrl, setImageUrl] = useState([]);
@@ -109,13 +109,13 @@ const ModalRoom = ({ handleClose, handleFetch }) => {
         dark:[&::-webkit-scrollbar-track]:bg-neutral-700
         dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500"
             >
-                <div className="flex items-center justify-between p-5">
+                <div className="flex items-center justify-between p-5 bg-gray-200">
                     <div className="text-2xl font-bold text-center">
                         Thêm phòng mới
                     </div>
                     <button
                         onClick={handleClose}
-                        className="text-gray-500 hover:text-gray-700 focus:outline-none"
+                        className="text-gray-500 hover:text-gray-700 focus:outline-none cursor-pointer"
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -297,14 +297,14 @@ const ModalRoom = ({ handleClose, handleFetch }) => {
             </div>
             <div className="rounded-b-lg absolute bottom-0 left-0 w-full bg-white border-t border-gray-300 flex flex-end justify-end gap-2 px-10 py-3">
                 <Button
-                    color="green"
+                    color="blue"
                     textColor="white"
                     children="Lưu và thêm mới"
                     size="lg"
                     handleClick={onSubmit}
                 />
                 <Button
-                    color="gray"
+                   
                     textColor="gray-700"
                     children="Hủy"
                     size="lg"

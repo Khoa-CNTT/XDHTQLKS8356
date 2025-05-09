@@ -5,7 +5,7 @@ import { APP_ROUTER } from '../../utils/Constants';
 const Footer = () => {
     return (
         <div>
-            <div className="bg-black/95 pt-8 pb-3 ">
+            <div className="bg-sky-900 pt-8 pb-3 ">
                 <div className="text-white w-full text-base max-w-6xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
                     <div>
                         <ul className="space-y-6">

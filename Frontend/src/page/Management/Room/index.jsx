@@ -3,6 +3,7 @@ import GeneralTable from '../../../components/GeneralTable';
 import { FaEdit } from "react-icons/fa";
 import { MdDeleteForever } from "react-icons/md";
 import { roomDetailService } from '../../../service/roomDetailService';
+import ModalRoom from './ModalRoom';
 const Room = () => {
     const columns = [
         { key: "room_number", label: "Số phòng" },
@@ -33,13 +34,13 @@ const Room = () => {
             ),
         },
     ];
+    const [modalAdd, setModalAdd] = useState(false)
     const [searchData, setSearchData] = useState('');
     const [data, setData] = useState([]);
     const fetchRooms = async () => {
         const result = await roomDetailService.getRoom();
         setData(result);
     };
-
     useEffect(() => {
         fetchRooms();
     }, []);
@@ -79,8 +80,25 @@ const Room = () => {
                 functionButton="Thêm phòng"
                 onDelete={handleDeleteRoom}
                 onEdit={handleEditRoom}
+                handleButton={() => {setModalAdd(true)}}
             >
             </GeneralTable>
+            {modalAdd && (
+                    <div
+                        onClick={() => setModalAdd(false)}
+                        className="fixed inset-0 bg-gray-800/50 flex justify-center items-center z-50"
+                    >
+                        <div
+                            className="bg-white rounded-lg w-[50%] h-[78%] relative"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <ModalRoom
+                                handleClose={()=>{setModalAdd(false)}}
+                                handleFetch={()=> {}}
+                            ></ModalRoom>
+                        </div>
+                    </div>
+                )}
         </div>
     );
 };

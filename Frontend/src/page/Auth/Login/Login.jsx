@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { PiEyeSlash, PiEye } from "react-icons/pi";
-import { RiFolderUserLine } from "react-icons/ri";
 import { Link, useNavigate } from "react-router-dom";
 import toast from 'react-hot-toast';
 import Cookies from "js-cookie";
 import { authService } from "../../../service/authService";
+import Loading from "../../../components/Loading";
 function Login() {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
@@ -17,6 +17,7 @@ function Login() {
         errors: "",
         isFocusedEmail: false,
         isFocusedPass: false,
+        loading: false
     });
 
     const handleSubmit = async (e) => {
@@ -27,26 +28,28 @@ function Login() {
             passwordError: "",
             errors: "",
         });
-        console.log(formData);
+        console.log("form",formData);
         if (validate()) {
+            setFormData({...formData,loading: true});
             try {
                 const login = await authService.login(formData.email, formData.password)
+                console.log("!",login)
                 if(login?.success){
                     toast.success('Đăng nhập thành công', { duration: 2000 });
                     const role = Cookies.get('role')
-                    console.log("role",role)
+                    setFormData({...formData,loading: false});
                     if(role === 'customer') {
                         navigate("/home")
                     }else {
                         navigate("/admin");
-                    }  
+                    }
                 } else {
-                    console.error("Đăng nhập không thành công");
-                    toast.error("Bạn không phải là người dùng", { duration: 2000 });
+                    toast.error(login.message);
+                    setFormData({...formData,loading: false});
                 }
             } catch (error) {
-                setFormData({...formData, errors: error.response.data.message});
-                toast.error(error.response.data.message, { duration: 3000 });
+                setFormData({...formData,loading: false});
+                navigate("/errors")
             }
         }
     };
@@ -162,8 +165,11 @@ function Login() {
                                 />
                             )}
                         </div>
-                        <button type="submit" className="mt-2 rounded-md bg-black px-4 py-3 text-sm text-white hover:bg-blue-600 hover:text-white hover:transition-all">
-                            Đăng nhập
+                        <button
+                            type="submit"
+                            className={`mt-2 rounded-md bg-black px-4 py-3 text-sm text-white hover:bg-blue-600 hover:text-white hover:transition-all ${formData.loading ? 'flex items-center justify-center cursor-not-allowed' : ''}`}
+                            disabled={formData.loading}>
+                            {formData.loading ? (<Loading></Loading>) : ('Đăng nhập')}
                         </button>
                         {formData.errors && ( <div className="ml-4 pt-1 text-xs text-rose-500 w-full break-words">{formData.errors}</div>)}
                     </div>

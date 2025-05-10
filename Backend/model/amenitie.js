@@ -4,7 +4,9 @@ const { sequelize } = require("../config/mysql");
 const Amenitie = sequelize.define("Amenitie",
     {
         name: DataTypes.STRING,
-        price : DataTypes.INTEGER
+        price : DataTypes.INTEGER,
+        icon : DataTypes.STRING,
+        image : DataTypes.STRING
     },
     {
         tableName: "amenitie"

@@ -26,9 +26,22 @@ export const getEmptyRoombyUser = async (checkin, checkout, num, hotelId) =>{
    }
 
 }
-
+export const getRoomType  = async() => {
+   try {
+      const response = await apiConfig.get(`/receptionist/room`)
+      console.log("res: ", response.data.room.map((item, index)=> ({
+         id:index,
+         name: item.room_number,
+      })))
+      return response.data.room
+      
+   } catch (error) {
+      console.log("Error getRoomType: " + error)
+   }
+}
 export const roomService =  {
    getSuggestRoom,
    getEmptyRoombyUser,
+   getRoomType
 }
    

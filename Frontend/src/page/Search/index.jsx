@@ -112,7 +112,7 @@ const SearchRoom = () => {
       );
     return (
         <div>
-            <div className="mx-32 mt-10 bg-white rounded-lg">
+            <div className=" mt-10 bg-white rounded-lg">
                 <h2 className="text-2xl font-bold mb-6">Đề xuất</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4 shadow-md rounded-md mb-6">
                     {roomData.map((room, index) => (

@@ -14,6 +14,7 @@ const Booking = sequelize.define("Booking",
             type: DataTypes.TEXT,
             defaultValue : "booked"
         },
+        type : DataTypes.TEXT,
         total_price : DataTypes.INTEGER
     },
     {

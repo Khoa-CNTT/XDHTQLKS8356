@@ -24,13 +24,13 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 //router
 const customerRouter = require("./router/customer.js");
-// const receptionistRouter = require("./router/receptionist.js");
+const adminRouter = require("./router/admin.js");
 // const uploadRouter = require("./router/upImage.js");
 
 
 //api
 app.use("/api/customer", customerRouter);
-// app.use("/api/receptionist", receptionistRouter);
+app.use("/api/admin", adminRouter);
 // app.use("/upload", uploadRouter);
 
 server.listen(process.env.PORT, async () => {

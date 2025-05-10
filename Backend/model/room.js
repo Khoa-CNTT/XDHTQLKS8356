@@ -23,9 +23,7 @@ Pricing.belongsTo(Room);
 Room.hasMany(Pricing);
 
 
-//Amenitie
-Amenitie.belongsTo(Room);
-Room.hasMany(Amenitie);
+
 
 //Room_Details
 Room_Details.belongsTo(Room);

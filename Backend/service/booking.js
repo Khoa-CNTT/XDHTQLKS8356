@@ -2,8 +2,7 @@ const {Booking} = require("../model/booking");
 const {Booking_Details} = require("../model/booking_details");
 const {Hotel} = require("../model/hotel");
 const {User} = require("../model/user");
-
-
+const {Booking_Services} = require("../model/booking_services");
 
 const find_room = async (id, count, start, end) => {
     const sql = `SELECT 
@@ -300,5 +299,8 @@ const updateBooking = async (id, data) => {
 }
 
 
+const bookingServices  = async (id, data) => {
+    await Booking_Services.bulkCreate(data);
+}
 
-module.exports = {createBooking, getBookingById, getAllBookingForAdmin, getAllBookingForCustomer, deleteBooking, updateBooking}
+module.exports = {createBooking, getBookingById, getAllBookingForAdmin, getAllBookingForCustomer, deleteBooking, updateBooking, bookingServices}

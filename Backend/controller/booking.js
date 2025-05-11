@@ -3,7 +3,7 @@ const Booking = require("../service/booking");
 //Đặt phòng
 const createBooking = async (req, res) => {
 
-    const booking = await Booking.createBooking(req.body);
+    const booking = await Booking.createBooking(req.user.id, req.body);
 
     if (booking == "error") {
         res.status(505).json("Lỗi hệ thống");
@@ -22,7 +22,7 @@ const createBooking = async (req, res) => {
 //Xem chi tiết đơn đặt phòng
 const getBookingById = async (req, res) => {
 
-    const booking = await Booking.createBooking(req.body);
+    const booking = await Booking.getBookingById(req.params.id);
 
     if (booking == "error") {
         res.status(505).json("Lỗi hệ thống");
@@ -30,7 +30,7 @@ const getBookingById = async (req, res) => {
     else {
         res.status(201).json({
             status: true,
-            message: "Đặt phòng thành công",
+            message: "Chi tiết đơn đặt phòng",
             booking
         })
     }
@@ -39,7 +39,7 @@ const getBookingById = async (req, res) => {
 //Tất cả đặt phòng của khách sạn
 const getAllBookingForAdmin = async (req, res) => {
 
-    const booking = await Booking.createBooking(req.body);
+    const booking = await Booking.getAllBookingForAdmin(req.query);
 
     if (booking == "error") {
         res.status(505).json("Lỗi hệ thống");
@@ -47,7 +47,7 @@ const getAllBookingForAdmin = async (req, res) => {
     else {
         res.status(201).json({
             status: true,
-            message: "Đặt phòng thành công",
+            message: "Danh sách đơn đặt phòng",
             booking
         })
     }
@@ -59,7 +59,7 @@ const getAllBookingForAdmin = async (req, res) => {
 //Tất cả đặt phòng của khách hàng
 const getAllBookingForCustomer = async (req, res) => {
 
-    const booking = await Booking.createBooking(req.body);
+    const booking = await Booking.getAllBookingForCustomer(req.user.id);
 
     if (booking == "error") {
         res.status(505).json("Lỗi hệ thống");
@@ -90,7 +90,7 @@ const deleteBooking = async (req, res) => {
     }
 }
 
-
+//chưa sửa 
 //Cập nhật đơn đặt phòng
 const updateBooking = async (req, res) => {
 

@@ -1,18 +1,28 @@
 const customerRouter = require("express").Router();
 const {authentication} = require("../middleware/authentication");
 
-const {createBooking} = require("../controller/booking");
+const {createBooking, getBookingById, getAllBookingForCustomer} = require("../controller/booking");
 const { sendMess, getMessages, getAllMessages } = require("../controller/message");
 const {loginUser} = require("../controller/user");
 const { getRoomEmpty } = require("../controller/room");
+const { bookingServices } = require("../controller/services");
+
 
 
 //booking
-customerRouter.post("/booking", createBooking);
+customerRouter.post("/booking", authentication, createBooking);
+customerRouter.post("/booking-service", bookingServices);
+customerRouter.get("/booking/:id", getBookingById);
+customerRouter.get("/bookings", authentication, getAllBookingForCustomer);
+
 
 
 //user
 customerRouter.post("/login", loginUser);
+
+
+//search
+customerRouter.get("/search", getAllBookingForCustomer);
 
 
 //room

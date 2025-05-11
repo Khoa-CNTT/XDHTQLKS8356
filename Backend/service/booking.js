@@ -3,19 +3,21 @@ const {Booking_Details} = require("../model/booking_details");
 const {Hotel} = require("../model/hotel");
 const {User} = require("../model/user");
 const {Booking_Services} = require("../model/booking_services");
+const {Sequelize, Op} = require("sequelize");
+const { sequelize } = require("../config/mysql");
 
 const find_room = async (id, count, start, end) => {
     const sql = `SELECT 
                     rd.id
                 FROM 
-                    roomdetails rd
+                    room_details rd
                 JOIN 
-                    room r ON rd."RoomId" = r.id
+                    room r ON rd.room_id = r.id
                 WHERE 
                     r.id = ${id}
                     AND rd.id NOT IN (
                         SELECT 
-                            "RoomDetailId"
+                            "room_detail_id"
                         FROM 
                             inventory
                         WHERE 
@@ -31,12 +33,12 @@ const find_room = async (id, count, start, end) => {
 }
 
 //Đặt phòng
-const createBooking = async (data) => {
+const createBooking = async (id, data) => {
     try {
-        //data.booking.user_id = id;
+        data.booking.UserId = id;
         if(data.type != "customer"){
             const user = await User.create(data.user_info);
-            data.booking.user_id = user.id;
+            data.booking.UserId = user.id;
         }
 
 
@@ -49,11 +51,12 @@ const createBooking = async (data) => {
 
             
             const list_id = await find_room(RoomId, count, data.booking.checkin, data.booking.checkout);
+
             for (let i = 0; i < count; i++) {
                 booking_detail.push({
                     price : price,
-                    booking_id : booking.id,
-                    room_detail_id: list_id[i].id                   
+                    BookingId : booking.id,
+                    RoomDetailId: list_id[i].id                   
                 });
             }
         }
@@ -73,56 +76,49 @@ const getBookingById = async (id) => {
         const sql = `SELECT 
                         b.id AS booking_id,
                         b."status" AS booking_status,
-                        b."createdAt",
-                        u.fullname,
-                        u.phone,
-                        b.note AS note,
+                        b.created_at,
                         b.checkin,
                         b.checkout,
                         (b.checkout - b.checkin) AS total_day,
-                        b.total_price + COALESCE(SUM(bs.total_price), 0) AS total_price,
+                        b.total_price AS total_price,
                         COALESCE(SUM(p.amount), 0) AS amount,
                         JSONB_AGG(
                             DISTINCT JSONB_BUILD_OBJECT(
-                                'room_name', r."name",
-                                'room_number', rd.room_number,
-                                'price', bd.price,
-                                'services', (
-                                    SELECT JSONB_AGG(
-                                        JSONB_BUILD_OBJECT(
-                                            'service_name', s.service_name,
-                                            'price', bs.price,
-                                            'quantity', bs.quantity,
-                                            'total_price', bs.total_price,
-                                            'createdAt', bs."createdAt"
-                                        )
-                                    )
-                                    FROM booking_services bs
-                                    JOIN services s ON s.id = bs."ServiceId"
-                                    WHERE bs."BookingDetailId" = bd.id
+                                    'room_type', r.room_type,
+                                    'room_number', rd.room_number,
+                                    'price', bd.price
                                 )
-                            )
-                        ) AS details
+                            ) AS details,
+                        JSONB_AGG(
+                            DISTINCT JSONB_BUILD_OBJECT(
+                                    'service_name', s.service_name,
+                                    'price', bs.price,
+                                    'quantity', bs.quantity,
+                                    'total_price', bs.total_price,
+                                    'created_at', bs.created_at
+                                )
+                            ) AS services
+                        
                     FROM 
                         booking b
                     JOIN 
-                        "user" u ON u.id = b."UserId"
+                        "user" u ON u.id = b.user_id
                     LEFT JOIN 
-                        payments p ON b.id = p."BookingId"
+                        payment p ON b.id = p.booking_id
                     JOIN 
-                        booking_detail bd ON b.id = bd."BookingId"
+                        booking_details bd ON bd.booking_id = b.id
                     LEFT JOIN 
-                        booking_services bs ON bs."BookingDetailId" = bd.id
+                        booking_services bs ON bs.booking_id = b.id
                     LEFT JOIN 
-                        services s ON s.id = bs."ServiceId"
+                        services s ON s.id = bs.service_id
                     JOIN 
-                        roomdetails rd ON rd.id = bd."RoomDetailId"
+                        room_details rd ON rd.id = bd.room_detail_id
                     JOIN 
-                        room r ON rd."RoomId" = r.id
+                        room r ON rd.room_id = r.id
                     WHERE
                         b.id = ${id}
                     GROUP BY
-                        b.id, b."status", b."createdAt", u.fullname, u.phone, b.note, b.checkin, b.checkout;`
+                        b.id, b."status", b.created_at, b.checkin, b.checkout;`
 
         const report = await sequelize.query(sql, { type: Sequelize.QueryTypes.SELECT });
         
@@ -135,61 +131,57 @@ const getBookingById = async (id) => {
 
 
 //Tất cả đặt phòng của khách sạn
-const getAllBookingForAdmin = async (id, data) => {
+const getAllBookingForAdmin = async (data) => {
     try {
         const sql = `SELECT 
                         b.id AS booking_id,
                         b."status" AS booking_status,
-                        b."createdAt",
-                        u.fullname,
-                        u.phone,
-                        b.note AS note,
+                        b.created_at,
                         b.checkin,
                         b.checkout,
+                        b.type,
                         (b.checkout - b.checkin) AS total_day,
-                        b.total_price + COALESCE(SUM(bs.total_price), 0) AS total_price,
+                        b.total_price AS total_price,
                         COALESCE(SUM(p.amount), 0) AS amount,
                         JSONB_AGG(
                             DISTINCT JSONB_BUILD_OBJECT(
-                                'room_name', r."name",
-                                'room_number', rd.room_number,
-                                'price', bd.price,
-                                'services', (
-                                    SELECT JSONB_AGG(
-                                        JSONB_BUILD_OBJECT(
-                                            'service_name', s.service_name,
-                                            'price', bs.price,
-                                            'quantity', bs.quantity,
-                                            'total_price', bs.total_price,
-                                            'createdAt', bs."createdAt"
-                                        )
-                                    )
-                                    FROM booking_services bs
-                                    JOIN services s ON s.id = bs."ServiceId"
-                                    WHERE bs."BookingDetailId" = bd.id
+                                    'room_type', r.room_type,
+                                    'room_number', rd.room_number,
+                                    'price', bd.price
                                 )
-                            )
-                        ) AS details
+                            ) AS details,
+                        JSONB_AGG(
+                            DISTINCT JSONB_BUILD_OBJECT(
+                                    'service_name', s.service_name,
+                                    'price', bs.price,
+                                    'quantity', bs.quantity,
+                                    'total_price', bs.total_price,
+                                    'created_at', bs.created_at
+                                )
+                            ) AS services
+                        
                     FROM 
                         booking b
-                    JOIN 
-                        "user" u ON u.id = b."UserId"
                     LEFT JOIN 
-                        payments p ON b.id = p."BookingId"
-                    JOIN 
-                        booking_detail bd ON b.id = bd."BookingId"
+                        "user" u ON u.id = b.user_id
                     LEFT JOIN 
-                        booking_services bs ON bs."BookingDetailId" = bd.id
+                        payment p ON b.id = p.booking_id
+                    JOIN 
+                        booking_details bd ON bd.booking_id = b.id
                     LEFT JOIN 
-                        services s ON s.id = bs."ServiceId"
+                        booking_services bs ON bs.booking_id = b.id
+                    LEFT JOIN 
+                        services s ON s.id = bs.service_id
                     JOIN 
-                        roomdetails rd ON rd.id = bd."RoomDetailId"
+                        room_details rd ON rd.id = bd.room_detail_id
                     JOIN 
-                        room r ON rd."RoomId" = r.id
+                        room r ON rd.room_id = r.id
                     WHERE
-                        b."createdAt" BETWEEN ${data.start} AND ${data.end} AND r."HotelId" = ${id}
+                        b.created_at BETWEEN ${data.start} AND ${data.end}
                     GROUP BY
-                        b.id, b."status", b."createdAt", u.fullname, u.phone, b.note, b.checkin, b.checkout;`
+                        b.id, b."status", b.created_at, b.checkin, b.checkout
+                    ORDER BY
+                        b.created_at;`
 
         const list_room = await sequelize.query(sql, { type: Sequelize.QueryTypes.SELECT });
         
@@ -205,61 +197,53 @@ const getAllBookingForAdmin = async (id, data) => {
 const getAllBookingForCustomer = async (id) => {
     try {
         const sql = `SELECT 
-                        h.name AS name_hotel,
                         b.id AS booking_id,
                         b."status" AS booking_status,
-                        b."createdAt",
-                        b.note AS note,
+                        b.created_at,
                         b.checkin,
                         b.checkout,
                         (b.checkout - b.checkin) AS total_day,
-                        b.total_price + COALESCE(SUM(bs.total_price), 0) AS total_price,
+                        b.total_price AS total_price,
                         COALESCE(SUM(p.amount), 0) AS amount,
                         JSONB_AGG(
                             DISTINCT JSONB_BUILD_OBJECT(
-                                'room_name', r."name",
-                                'room_number', rd.room_number,
-                                'price', bd.price,
-                                'services', (
-                                    SELECT JSONB_AGG(
-                                        JSONB_BUILD_OBJECT(
-                                            'service_name', s.service_name,
-                                            'price', bs.price,
-                                            'quantity', bs.quantity,
-                                            'total_price', bs.total_price,
-                                            'createdAt', bs."createdAt"
-                                        )
-                                    )
-                                    FROM booking_services bs
-                                    JOIN services s ON s.id = bs."ServiceId"
-                                    WHERE bs."BookingDetailId" = bd.id
+                                    'room_type', r.room_type,
+                                    'room_number', rd.room_number,
+                                    'price', bd.price
                                 )
-                            )
-                        ) AS details
+                            ) AS details,
+                        JSONB_AGG(
+                            DISTINCT JSONB_BUILD_OBJECT(
+                                    'service_name', s.service_name,
+                                    'price', bs.price,
+                                    'quantity', bs.quantity,
+                                    'total_price', bs.total_price,
+                                    'created_at', bs.created_at
+                                )
+                            ) AS services
+                        
                     FROM 
                         booking b
-                    JOIN 
-                        "user" u ON u.id = b."UserId"
                     LEFT JOIN 
-                        payments p ON b.id = p."BookingId"
-                    JOIN 
-                        booking_detail bd ON b.id = bd."BookingId"
+                        "user" u ON u.id = b.user_id
                     LEFT JOIN 
-                        booking_services bs ON bs."BookingDetailId" = bd.id
+                        payment p ON b.id = p.booking_id
+                    JOIN 
+                        booking_details bd ON bd.booking_id = b.id
                     LEFT JOIN 
-                        services s ON s.id = bs."ServiceId"
+                        booking_services bs ON bs.booking_id = b.id
+                    LEFT JOIN 
+                        services s ON s.id = bs.service_id
                     JOIN 
-                        roomdetails rd ON rd.id = bd."RoomDetailId"
+                        room_details rd ON rd.id = bd.room_detail_id
                     JOIN 
-                        room r ON rd."RoomId" = r.id
-                    JOIN
-                        hotel h ON h.id = r."HotelId"
+                        room r ON rd.room_id = r.id
                     WHERE
                         u.id = ${id}
                     GROUP BY
-                        h.name, b.id, b."status", b."createdAt", u.fullname, u.phone, b.note, b.checkin, b.checkout
+                        b.id, b."status", b.created_at, b.checkin, b.checkout
                     ORDER BY
-	                    b."createdAt";`
+                        b.created_at;`
 
         const list_room = await sequelize.query(sql, { type: Sequelize.QueryTypes.SELECT });
         

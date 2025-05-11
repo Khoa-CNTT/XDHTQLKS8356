@@ -1,7 +1,7 @@
 const {Services} = require("../model/services");
 const {Sequelize, Op} = require("sequelize");
 const { sequelize } = require("../config/mysql");
-//const { Booking_Services } = require("../model/booking_services");
+const { Booking_Services } = require("../model/booking_services");
 
 const createServices = async (data) => {
     try {
@@ -66,7 +66,7 @@ const updateServices = async (id, data) => {
     }
 }
 
-// chưa sửa 
+
 const bookingServices = async (data) => {
     try {
         await Booking_Services.bulkCreate(data);

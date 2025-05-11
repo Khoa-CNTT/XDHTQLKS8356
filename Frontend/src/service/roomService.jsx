@@ -1,5 +1,5 @@
+import { useNavigate } from "react-router-dom"
 import apiConfig from "./axiosConfig"
-
 export const getSuggestRoom = async (checkin, checkout, num, hotelId) =>{
    if(!(checkin||checkout||num)) return
    const hotel = hotelId ? hotelId : 1
@@ -28,7 +28,7 @@ export const getEmptyRoombyUser = async (checkin, checkout, num, hotelId) =>{
 }
 export const getRoomType  = async() => {
    try {
-      const response = await apiConfig.get(`/receptionist/room`)
+      const response = await apiConfig.get(`/admin/room`)
       console.log("res: ", response.data.room.map((item, index)=> ({
          id:index,
          name: item.room_number,
@@ -37,11 +37,23 @@ export const getRoomType  = async() => {
       
    } catch (error) {
       console.log("Error getRoomType: " + error)
+      return {}
    }
 }
+export const addRoomType = async (data) => {
+   try {
+      const response = await apiConfig.post(`/admin/room`, data);
+      console.log("2",response.data)
+      return response.data;
+   } catch (error) {
+      console.log("lỗi" + error);
+      return {}
+   }
+};
 export const roomService =  {
    getSuggestRoom,
    getEmptyRoombyUser,
-   getRoomType
+   getRoomType,
+   addRoomType
 }
    

@@ -1,5 +1,5 @@
 import axios from "axios"
-import { setHotel, setRole, setToken } from "../utils/AuthCheck"
+import {setRole, setToken } from "../utils/AuthCheck"
 import apiConfig from "./axiosConfig";
 import Cookies from "js-cookie";
 
@@ -10,10 +10,11 @@ export const login = async (email, password) => {
       // console.log("response", response);
       setRole(response.data.role)
       setToken(response.data.token)
-      if(response.data.role === "admin") {
-         const hotel = await apiConfig.get('/receptionist/hotel')
-         if(hotel.data.hotel?.length>0) setHotel(hotel.data.hotel[0].id)
-      }
+      console.log(response.data)
+      // if(response.data.role === "admin") {
+      //    const hotel = await apiConfig.get('/receptionist/hotel')
+      //    if(hotel.data.hotel?.length>0) setHotel(hotel.data.hotel[0].id)
+      // }
       return response.data
    } catch (error) {
       if (error.status === 404) {

@@ -74,20 +74,17 @@ const getAllUserGroup  = async (id) => {
 
 
 const findUser  = async (data) => {
-    const search = `%${data}%`;
+    const sql = `SELECT 
+                    u.id,
+                    u.fullname,
+                    u.email,
+                    u.image
+                    FROM 
+                    "user" u
+                WHERE
+                    u.fullname ILIKE '%${data}%'`;
 
-    const user = User.findAll({
-        attributes : ["id", "fullname", "email", "image"],
-        where: {
-            role : "customer",
-            [Op.or]: [
-                Sequelize.where(Sequelize.fn('LOWER', Sequelize.col('fullname')), {
-                [Op.like]: search.toLowerCase()
-                }),
-                { email: { [Op.like]: search } }
-            ]
-        }
-    })
+    const user = await sequelize.query(sql, { type: Sequelize.QueryTypes.SELECT });
     return user;
 }
 

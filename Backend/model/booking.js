@@ -3,7 +3,7 @@ const { sequelize } = require("../config/mysql");
 
 const { Booking_Services } = require('./booking_services');
 const { Payment } = require('./payment');
-const { Booking_Details } = require('./booking_details');
+
 
 const Booking = sequelize.define("Booking",
     {
@@ -28,9 +28,7 @@ Booking_Services.belongsTo(Booking);
 Booking.hasMany(Booking_Services);
 
 
-//Booking_Details
-Booking_Details.belongsTo(Booking);
-Booking.hasMany(Booking_Details);
+
 
 //Payment
 Payment.belongsTo(Booking);

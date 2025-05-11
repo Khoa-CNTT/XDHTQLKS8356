@@ -2,6 +2,7 @@ const adminRouter = require("express").Router();
 
 
 const {getAmenitie, createAmenitie, deleteAmenitie, updateAmenitie} = require("../controller/amenitie");
+const { getAllBookingForAdmin } = require("../controller/booking");
 const { updateHotel, getHotel } = require("../controller/hotel");
 const { createPricing, deletePricing, updatePricing, getPricing } = require("../controller/pricing");
 const { createRoom, deleteRoom, updateRoom, getRoom } = require("../controller/room");
@@ -55,7 +56,9 @@ adminRouter.get("/services", getAllServices);
 
 
 //user
-adminRouter.get("/search_user/", findUser);
+adminRouter.get("/search_user", findUser);
 
+//booking
+adminRouter.get("/bookings", getAllBookingForAdmin);
 
 module.exports = adminRouter;

@@ -29,6 +29,7 @@ const getPricing = async () => {
         const sql = `WITH price AS (
                         SELECT
                             p.id,
+                            r.id as room_type_id,
                             r.room_type,
                             p.start_date,
                             p.end_date,
@@ -38,13 +39,14 @@ const getPricing = async () => {
                         JOIN 
                             pricing p ON p."room_id" = r.id
                         GROUP BY 
-                            p.id, r.room_type, p.start_date, p.end_date, p.price
+                            p.id, r.room_type, p.start_date, p.end_date, p.price, r.id
                     )
                     SELECT 
                         p.name,
                         json_agg(
                             json_build_object(
                                 'room_type', pr.room_type,
+                                'room_type_id', pr.room_type_id,
                                 'start_date', pr.start_date,
                                 'end_date', pr.end_date,
                                 'price', pr.price,

@@ -2,9 +2,13 @@ const Booking = require("../service/booking");
 
 //Đặt phòng
 const createBooking = async (req, res) => {
-
-    const booking = await Booking.createBooking(req.user.id, req.body);
-
+    let booking;
+    if(req.user != null){
+        booking = await Booking.createBooking(req.user.id, req.body);
+    }
+    else{
+        booking = await Booking.createBooking(null, req.body);
+    }
     if (booking == "error") {
         res.status(505).json("Lỗi hệ thống");
     }

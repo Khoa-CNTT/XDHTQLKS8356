@@ -60,7 +60,7 @@ const deletePricing = async (req, res) => {
 
 const updatePricing = async (req, res) => {
 
-    const pricing = await Pricing.updatePricing(req.params.id);
+    const pricing = await Pricing.updatePricing(req.params.id, req.body);
 
     if (pricing == "error") {
         res.status(505).json("Lỗi hệ thống");
@@ -68,7 +68,7 @@ const updatePricing = async (req, res) => {
     else {
         res.status(201).json({
             status: true,
-            message: "Cập nhật giá thành côngcông"
+            message: "Cập nhật giá thành công"
         })
     }
 

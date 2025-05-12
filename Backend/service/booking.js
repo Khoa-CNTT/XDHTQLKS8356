@@ -35,6 +35,7 @@ const find_room = async (id, count, start, end) => {
 //Đặt phòng
 const createBooking = async (id, data) => {
     try {
+        console.log(id);
         data.booking.UserId = id;
         if(data.type != "customer"){
             const user = await User.create(data.user_info);

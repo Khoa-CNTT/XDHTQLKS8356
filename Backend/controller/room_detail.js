@@ -40,6 +40,24 @@ const getRoomDetail = async (req, res) => {
 
 }
 
+//Xem tất cả phòng theo loại 
+const getAllRoomDetail = async (req, res) => {
+
+    const room = await RoomDetail.getAllRoomDetail();
+
+    if (room == "error") {
+        res.status(505).json("Lỗi hệ thống");
+    }
+    else {
+        res.status(201).json({
+            status: true,
+            message: "Danh sách phòng",
+            room
+        })
+    }
+
+}
+
 const updateRoomDetail = async (req, res) => {
 
     const room = await RoomDetail.updateRoomDetail(req.params.id, req.body);
@@ -72,4 +90,4 @@ const deleteRoomDetail = async (req, res) => {
 
 }
 
-module.exports = { createRoomDetail, getRoomDetail, updateRoomDetail, deleteRoomDetail}
+module.exports = { createRoomDetail, getRoomDetail, updateRoomDetail, deleteRoomDetail, getAllRoomDetail}

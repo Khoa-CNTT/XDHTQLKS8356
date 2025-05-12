@@ -190,7 +190,7 @@ const putUser  = async (id, data) => {
 }
 
 
-const addEmployee  = async (id, data) => {
+const addEmployee  = async (data) => {
     try {
         const check = await User.findOne({
             where : {

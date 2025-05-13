@@ -46,6 +46,28 @@ const getRoomDetail = async (id) => {
 }
 
 
+const getAllRoomDetail = async (id) => {
+    try {
+        const sql = `SELECT
+                        rd.room_number,
+                        r.room_type AS room_name,
+                        r.price_per_night
+                    FROM 
+                        room_details rd
+                    JOIN 
+                        room r ON rd.room_id = r.id
+                    ORDER BY rd.room_number`;
+        
+        const room = await sequelize.query(sql, { type: Sequelize.QueryTypes.SELECT });
+
+        return room;
+    } catch (error) {
+        console.log(error);
+        return "error";
+    }
+}
+
+
 const deleteRoomDetail = async (id) => {
     try {
         await Room_Details.destroy({
@@ -70,4 +92,4 @@ const updateRoomDetail = async (id, data) => {
     }
 }
 
-module.exports = {createRoomDetail, getRoomDetail, deleteRoomDetail, updateRoomDetail}
+module.exports = {createRoomDetail, getRoomDetail, deleteRoomDetail, updateRoomDetail, getAllRoomDetail}

@@ -9,7 +9,10 @@ const User = sequelize.define("User",
         fullname: DataTypes.TEXT,
         password: DataTypes.TEXT,
         email: DataTypes.TEXT,
-        status: DataTypes.TEXT,
+        status: {
+            type : DataTypes.TEXT,
+            defaultValue : "account"
+        },
         role : {
             type : DataTypes.TEXT,
             defaultValue : "customer"

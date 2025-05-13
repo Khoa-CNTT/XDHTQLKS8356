@@ -34,6 +34,20 @@ const findUser = async (req, res) => {
 }
 
 
+const addEmployee = async (req, res) => {
+    const user = await User.addEmployee(req.body);
+    if(user == -1){
+        res.status(404).json({
+            success: false,
+            message: "Email đã tồn tại"
+        });
+    }
+    res.status(200).json({
+        success: true,
+        message: "Thêm thành công "
+    });
+}
+
 const getAllUserGroup = async (req, res) => {
     const user = await User.getAllUserGroup(req.params.id);
     res.status(200).json({
@@ -67,4 +81,13 @@ const loginUser = async (req, res) => {
     }
 }
 
-module.exports = {loginUser, getUser,  getAllUser, findUser, getAllUserGroup}
+
+const logout = async (req, res) => {
+    res.clearCookie("token");
+    res.status(200).json({
+        success: true,
+        message: "Logout thành công "
+    });
+}
+
+module.exports = {loginUser, getUser,  getAllUser, findUser, getAllUserGroup, addEmployee, logout}

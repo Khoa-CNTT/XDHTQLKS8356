@@ -6,9 +6,9 @@ const { getAllBookingForAdmin } = require("../controller/booking");
 const { updateHotel, getHotel } = require("../controller/hotel");
 const { createPricing, deletePricing, updatePricing, getPricing } = require("../controller/pricing");
 const { createRoom, deleteRoom, updateRoom, getRoom } = require("../controller/room");
-const { createRoomDetail, deleteRoomDetail, updateRoomDetail, getRoomDetail } = require("../controller/room_detail");
+const { createRoomDetail, deleteRoomDetail, updateRoomDetail, getRoomDetail, getAllRoomDetail } = require("../controller/room_detail");
 const { createServices, deleteServices, updateServices, getAllServices } = require("../controller/services");
-const { findUser } = require("../controller/user");
+const { findUser, addEmployee } = require("../controller/user");
 
 
 
@@ -46,6 +46,7 @@ adminRouter.post("/room_detail", createRoomDetail);
 adminRouter.delete("/room_detail/:id", deleteRoomDetail);
 adminRouter.put("/room_detail/:id", updateRoomDetail);
 adminRouter.get("/room_detail/:id", getRoomDetail);
+adminRouter.get("/room_details", getAllRoomDetail);
 
 
 //services
@@ -57,6 +58,8 @@ adminRouter.get("/services", getAllServices);
 
 //user
 adminRouter.get("/search_user", findUser);
+adminRouter.post("/user", findUser);
+adminRouter.post("/add_user", addEmployee);
 
 //booking
 adminRouter.get("/bookings", getAllBookingForAdmin);

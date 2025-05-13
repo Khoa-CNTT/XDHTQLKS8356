@@ -132,7 +132,7 @@ const getRoomEmpty = async (data) => {
                                         FROM
                                             room_details rd
                                         LEFT JOIN inventory i ON rd.id = i.room_detail_id
-                                            AND i.created_at BETWEEN ${data.start} AND  ${data.end}
+                                            AND i.inventory_date BETWEEN ${data.start} AND  ${data.end}
                                         WHERE
                                             rd.room_id = r.id
                                             AND i.room_detail_id IS NULL

@@ -1,8 +1,8 @@
 import apiConfig from "./axiosConfig";
 
-export const getHotelDetail = async (hotelId) => {
+export const getHotelDetail = async () => {
    try {
-     const response = await apiConfig.get(`/receptionist/hotel/${hotelId}`);
+     const response = await apiConfig.get(`/receptionist/admin/hotel`);
      return response.data;
    } catch (error) {
      console.error("Error fetching room details:", error);

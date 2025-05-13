@@ -17,15 +17,6 @@ export const setRole = (role) => {
   })
 }
 
-export const setHotel = (id) => {
-  Cookies.set('hotel_id', id, {
-    expires: 1, 
-    path: '/',  
-    // secure: true,
-    // sameSite: 'Strict' 
-  })
-}
-
 export const setToken = (token) => {
   Cookies.set('token', token, {
     expires: 1, 
@@ -33,4 +24,8 @@ export const setToken = (token) => {
     // secure: true,
     // sameSite: 'Strict' 
   })
+}
+
+export const getToken = () => {
+  return Cookies.get('token')
 }

@@ -36,6 +36,7 @@ const RoomType = () => {
             ),
         },
     ];
+    
     const [modalAddType, setModalAddType] = useState(false)
     const [searchData, setSearchData] = useState('');
     const [data, setData] = useState([]);

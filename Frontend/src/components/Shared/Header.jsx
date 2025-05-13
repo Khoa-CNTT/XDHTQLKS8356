@@ -18,7 +18,7 @@ const Header = () => {
         const token = isAuthenticated();
         console.log("checkToken", token);
         setCheckToken(token);
-    }, []);
+    }, [checkToken]);
     useEffect(() => {
       const handleDropdownClickOutside = (event) => {
         if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {

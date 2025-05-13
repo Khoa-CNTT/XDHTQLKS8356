@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import GeneralTable from '../../../components/GeneralTable';
-import { roomDetailService } from '../../../service/roomDetailService';
+import toast from 'react-hot-toast';
 import { FaEdit } from "react-icons/fa";
 import { MdDeleteForever } from "react-icons/md";
 import { serviceService } from '../../../service/serviceService';
 import ModalServices from './ModalServices';
+import { useNavigate } from 'react-router-dom';
 const Services = () => {
     const columns = [
         { key: "id", label: "Mã dịch vụ"},
@@ -15,7 +16,7 @@ const Services = () => {
             label: "Chỉnh sửa",
             render: (row) => (
                 <button
-                    onClick={(event) => handleEditRoom(event, row)}
+                    onClick={(event) => handleEditService(event, row)}
                     className="z-10 text-center mx-auto p-2 hover:bg-slate-200 hover:rounded-md"
                 >
                     <FaEdit className="h-6 w-6" />
@@ -27,7 +28,7 @@ const Services = () => {
             label: "Xóa",
             render: (row) => (
                 <button
-                    onClick={(event) => handleDeleteRoom(event, row)}
+                    onClick={(event) => handleDeleteService(event, row)}
                     className="z-10 text-center mx-auto p-2 hover:bg-slate-200 hover:rounded-md"
                 >
                     <MdDeleteForever className="h-6 w-6" />
@@ -35,19 +36,18 @@ const Services = () => {
             ),
         },
     ];
-    const [modalAdd, setModalAdd] = useState(false)
-    const [searchData, setSearchData] = useState('');
+    const navigate = useNavigate();
+    const [resetFormTrigger, setResetFormTrigger] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false)
     const [data, setData] = useState([]);
-    const fetchRooms = async () => {
+    const [selectedService, setSelectedService] = useState("");
+    const fetchServices = async () => {
         const result = await serviceService.getServices();
         setData(result);
     };
     useEffect(() => {
-        fetchRooms();
+        fetchServices();
     }, []);
-    const handleSearchChange = (value) => {
-        setSearchData(value)
-    };
     const renderExpandedRow = (row) => {
         return (
             <div>
@@ -60,15 +60,68 @@ const Services = () => {
             </div>
         );
     };
-    const handleDeleteRoom = (event, row) => {
+    const handleDeleteService = async (event, row) => {
         event.stopPropagation();
-        console.log("Delete room for booking:", row.booking_id);
+        try {
+            const result = await serviceService.deleteServices(row.id);
+        if(result.status == true){
+            toast.success(result.message);
+            fetchServices()
+        }else{
+            toast.error(result.message);
+        }
+        } catch (error) {
+            
+        }
        
     };
-    const handleEditRoom = (event, row) => {
+    const handleEditService = (event, row) => {
         event.stopPropagation();
-        console.log("Editing room for booking:", row.booking_id);
+        setSelectedService(row)
+        setModalVisible(true);
        
+    };
+    const handleSubmit = async (formData) => {
+        for (let key in formData) {
+            if (formData[key] === "") {
+                toast.error("Vui lòng nhập đầy đủ thông tin.");
+                return;
+            }
+        }
+        const payload = {
+            service_name: formData.serviceName,
+            price: formData.price,
+            HotelId: 1
+        }; 
+        if (selectedService) {
+            try {
+                const result = await serviceService.updateServices(selectedService.id, payload);
+                if(result.status === true){
+                    toast.success(result.message);
+                    setResetFormTrigger(true);
+                    setModalVisible(false);
+                }else{
+                    toast.error(result.message);
+                }
+            } catch (error) {
+                console.log("lỗi 2",error)
+                navigate("/error")
+            }
+        } else { 
+            try {
+                const result = await serviceService.addServices(payload);
+                if(result.status === true){
+                    toast.success(result.message);
+                    setResetFormTrigger(true);
+                    setModalVisible(false);
+                }else{
+                    toast.error(result.message);
+                }
+            } catch (error) {
+                navigate("/error")
+            }
+        }
+        fetchServices();
     };
     return (
         <div>
@@ -76,16 +129,15 @@ const Services = () => {
                 datas={data}
                 columns={columns}
                 renderExpandedRow={renderExpandedRow}
-                onSearchChange={handleSearchChange}
                 functionButton="Thêm dịch vụ"
-                onDelete={handleDeleteRoom}
-                onEdit={handleEditRoom}
-                handleButton={() => {setModalAdd(true)}}
+                onDelete={handleDeleteService}
+                onEdit={handleEditService}
+                handleButton={() => {setModalVisible(true)}}
             >
             </GeneralTable>
-            {modalAdd && (
+            {modalVisible && (
                     <div
-                        onClick={() => {setModalAdd(false)}}
+                        onClick={() => {setModalVisible(false)}}
                         className="fixed inset-0 bg-gray-800/50 flex justify-center items-center z-50"
                     >
                         <div
@@ -93,8 +145,12 @@ const Services = () => {
                             onClick={(e) => e.stopPropagation()}
                         >
                             <ModalServices
-                                onClose={() => { setModalAdd(false) }}
-                                handleFetch={()=> {}}
+                                handleClose={()=>{setModalVisible(false)}}
+                                resetTrigger={resetFormTrigger} 
+                                lable={selectedService ? "Cập nhật dịch vụ" : "Thêm dịch vụ"}
+                                data={selectedService}
+                                handleSubmit={handleSubmit}
+                                functionButton={selectedService ? "Lưu" : "Thêm mới"}
                             ></ModalServices>
                         </div>
                     </div>

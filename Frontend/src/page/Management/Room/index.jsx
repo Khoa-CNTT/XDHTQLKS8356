@@ -4,10 +4,12 @@ import { FaEdit } from "react-icons/fa";
 import { MdDeleteForever } from "react-icons/md";
 import { roomDetailService } from '../../../service/roomDetailService';
 import ModalRoom from './ModalRoom';
+import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 const Room = () => {
     const columns = [
         { key: "room_number", label: "Số phòng" },
-        { key: "room_name", label: "Loại phòng", isFilterable: true },
+        { key: "room_type", label: "Loại phòng", isFilterable: true },
         { key: "price_per_night", label: "Giá phòng" },
         {
             key: "edit",
@@ -34,8 +36,10 @@ const Room = () => {
             ),
         },
     ];
-    const [modalAdd, setModalAdd] = useState(false)
-    const [searchData, setSearchData] = useState('');
+    const navigate = useNavigate();
+    const [resetFormTrigger, setResetFormTrigger] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false)
+    const [selectedRoom, setSelectedRoom] = useState("");
     const [data, setData] = useState([]);
     const fetchRooms = async () => {
         const result = await roomDetailService.getRoom();
@@ -44,9 +48,7 @@ const Room = () => {
     useEffect(() => {
         fetchRooms();
     }, []);
-    const handleSearchChange = (value) => {
-        setSearchData(value)
-    };
+    console.log(selectedRoom)
     const renderExpandedRow = (row) => {
         return (
             <div>
@@ -59,15 +61,71 @@ const Room = () => {
             </div>
         );
     };
-    const handleDeleteRoom = (event, row) => {
+    const handleDeleteRoom = async (event, row) => {
         event.stopPropagation();
-        console.log("Delete room for booking:", row.booking_id);
+        try {
+            const result = await roomDetailService.deleteRoom(row.id);
+            if(result.status == true){
+                toast.success(result.message);
+                fetchRooms();     
+            }else{
+                toast.error(result.message);
+            }
+        } catch (error) {
+            
+        }
        
     };
     const handleEditRoom = (event, row) => {
         event.stopPropagation();
-        console.log("Editing room for booking:", row.booking_id);
-       
+        setSelectedRoom(row)
+        setModalVisible(true);
+    };
+    const handleSubmit = async (formData) => {
+        // for (let key in formData) {
+        //     if (formData[key] === "") {
+        //         toast.error("Vui lòng nhập đầy đủ thông tin.");
+        //         return;
+        //     }
+        // }
+       console.log(formData)
+        const payload = {
+            room_number: formData.roomNumber,
+            description: formData.description,
+            RoomId: formData.roomID,
+        }; 
+        try {
+            if (selectedRoom) {
+                try {
+                    const result = await roomDetailService.updateRoom(selectedRoom.id, payload);
+                    if(result.status == true){
+                        toast.success(result.message);
+                        setResetFormTrigger(true);
+                        setModalVisible(false);
+                    }else{
+                        toast.error(result.message);
+                    }
+                } catch (error) {
+                    navigate("/error")
+                }
+            } else { 
+                try {
+                    const result = await roomDetailService.addRoom(payload);
+                    if(result.status == true){
+                        toast.success(result.message);
+                        setResetFormTrigger(true);
+                        setModalVisible(false);
+                    }else{
+                        toast.error(result.message);
+                    }
+                } catch (error) {
+                    navigate("/error")
+                }
+            }
+            fetchRooms();
+        } catch (err) {
+            navigate("/error")
+        }
     };
     return (
         <div>
@@ -75,17 +133,15 @@ const Room = () => {
                 datas={data}
                 columns={columns}
                 renderExpandedRow={renderExpandedRow}
-                onSearchChange={handleSearchChange}
-                placeholderSearch="Nhập mã phòng"
                 functionButton="Thêm phòng"
                 onDelete={handleDeleteRoom}
                 onEdit={handleEditRoom}
-                handleButton={() => {setModalAdd(true)}}
+                handleButton={() => {setModalVisible(true), setSelectedRoom(null)}}
             >
             </GeneralTable>
-            {modalAdd && (
+            {modalVisible && (
                     <div
-                        onClick={() => setModalAdd(false)}
+                        onClick={() => setModalVisible(false)}
                         className="fixed inset-0 bg-gray-800/50 flex justify-center items-center z-50"
                     >
                         <div
@@ -93,8 +149,12 @@ const Room = () => {
                             onClick={(e) => e.stopPropagation()}
                         >
                             <ModalRoom
-                                handleClose={()=>{setModalAdd(false)}}
-                                handleFetch={()=> {}}
+                                handleClose={()=>{setModalVisible(false)}}
+                                resetTrigger={resetFormTrigger} 
+                                lable={selectedRoom ? "Cập nhật phòng" : "Thêm phòng"}
+                                data={selectedRoom}
+                                handleSubmit={handleSubmit}
+                                functionButton={selectedRoom ? "Cập nhật" : "Thêm mới"}
                             ></ModalRoom>
                         </div>
                     </div>

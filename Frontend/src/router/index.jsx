@@ -19,6 +19,8 @@ import Booking from "../page/Booking/Booking";
 import ServicesPage from "../page/Services";
 import AllBooking from "../page/User/AllBooking";
 import Information from "../page/User/Information";
+import Price from "../page/Management/Price";
+import Extension from "../page/Management/Extension";
 
 const router = createBrowserRouter([
     {
@@ -96,6 +98,14 @@ const router = createBrowserRouter([
             {
                 path: APP_ROUTER.CHAT,
                 element: <Chat />,
+            },
+            {
+                path: APP_ROUTER.PRICE,
+                element: <Price />,
+            },
+            {
+                path: APP_ROUTER.EXTENTION,
+                element: <Extension />,
             },
         ],
     },

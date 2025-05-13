@@ -4,7 +4,6 @@ export const isAuthenticated = () => !!Cookies.get("token");
 
 export const hasRole = (role) => {
   const userRole = Cookies.get("role"); 
-  console.log("role: ",userRole===role)
   return userRole === role;
 };
 
@@ -17,11 +16,20 @@ export const setRole = (role) => {
   })
 }
 
+// export const setHotel = (id) => {
+//   Cookies.set('hotel_id', id, {
+//     expires: 1, 
+//     path: '/',  
+//     // secure: true,
+//     // sameSite: 'Strict' 
+//   })
+// }
+
 export const setToken = (token) => {
   Cookies.set('token', token, {
     expires: 1, 
     path: '/',  
-    // secure: true,
+    secure: true,
     // sameSite: 'Strict' 
   })
 }

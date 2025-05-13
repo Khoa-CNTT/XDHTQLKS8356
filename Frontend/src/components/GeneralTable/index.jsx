@@ -2,6 +2,7 @@ import React, { Fragment, useEffect, useState } from 'react';
 import { FaCalendarDays } from "react-icons/fa6";
 import { format } from "date-fns";
 import "./customStyles.css"
+import { Icon } from '@iconify/react';
 const GeneralTable = ({ datas, columns, renderExpandedRow, onDateChange, onSearchChange, placeholderSearch, functionButton, onEdit, onDelete, handleButton}) => {
     const today = new Date().toISOString().split("T")[0];
     const sevenDaysAgo = new Date();
@@ -40,7 +41,6 @@ const GeneralTable = ({ datas, columns, renderExpandedRow, onDateChange, onSearc
 
     const filteredData = Array.isArray(value?.data) && value.data?.length > 0 ? value?.data.filter((row) => Object.keys(value.filters).every((key) => !value.filters[key] || row[key].toString().includes(value.filters[key]))) : [];
     const getValueFilter = (key) => { return [...new Set(value?.data.map((item) => item[key]))] };
-    
     const startIndex = (value.currentPage - 1) * value.pageSize;
     const resultData = filteredData.slice(startIndex, startIndex + value.pageSize);
     const totalPages = Math.ceil(filteredData.length / value.pageSize);
@@ -143,7 +143,7 @@ const GeneralTable = ({ datas, columns, renderExpandedRow, onDateChange, onSearc
                     </button>}
                 </div>
             </div>
-            <div className="flex-grow overflow-auto min-h-[650px]">
+            <div className="flex-grow overflow-auto min-h-[550px]">
                 <table className='w-full table-auto'>
                     <thead className='sticky top-0 bg-gray-100 z-10'>
                         <tr>
@@ -162,8 +162,8 @@ const GeneralTable = ({ datas, columns, renderExpandedRow, onDateChange, onSearc
                                                     }}
                                                 >
                                                     <option value="">Tất cả</option>
-                                                    {getValueFilter(column.key).map((value) => (
-                                                        <option key={value} value={value}>{value}</option>
+                                                    {getValueFilter(column.key).map((value,index) => (
+                                                        <option key={value || index} value={value}>{value}</option>
                                                     ))}
                                                 </select>
                                             )}
@@ -173,34 +173,69 @@ const GeneralTable = ({ datas, columns, renderExpandedRow, onDateChange, onSearc
                             ))}
                         </tr>
                     </thead>
-                    <tbody className='max-h-full'>
-                        {resultData.map((row, index) => (
+                    <tbody className="max-h-full">
+                        {resultData.map((row, index) => {
+                            if (Array.isArray(row.details)) {
+                            return row.details.map((detail, subIndex) => (
+                                <Fragment key={`${index}-${subIndex}`}>
+                                <tr onClick={() => handleRowClick(`${index}-${subIndex}`)}>
+                                    {columns.map((column) => {
+                                        const value = detail[column.key] ?? row[column.key]; 
+                                        return (
+                                            <td key={`${column.key}-${index}-${subIndex}`} className="py-2.5 border-b border-gray-200 text-center">
+                                                {column.render ? (
+                                                    column.render({ ...detail, name: row.name }) 
+                                                ) : column.key === "checkin" || column.key === "checkout" || column.key === "createdAt" ? (
+                                                    (() => {
+                                                    const date = new Date(value);
+                                                    return format(date, "HH:mm, dd/MM/yyyy");
+                                                    })()
+                                                ) : (
+                                                    value
+                                                )}
+                                            </td>
+                                        );
+                                    })}
+                                </tr>
+                                {value.expandedRow && value.expandedRow.includes(`${index}-${subIndex}`) && (
+                                    <tr>
+                                        <td colSpan={columns.length + 1} className="px-4 py-2 shadow-inner">
+                                            <div>{renderExpandedRow(detail)}</div>
+                                        </td>
+                                    </tr>
+                                )}
+                                </Fragment>
+                            ));
+                            }
+                            return (
                             <Fragment key={index}>
                                 <tr onClick={() => handleRowClick(index)}>
                                     {columns.map((column) => (
-                                        <td key={column.key} className='py-2.5 border-b border-gray-200 text-center'>
-                                            {column.render ? ( column.render(row)) 
-                                            : column.key === "checkin" || column.key === "checkout" || column.key === "createdAt" ? (
-                                                (() => {
-                                                    const date = new Date(row[column.key]);
-                                                    return format(date, "HH:mm, dd/MM/yyyy");
-                                                })()
-                                            ) : (
-                                                row[column.key]
-                                            )}
+                                        <td key={column.key} className="py-2.5 border-b border-gray-200 text-center">
+                                        {column.render ? (column.render(row)) 
+                                        : column.key === "checkin" || column.key === "checkout" || column.key === "createdAt" 
+                                        ? ((() => { const date = new Date(row[column.key]);
+                                            return format(date, "HH:mm, dd/MM/yyyy")})()
+                                        ) : column.key === "icon" ? (
+                                            <Icon icon={row[column.key]} width={28} height={28} className='mx-auto'/>
+                                        ) : (
+                                            row[column.key]
+                                        )}
                                         </td>
                                     ))}
                                 </tr>
                                 {value.expandedRow && value.expandedRow.includes(index) && (
                                     <tr>
                                         <td colSpan={columns.length + 1} className="px-4 py-2 shadow-inner">
-                                            <div>{renderExpandedRow(row)}</div>
+                                        <div>{renderExpandedRow(row)}</div>
                                         </td>
                                     </tr>
                                 )}
                             </Fragment>
-                        ))}
+                            );
+                        })}
                     </tbody>
+
                 </table>
             </div>
             <div className="flex justify-between items-center bg-gray-100/80 rounded-b-xl p-3 mt-3">
@@ -218,7 +253,7 @@ const GeneralTable = ({ datas, columns, renderExpandedRow, onDateChange, onSearc
                 </div>
                 <div className="">
                     <button
-                        className="disabled:cursor-not-allowed disabled:border-gray-300 disabled:text-gray-300 mr-2 px-2 py-1 rounded cursor-pointer font-semibold border border-gray-400 text-gray-500 transition-all"
+                        className="mr-2 disabled:cursor-not-allowed disabled:border-gray-300 disabled:text-gray-300 px-2 py-1 rounded cursor-pointer font-semibold border border-gray-400 text-gray-500 transition-all"
                         disabled={value.currentPage === 1}
                         onClick={() => handlePageChange(value.currentPage - 1)}
                     >
@@ -227,7 +262,7 @@ const GeneralTable = ({ datas, columns, renderExpandedRow, onDateChange, onSearc
                     {getPaginationRange().map((page, index) => (
                         <button
                             key={index}
-                            className={`mr-3 px-3 py-1 font-semibold rounded cursor-pointer ${value.currentPage === page ? "bg-blue-100 text-blue-500" : "text-gray-600 "}`}
+                            className={`px-3 py-1 font-semibold rounded cursor-pointer ${value.currentPage === page ? "bg-blue-100 text-blue-500" : "text-gray-600 "}`}
                             disabled={page === '...'}
                             onClick={() => page !== '...' && handlePageChange(page)}
                         >
@@ -235,7 +270,7 @@ const GeneralTable = ({ datas, columns, renderExpandedRow, onDateChange, onSearc
                         </button>
                     ))}
                     <button
-                        className="disabled:cursor-not-allowed disabled:border-gray-300 disabled:text-gray-300 px-2 py-1 rounded cursor-pointer font-semibold border border-gray-400 text-gray-500 transition-all"
+                        className="ml-2 disabled:cursor-not-allowed disabled:border-gray-300 disabled:text-gray-300 px-2 py-1 rounded cursor-pointer font-semibold border border-gray-400 text-gray-500 transition-all"
                         disabled={value.currentPage === totalPages}
                         onClick={() => handlePageChange(value.currentPage + 1)}
                     >

@@ -17,6 +17,8 @@ export const APP_ROUTER = {
     ROOM: "/admin/room",
     CHAT: "/admin/chat",
     ROOMTYPE: "/admin/roomtype",
+    PRICE: "/admin/price",
+    EXTENTION: "/admin/extension",
     //client
     USER: "/user",
     INFORMATION: "/user/information",

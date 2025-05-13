@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import GeneralTable from '../../../components/GeneralTable';
-import { roomDetailService } from '../../../service/roomDetailService';
-import { FaEdit } from "react-icons/fa";
-import { MdDeleteForever } from "react-icons/md";
 import ModalRoomType from './ModalRoomType';
 import { roomService } from '../../../service/roomService';
+import { FaEdit } from "react-icons/fa";
+import { MdDeleteForever } from "react-icons/md";
+import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 const RoomType = () => {
     const columns = [
-        { key: "room_name", label: "Tên loại phòng", isFilterable: true },
+        { key: "id", label: "Mã loại phòng"},
+        { key: "room_type", label: "Tên loại phòng", isFilterable: true },
         { key: "room_count", label: "Tổng số phòng" },
         { key: "adult_count", label: "Số người" },
         { key: "price_per_night", label: "Giá phòng" },
@@ -17,7 +19,7 @@ const RoomType = () => {
             render: (row) => (
                 <button
                     onClick={(event) => handleEditRoom(event, row)}
-                    className="z-10 text-center mx-auto p-2 hover:bg-slate-200 hover:rounded-md"
+                    className="z-10 text-center mx-auto p-2 hover:bg-slate-200 hover:rounded-md cursor-pointer"
                 >
                     <FaEdit className="h-6 w-6" />
                 </button>
@@ -29,17 +31,18 @@ const RoomType = () => {
             render: (row) => (
                 <button
                     onClick={(event) => handleDeleteRoom(event, row)}
-                    className="z-10 text-center mx-auto p-2 hover:bg-slate-200 hover:rounded-md"
+                    className="z-10 text-center mx-auto p-2 hover:bg-slate-200 hover:rounded-md cursor-pointer"
                 >
                     <MdDeleteForever className="h-6 w-6" />
                 </button>
             ),
         },
     ];
-    
-    const [modalAddType, setModalAddType] = useState(false)
-    const [searchData, setSearchData] = useState('');
+    const navigate = useNavigate();
+    const [resetFormTrigger, setResetFormTrigger] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
     const [data, setData] = useState([]);
+    const [selectedRoom, setSelectedRoom] = useState("");
     const fetchRooms = async () => {
         const result = await roomService.getRoomType();
         setData(result);
@@ -48,9 +51,6 @@ const RoomType = () => {
     useEffect(() => {
         fetchRooms();
     }, []);
-    const handleSearchChange = (value) => {
-        setSearchData(value)
-    };
     const renderExpandedRow = (row) => {
         return (
             <div>
@@ -63,15 +63,74 @@ const RoomType = () => {
             </div>
         );
     };
-    const handleDeleteRoom = (event, row) => {
+    const handleDeleteRoom = async (event, row) => {
         event.stopPropagation();
-        console.log("Delete room for booking:", row.booking_id);
+        try {
+            const result = await roomService.deleteRoomType(row.id);
+        if(result.status == true){
+            toast.success(result.message);
+            fetchRooms();     
+        }else{
+            toast.error(result.message);
+        }
+        } catch (error) {
+            console.log(error)
+        }
        
     };
     const handleEditRoom = (event, row) => {
         event.stopPropagation();
-        console.log("Editing room for booking:", row.booking_id);
-       
+        setSelectedRoom(row)
+        setModalVisible(true);
+    };
+    const handleSubmit = async (formData) => {
+        // for (let key in formData) {
+        //     if (formData[key] === "") {
+        //         toast.error("Vui lòng nhập đầy đủ thông tin.");
+        //         return;
+        //     }
+        // }
+        const isEdit = !!data;
+        const payload = {
+            adult_count: formData.adultCount,
+            room_type: formData.name,
+            square_meters: formData.squareMeters,
+            price_per_night: formData.pricePerNight,
+            image: formData.image,
+            ...(isEdit ? {} : { HotelId: 1 }) 
+        }; 
+        try {
+            if (selectedRoom && isEdit) {
+                try {
+                    const result = await roomService.updateRoomType(selectedRoom.id, payload);
+                    if(result.status == true){
+                        toast.success(result.message);
+                        setResetFormTrigger(true);
+                        setModalVisible(false);
+                    }else{
+                        toast.error(result.message);
+                    }
+                } catch (error) {
+                    navigate("/error")
+                }
+            } else { 
+                try {
+                    const result = await roomService.addRoomType(payload);
+                    if(result.status == true){
+                        toast.success(result.message);
+                        setResetFormTrigger(true);
+                        setModalVisible(false);
+                    }else{
+                        toast.error(result.message);
+                    }
+                } catch (error) {
+                    navigate("/error")
+                }
+            }
+            fetchRooms();
+        } catch (err) {
+            navigate("/error")
+        }
     };
     return (
         <div>
@@ -79,30 +138,32 @@ const RoomType = () => {
                 datas={data}
                 columns={columns}
                 renderExpandedRow={renderExpandedRow}
-                onSearchChange={handleSearchChange}
-                placeholderSearch="Nhập mã loại phòng"
                 functionButton="Thêm loại phòng"
                 onDelete={handleDeleteRoom}
                 onEdit={handleEditRoom}
-                handleButton={() => {setModalAddType(true)}}
+                handleButton={()=>{setModalVisible(true), setSelectedRoom(null)}}
             >
             </GeneralTable>
-            {modalAddType && (
+            {modalVisible && (
+                <div
+                    onClick={()=>{setModalVisible(false)}}
+                    className="fixed inset-0 bg-gray-800/50 flex justify-center items-center z-50"
+                >
                     <div
-                        onClick={()=>{setModalAddType(false)}}
-                        className="fixed inset-0 bg-gray-800/50 flex justify-center items-center z-50"
+                        className="bg-white rounded-lg w-[50%] h-[80%] relative"
+                        onClick={(e) => e.stopPropagation()}
                     >
-                        <div
-                            className="bg-white rounded-lg w-[50%] h-[80%] relative"
-                            onClick={(e) => e.stopPropagation()}
-                        >
-                            <ModalRoomType
-                                handleClose={()=>{setModalAddType(false)}}
-                                handleFetch={()=> {}}
-                            ></ModalRoomType>
-                        </div>
+                        <ModalRoomType
+                            handleClose={()=>{setModalVisible(false)}}
+                            resetTrigger={resetFormTrigger} 
+                            lable={selectedRoom ? "Cập nhật loại phòng" : "Thêm loại phòng"}
+                            data={selectedRoom}
+                            handleSubmit={handleSubmit}
+                            functionButton={selectedRoom ? "Cập nhật" : "Thêm mới"}
+                        ></ModalRoomType>
                     </div>
-                )}
+                </div>
+            )}
         </div>
     );
 };

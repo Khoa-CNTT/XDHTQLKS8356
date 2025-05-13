@@ -1,5 +1,5 @@
 import axios from "axios"
-import { setRole, setToken } from "../utils/AuthCheck"
+import {setRole, setToken } from "../utils/AuthCheck"
 import apiConfig from "./axiosConfig";
 import Cookies from "js-cookie";
 

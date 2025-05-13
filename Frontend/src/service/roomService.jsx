@@ -42,18 +42,46 @@ export const getRoomType  = async() => {
 }
 export const addRoomType = async (data) => {
    try {
-      const response = await apiConfig.post(`/admin/room`, data);
-      console.log("2",response.data)
-      return response.data;
+     const response = await apiConfig.post(`/admin/room`, data);
+     return response.data;
    } catch (error) {
-      console.log("lỗi" + error);
-      return {}
+     if (error.response) {
+       return error.response.data;
+     } else {
+       throw error;
+     }
    }
-};
+ };
+ export const updateRoomType = async (id,data) => {
+   try {
+     const response = await apiConfig.put(`/admin/room/${id}`, data);
+     return response.data;
+   } catch (error) {
+     if (error.response) {
+       return error.response.data;
+     } else {
+       throw error;
+     }
+   }
+ };
+ export const deleteRoomType = async (id) => {
+   try {
+     const response = await apiConfig.delete(`/admin/room/${id}`);
+     return response.data;
+   } catch (error) {
+     if (error.response) {
+       return error.response.data;
+     } else {
+       throw error;
+     }
+   }
+ };
 export const roomService =  {
    getSuggestRoom,
    getEmptyRoombyUser,
    getRoomType,
-   addRoomType
+   addRoomType,
+   updateRoomType,
+   deleteRoomType
 }
    

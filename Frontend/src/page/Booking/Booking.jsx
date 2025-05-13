@@ -15,8 +15,10 @@ const Booking = () => {
     fullname: '',
     email: '',
     phone: '',
-    address: '',
-    note: '',
+    // address: '',
+    // note: '',
+    status : "guest",
+    role : "guest"
   });
   const location = useLocation();
   const state = location.state;
@@ -25,6 +27,8 @@ const Booking = () => {
 
   const handleOrder = async() => {
     const data = {
+      type: "customer",
+      user_info: infoCustomer,
       booking: {
         // checkin: state.checkin,
         // checkout: state.checkout,
@@ -34,14 +38,16 @@ const Booking = () => {
         // fullname: infoCustomer.fullname,
         // email: infoCustomer.email,
         // numberphone: infoCustomer.phone
-        checkin: "10/05/2025",               // Ngày check-in
-        checkout: "15/05/2025",              // Ngày check-out
+        checkin: "2024-12-25",               // Ngày check-in
+        checkout: "2024-12-27",              // Ngày check-out
         adult_count: 2,                      // Số lượng người lớn
-        total_price: 500,                    // Tổng giá tiền (ví dụ: USD)
-        note: "Yêu cầu giường đôi và phòng yên tĩnh.", // Ghi chú
-        fullname: "Nguyễn Văn A",           // Họ tên khách hàng
-        email: "nguyenvana@example.com",    // Email khách hàng
-        numberphone: "0912345678"            // Số điện thoại khách hàng
+        total_price: 200,  
+        type : "customer",
+        status : "temporary"                  // Tổng giá tiền (ví dụ: USD)
+        // note: "Yêu cầu giường đôi và phòng yên tĩnh.", // Ghi chú
+        // fullname: "Nguyễn Văn A",           // Họ tên khách hàng
+        // email: "nguyenvana@example.com",    // Email khách hàng
+        // numberphone: "0912345678"            // Số điện thoại khách hàng
       },
       // booking_detail: state.room.map(room => ({
       //   RoomId: room.id,
@@ -50,34 +56,24 @@ const Booking = () => {
       // }))
       booking_detail : [
         {
-          RoomId: 101,
-          count: 2,
-          price: 100
-        },
-        {
-          RoomId: 102,
+          RoomId: 5,
           count: 1,
-          price: 150
-        },
-        {
-          RoomId: 103,
-          count: 3,
           price: 200
-        }
+        },
       ]
     }
     const order = await bookingService.creatBooking(data)
     console.log("order", order)
     if (order?.booking) {
       toast.success("Đặt phòng thành công")
-      navigate(APP_ROUTER.HOME)
+      // navigate(APP_ROUTER.HOME)
     } else {
       toast.error("Đặt phòng thất bại")
       navigate(-1)
     }
   }
 
-  // console.log("state", state);
+  console.log("state", state);
 
   return (
     <div className='w-9/12 mb-10 mt-4 mx-auto'>

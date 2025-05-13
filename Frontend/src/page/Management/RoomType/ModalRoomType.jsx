@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Button from "../../../components/Button";
 import { BsImageFill } from "react-icons/bs";
 
-const ModalRoomType = ({ handleClose, handleFetch, lable, handleSubmit, data,resetTrigger}) => {
+const ModalRoomType = ({ handleClose, lable, handleSubmit, data, resetTrigger, functionButton}) => {
     const [isLoading, setIsLoading] = useState(false);
     const [imageUrl, setImageUrl] = useState([]);
     const [formData, setFormData] = useState({
@@ -10,18 +10,33 @@ const ModalRoomType = ({ handleClose, handleFetch, lable, handleSubmit, data,res
         squareMeters: "",
         pricePerNight: "",
         adultCount: "",
-        image: "abc"
+        image: "123"
         // description: "",
     });
     useEffect(() => {
-        setFormData({
-            name: "",
-            squareMeters: "",
-            pricePerNight: "",
-            adultCount: "",
-            image: ""
-        });
-    }, [resetTrigger]);
+        if (data) {
+            setFormData({
+                name: data.room_type || "",
+                squareMeters: data.square_meters || "",
+                pricePerNight: data.price_per_night || "",
+                adultCount: data.adult_count || "",
+                image: data.image || ""
+            });
+            if (data.image) {
+                setImageUrl([data.image]);
+            }
+        } else {
+            setFormData({
+                name: "",
+                squareMeters: "",
+                pricePerNight: "",
+                adultCount: "",
+                image: ""
+            });
+            setImageUrl([]);
+        }
+    }, [data, resetTrigger]);
+    
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({
@@ -111,7 +126,7 @@ const ModalRoomType = ({ handleClose, handleFetch, lable, handleSubmit, data,res
                                         type="number"
                                         name="adultCount"
                                         placeholder="0"
-                                        className="w-12 p-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:outline-none text-center"
+                                        className="w-12 p-1 border border-gray-300 rounded focus:ring-1 focus:border-blue-500 focus:ring-blue-500 focus:outline-none text-center"
                                         value={formData.adultCount}
                                         onChange={handleChange}
                                     />
@@ -208,7 +223,7 @@ const ModalRoomType = ({ handleClose, handleFetch, lable, handleSubmit, data,res
                 <Button
                     color="blue"
                     textColor="white"
-                    children="Lưu và thêm mới"
+                    children={functionButton}
                     size="lg"
                     handleClick={() => handleSubmit(formData)}
                 />

@@ -16,6 +16,7 @@ const ModalRoom = ({ handleClose, lable, handleSubmit, data, resetTrigger, funct
     });
     const fetchRoomType = async () => {
         const result = await roomService.getRoomType();
+        console.log("ok",result)
         setFormData(prev => ({...prev, roomType: result}));
     };
 
@@ -35,7 +36,7 @@ const ModalRoom = ({ handleClose, lable, handleSubmit, data, resetTrigger, funct
                 roomNumber: data.room_number || "",
                 description: data.description || "",
                 roomID: data.id_room_type || "",
-                roomType: data.room_name || [], 
+                roomType: data.room_type || [], 
             });
         } else {
             setFormData({
@@ -101,7 +102,7 @@ const ModalRoom = ({ handleClose, lable, handleSubmit, data, resetTrigger, funct
                                 </label>
                                 <select
                                     name="roomID"
-                                    value={formData.id}
+                                    value={formData.roomID}
                                     onChange={handleChange}
                                     className="focus:outline-none px-1 py-3 block w-full text-sm text-gray-900 dark:bg-gray-700 border-0 border-b-[2px] border-gray-400 dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:ring-0 focus:border-blue-600 focus:border-b-2 peer"
                                 >

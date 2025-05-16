@@ -49,7 +49,7 @@ const ManagementLayout = () => {
 
     const items = [
         getItem(<Link to={APP_ROUTER.HOME}>Trang chủ</Link>, "1", <HomeOutlined />),
-        getItem(<Link to={APP_ROUTER.INFORHOTEL}>Thông tin khách sạn</Link>, "2", <FundViewOutlined />),
+        getItem(<Link to={APP_ROUTER.HOTEL}>Thông tin khách sạn</Link>, "2", <FundViewOutlined />),
         getItem(<Link to={APP_ROUTER.ROOMTYPE}>Loại phòng</Link>, "3", <HddOutlined />),
         getItem(<Link to={APP_ROUTER.INFORHOTEL}>Phòng</Link>, "sub1", <LayoutOutlined />, [
             getItem(<Link to={APP_ROUTER.ROOM}>Tất cả phòng</Link>, "12", <ProductOutlined />),
@@ -57,7 +57,7 @@ const ManagementLayout = () => {
             getItem(<Link to={APP_ROUTER.PRICE}>Giá phòng</Link>, "5", <DollarOutlined />),
         ]),
         getItem(<Link to={APP_ROUTER.EXTENTION}>Tiện ích</Link>, "13", <SunOutlined />),
-        getItem(<Link to={APP_ROUTER.ORDER}>Đơn đặt phòng</Link>, "6", <ShoppingCartOutlined />),
+        getItem(<Link to={APP_ROUTER.BOOKING_MANAGER}>Đơn đặt phòng</Link>, "6", <ShoppingCartOutlined />),
         getItem(<Link to={APP_ROUTER.SERVICE}>Dịch vụ</Link>, "7", <ThunderboltOutlined />),
         getItem(<Link to={APP_ROUTER.USER}>Khách hàng</Link>, "sub2", <UserOutlined />, [
             getItem(<Link to={APP_ROUTER.CLASSIFICATION}>Phân loại khách hàng</Link>, "8", <SisternodeOutlined />),

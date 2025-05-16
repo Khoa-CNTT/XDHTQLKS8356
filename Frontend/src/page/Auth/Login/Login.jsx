@@ -107,14 +107,14 @@ function Login() {
                     <div className="mb-4 text-sm text-gray-600">
                         Bạn có thể đăng nhập tài khoản của mình để truy cập các dịch vụ của chúng tôi.
                     </div>
-                    <div className="mb-4 text-sm font-bold">
+                    {/* <div className="mb-4 text-sm font-bold">
                         Đăng nhập hoặc đăng ký (miễn phí)
                     </div>
                     <div className="flex">
                         <a href="#!" className="mr-2 rounded border border-solid border-gray-400 p-2 hover:scale-110 transition-transform duration-200">
                             <FcGoogle className="h-8 w-8" />
                         </a>
-                    </div>
+                    </div> */}
                     <div className="relative my-4 w-full flex items-center">
                         <div className="w-1/6 border-t border-gray-400"></div> 
                         <span className="mx-4 text-sm text-gray-500 whitespace-nowrap">Hoặc</span>

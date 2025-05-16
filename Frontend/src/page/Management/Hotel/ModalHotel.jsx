@@ -2,31 +2,32 @@ import React, { useEffect, useState } from "react";
 import Button from "../../../components/Button";
 import { BsImageFill } from "react-icons/bs";
 import { IoIosRemoveCircle } from "react-icons/io";
-const ModalRoomType = ({ handleClose, lable, handleSubmit, data, resetTrigger, functionButton}) => {
+import Address from "../../../components/Address";
+const ModalHotel = ({ handleClose, handleSubmit, data, resetTrigger}) => {
     const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState({
         name: "",
-        squareMeters: "",
-        pricePerNight: "",
-        adultCount: "",
-        image: []
-        // description: "",
+        description: "",
+        address: "",
+        // phone: "",
+        image: [],
+
     });
     useEffect(() => {
         if (data) {
             setFormData({
-                name: data.room_type || "",
-                squareMeters: data.square_meters || "",
-                pricePerNight: data.price_per_night || "",
-                adultCount: data.adult_count || "",
+                name: data.name || "",
+                description: data.description || "",
+                address: data.address || "",
+                // phone: data.phone || "",
                 image: data.image ? JSON.parse(data.image) : []
             });
         } else {
             setFormData({
                 name: "",
-                squareMeters: "",
-                pricePerNight: "",
-                adultCount: "",
+                description: "",
+                address: "",
+                // phone: "",
                 image: []
             });
            
@@ -67,10 +68,16 @@ const ModalRoomType = ({ handleClose, lable, handleSubmit, data, resetTrigger, f
             image: prev.image.filter((_, index) => index !== indexToRemove),
         }));
     };
+    const handleFieldChange = (fieldName, newValue) => {
+        setFormData((prev) => ({
+            ...prev,
+            [fieldName]: newValue
+        }));
+    };
     return (
         <div className="rounded-lg h-full overflow-hidden relative">
-        <div className="flex items-center justify-between p-5 bg-gray-200">
-            <div className="text-2xl font-bold text-center">{lable}</div>
+        <div className="flex items-center justify-between p-4 bg-gray-200">
+            <div className="text-2xl font-bold text-center">Cập nhật thông tin khách sạn</div>
             <button
                 onClick={handleClose}
                 className="text-gray-500 hover:text-gray-700 focus:outline-none cursor-pointer"
@@ -91,20 +98,20 @@ const ModalRoomType = ({ handleClose, lable, handleSubmit, data, resetTrigger, f
                 <div className="px-24 py-5 bg-white w-full">
                     <div className="mb-3 flex items-center">
                         <label className="text-sm font-medium text-gray-700 text-nowrap w-56">
-                            Tên loại phòng
+                            Tên khách sạn
                         </label>
                         <input
                             type="text"
                             name="name"
-                            placeholder="Nhập tên loại phòng"
-                            className="rounded-t-lg p-2 w-full text-sm text-gray-900 dark:bg-gray-700 border-0 border-b-[2px] border-gray-400 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 focus:border-b-2 peer"
+                            placeholder="Nhập tên khách sạn"
+                            className="rounded-t-lg p-1 w-full text-sm text-gray-900 dark:bg-gray-700 border-0 border-b-[2px] border-gray-400 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 focus:border-b-2 peer"
                             value={formData.name}
                             onChange={handleChange}
                         />
                     </div>
-                    <div className="mb-3 flex items-center">
+                    {/* <div className="mb-3 flex items-center">
                         <label className="text-sm font-medium text-gray-700 text-nowrap w-56">
-                            Giá ngày đêm
+                            Số điện thoại
                         </label>
                         <input
                             type="number"
@@ -112,50 +119,36 @@ const ModalRoomType = ({ handleClose, lable, handleSubmit, data, resetTrigger, f
                             placeholder="0"
                             min={0}
                             className="text-left w-full rounded-t-lg p-2 text-sm text-gray-900 dark:bg-gray-700 border-0 border-b-[2px] border-gray-400 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 focus:border-b-2 peer"
-                            value={formData.pricePerNight}
+                            value={formData.phone}
+                            onChange={handleChange}
+                        />
+                    </div> */}
+                   
+                    
+                    <div className="mb-3 flex items-center">
+                        <label className="text-sm font-medium text-gray-700 text-nowrap w-56">
+                            Mô tả
+                        </label>
+                        <textarea
+                            name="description"
+                            placeholder="Nhập mô tả"
+                            className="h-[150px] text-justify resize-none overflow-y-auto w-full rounded-t-lg p-1 text-sm text-gray-900 dark:bg-gray-700 border-0 border-b-[2px] border-gray-400 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 focus:border-b-2 peer
+                                [&::-webkit-scrollbar]:w-2
+                                [&::-webkit-scrollbar-thumb]:bg-gray-400
+                                [&::-webkit-scrollbar-thumb]:rounded-full"
+                            value={formData.description}
                             onChange={handleChange}
                         />
                     </div>
-                    <div className="mt-5 mb-3 pb-2 shadow-md rounded-md">
-                        <div className="w-full ">
-                            <h3 className="font-medium text-gray-700 mb-4 bg-gray-100 p-3 rounded-t-md">
-                                Sức chứa
+                    <div className="mt-5 shadow-md mb-8 ">
+                        <div className="rounded-md w-full">
+                            <h3 className="font-medium text-gray-700 bg-gray-100 p-3">
+                                Địa chỉ
                             </h3>
-                            <div className="flex items-center mb-4 px-3">
-                                <span className="w-24 text-sm text-gray-700 font-semibold">
-                                    Tiêu chuẩn
-                                </span>
-                                <div className="flex items-center gap-2">
-                                    <input
-                                        type="number"
-                                        name="adultCount"
-                                        placeholder="0"
-                                        className="w-12 p-1 border border-gray-300 rounded focus:ring-1 focus:border-blue-500 focus:ring-blue-500 focus:outline-none text-center"
-                                        value={formData.adultCount}
-                                        onChange={handleChange}
-                                    />
-                                    <span className="text-sm text-gray-700">
-                                        người lớn 
-                                    </span>
-                                </div>
-                            </div>
-                            <div className="mb-4 flex items-center px-3">
-                                <label className="text-sm font-medium text-gray-700 text-nowrap w-24">
-                                    Diện tích
-                                </label>
-                                <input
-                                    type="number"
-                                    id="squareMeters"
-                                    name="squareMeters"
-                                    min={0}
-                                    className=" text-center rounded-t-lg p-1 w-20 text-sm text-gray-900 dark:bg-gray-700 border-0 border-b-[2px] border-gray-400 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 focus:border-b-2 peer"
-                                    value={formData.squareMeters}
-                                    onChange={handleChange}
-                                />
-                                <div className="text-sm  text-gray-700 text-nowrap">
-                                    m²
-                                </div>
-                            </div>
+                            <Address 
+                                onFieldChange={handleFieldChange}
+                                initialAddress={data.address || ""}
+                            ></Address>
                         </div>
                     </div>
                     <div className="mt-5 shadow-md mb-8 pb-4">
@@ -204,7 +197,7 @@ const ModalRoomType = ({ handleClose, lable, handleSubmit, data, resetTrigger, f
                                 </div>
 
                                 {formData.image.length > 0 ? (
-                                    <div className="mt-4 grid grid-cols-2 gap-2 w-full p-2">
+                                    <div className="mt-4 grid grid-cols-4 gap-2 w-full p-2">
                                         {formData.image.map((url, index) => (
                                             <div key={index} className="relative group flex mx-auto p-2 border border-gray-200 rounded-md">
                                                 <img
@@ -239,7 +232,7 @@ const ModalRoomType = ({ handleClose, lable, handleSubmit, data, resetTrigger, f
                 <Button
                     color="blue"
                     textColor="white"
-                    children={functionButton}
+                    children="Lưu"
                     size="lg"
                     onClick={() => handleSubmit({...formData,image: JSON.stringify(formData.image)})}
                 />
@@ -254,4 +247,4 @@ const ModalRoomType = ({ handleClose, lable, handleSubmit, data, resetTrigger, f
     );
 };
 
-export default ModalRoomType;
+export default ModalHotel;

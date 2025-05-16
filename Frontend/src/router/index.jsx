@@ -5,7 +5,7 @@ import HomePage from "../page/Home/HomePage";
 import Login from "../page/Auth/Login/Login";
 import Register from "../page/Auth/Register/Register";
 import ManagementLayout from "../layout/Main/ManagementLayout";
-import ListOrder from "../page/Management/Order";
+import ListOrder from "../page/Management/Booking";
 import PrivateRoutes from "./PrivateRoutes";
 import AuthLayout from "../layout/Auth/AuthLayout";
 import Error from "../components/Error";
@@ -21,6 +21,10 @@ import AllBooking from "../page/User/AllBooking";
 import Information from "../page/User/Information";
 import Price from "../page/Management/Price";
 import Extension from "../page/Management/Extension";
+import Payment from "../page/Booking/Payment";
+import BookingManager from "../page/Management/Booking";
+import Hotel from "../page/Management/Hotel";
+import BookingService from "../page/Management/BookingService";
 
 const router = createBrowserRouter([
     {
@@ -54,6 +58,10 @@ const router = createBrowserRouter([
                 element: <SearchRoom />,
             },
             {
+                path: APP_ROUTER.PAYMENT,
+                element: <Payment />,
+            },
+            {
                 path: APP_ROUTER.USER,
                 element: <PrivateRoutes role="customer" />,
                 children: [         
@@ -65,6 +73,7 @@ const router = createBrowserRouter([
                         path: APP_ROUTER.ALLBOOKING,
                         element: <AllBooking />,
                     },
+                   
                 ],
             },
            
@@ -80,8 +89,8 @@ const router = createBrowserRouter([
         ),
         children: [           
             {
-                path: APP_ROUTER.ORDER,
-                element: <ListOrder />,
+                path: APP_ROUTER.BOOKING_MANAGER,
+                element: <BookingManager />,
             },
             {
                 path: APP_ROUTER.SERVICE,
@@ -106,6 +115,14 @@ const router = createBrowserRouter([
             {
                 path: APP_ROUTER.EXTENTION,
                 element: <Extension />,
+            },
+            {
+                path: APP_ROUTER.HOTEL,
+                element: <Hotel />,
+            },
+            {
+                path: APP_ROUTER.BOOKINGSERVICE,
+                element: <BookingService />,
             },
         ],
     },

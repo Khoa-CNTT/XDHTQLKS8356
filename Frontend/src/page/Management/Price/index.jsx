@@ -89,7 +89,7 @@ const Price = () => {
         //         return;
         //     }
         // }
-        const payload = formData.selectedPrice !== "" 
+        const payload = formData.selectedPrice
                         ? {
                             start_date: formData.startDate,
                             end_date: formData.endDate,

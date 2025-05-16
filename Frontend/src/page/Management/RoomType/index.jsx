@@ -9,9 +9,11 @@ import { useNavigate } from 'react-router-dom';
 const RoomType = () => {
     const columns = [
         { key: "id", label: "Mã loại phòng"},
+        { key: "image", label: "Hình ảnh"},
         { key: "room_type", label: "Tên loại phòng", isFilterable: true },
         { key: "room_count", label: "Tổng số phòng" },
         { key: "adult_count", label: "Số người" },
+        { key: "square_meters", label: "Diện tích" },
         { key: "price_per_night", label: "Giá phòng" },
         {
             key: "edit",
@@ -80,17 +82,19 @@ const RoomType = () => {
     };
     const handleEditRoom = (event, row) => {
         event.stopPropagation();
+        console.log(row)
         setSelectedRoom(row)
         setModalVisible(true);
     };
     const handleSubmit = async (formData) => {
-        // for (let key in formData) {
-        //     if (formData[key] === "") {
-        //         toast.error("Vui lòng nhập đầy đủ thông tin.");
-        //         return;
-        //     }
-        // }
-        const isEdit = !!data;
+        for (let key in formData) {
+            if (formData[key] === "") {
+                toast.error("Vui lòng nhập đầy đủ thông tin.");
+                return;
+            }
+        }
+     
+        const isEdit = !!selectedRoom?.id;
         const payload = {
             adult_count: formData.adultCount,
             room_type: formData.name,
@@ -99,6 +103,7 @@ const RoomType = () => {
             image: formData.image,
             ...(isEdit ? {} : { HotelId: 1 }) 
         }; 
+        console.log("dữ liệu",payload)
         try {
             if (selectedRoom && isEdit) {
                 try {
@@ -116,7 +121,7 @@ const RoomType = () => {
             } else { 
                 try {
                     const result = await roomService.addRoomType(payload);
-                    if(result.status == true){
+                    if(result.status === true){
                         toast.success(result.message);
                         setResetFormTrigger(true);
                         setModalVisible(false);

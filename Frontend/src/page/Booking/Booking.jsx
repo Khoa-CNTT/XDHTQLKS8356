@@ -1,6 +1,8 @@
 import { useLocation, useNavigate } from 'react-router-dom'
 import React, { useState } from 'react';
 import { IoCheckmark, IoStar, IoStarHalf } from 'react-icons/io5';
+import { FaCheckCircle } from "react-icons/fa";
+import { PiCardholderFill } from "react-icons/pi";
 import Payment from './Payment';
 import Information from './Information';
 import OrderDetail from './OrderDetail';
@@ -12,11 +14,11 @@ import { APP_ROUTER } from '../../utils/Constants';
 const Booking = () => {
   const navigate = useNavigate()
   const [infoCustomer, setInfoCustomer] = useState({
-    fullname: '',
-    email: '',
-    phone: '',
-    // address: '',
-    // note: '',
+    fullname: 'Mỹ Lệ',
+    email: 'myle@gmail.com',
+    phone: '0794636494',
+    address: 'Huế',
+    note: 'Ok',
     status : "guest",
     role : "guest"
   });
@@ -24,11 +26,40 @@ const Booking = () => {
   const state = location.state;
   const [step, setStep] = useState(1)
 
-
+  const dataRoom = {
+    "booking_id": 123,
+    "checkin": "2025-01-01",
+    "checkout": "2025-01-03",
+    "total_nights": 2,
+    "total_guests": 7,
+    "note": "Yêu cầu phòng yên tĩnh.",
+    "rooms": [
+      {
+        "room_type": "Phòng cao cấp",
+        "room_number": "P705",
+        "price_per_night": 3000000,
+        "quantity": 1,
+        "nights": 3,
+        "total_price": 9000000
+      },
+      {
+        "room_type": "Phòng luxury",
+        "room_number": "P7056",
+        "price_per_night": 4000000,
+        "quantity": 1,
+        "nights": 3,
+        "total_price": 12000000
+      }
+    ],
+    "total_amount": 21000000,
+    "total_discount": 0,
+    "final_amount": 21000000
+  }
+  
   const handleOrder = async() => {
     const data = {
       type: "customer",
-      user_info: infoCustomer,
+      // user_info: infoCustomer,
       booking: {
         // checkin: state.checkin,
         // checkout: state.checkout,
@@ -77,40 +108,45 @@ const Booking = () => {
 
   return (
     <div className='w-9/12 mb-10 mt-4 mx-auto'>
-      <ol className="flex items-center w-full sm:mb-5 gap-0">
-        <li className={`${step >= 1 ? 'text-blue-600  after:border-blue-100 ' : ''} flex w-full items-center after:content-[''] after:w-10/12 after:h-1 after:border-b after:border-4 after:inline-block`}>
-          <div className={`${step >= 1 ? ' bg-blue-100 ' : 'bg-gray-100 '} flex items-center justify-center text-2xl w-10 h-10 rounded-full lg:h-12 lg:w-12  shrink-0`}>
-            {step > 1 ? (<IoCheckmark />) : (<BiSolidUserDetail />)}
+      <ol className="flex justify-between items-start w-full relative">
+        <li className="flex flex-col items-center w-1/3 relative z-10">
+          <div className={`flex items-center justify-center w-12 h-12 rounded-full text-2xl
+              ${step >= 1 ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-600'}`}>
+            {step > 1 ? <FaCheckCircle /> : <BiSolidUserDetail />}
           </div>
-          <p className='p-2 ml-2'>Điền thông tin</p>
+          <p className={`${step>=1 ? 'text-blue-600' : 'text-gray'} font-semibold mt-2 text-center text-sm`}>Thông tin khách hàng</p>
         </li>
-        {/* <li className={`${step >= 2 ? 'text-blue-600  after:border-blue-100 ' : ''} flex w-full items-center after:content-[''] after:w-10/12 after:h-1 after:border-b after:border-4 after:inline-block`}>
-          <div className={`${step >= 2 ? ' bg-blue-100 ' : 'bg-gray-100 '} flex items-center justify-center text-2xl w-10 h-10 rounded-full lg:h-12 lg:w-12  shrink-0`}>
-            {step > 2 ? (<IoCheckmark />) : (<MdChecklist />)}
+        <div className={`${step > 1 ? 'bg-blue-100' : 'bg-gray-200/80'} absolute top-6 left-[16.5%] w-[33%] h-1 z-0 `}></div>
+        <li className="flex flex-col items-center w-1/3 relative z-10">
+          <div className={`flex items-center justify-center w-12 h-12 rounded-full text-2xl
+              ${step >= 2 ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-600'}`}>
+            {step > 2 ? <FaCheckCircle /> : <PiCardholderFill />}
           </div>
-          <p className='p-2 ml-2'>Kiểm tra</p>
-        </li> */}
-        <li className={`${step >= 3 ? 'text-blue-600 ' : ''} flex items-center w-auto`}>
-          <div className={`${step >= 3 ? ' bg-blue-100 ' : 'bg-gray-100 '} flex items-center justify-center text-2xl w-10 h-10 rounded-full lg:h-12 lg:w-12 shrink-0`}>
-            {/* <MdPayment /> */}
-            <IoCheckmark />
+          <p className={`${step>=2 ? 'text-blue-600' : 'text-gray'} font-semibold mt-2 text-center text-sm`}>Chi tiết thanh toán</p>
+        </li>
+        <div className={`${step > 2 ? 'bg-blue-100' : 'bg-gray-200/80'} absolute top-6 left-[49.5%] w-[33%] h-1 z-0 `}></div>
+        <li className="flex flex-col items-center w-1/3 relative z-10">
+          <div className={`flex items-center justify-center w-12 h-12 rounded-full text-2xl
+              ${step >= 3 ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-600'}`}>
+            <FaCheckCircle />
           </div>
-          <p className='p-2 ml-2'>Thanh toán</p>
+          <p className={`${step>=3 ? 'text-blue-600' : 'text-gray'} font-semibold mt-2 text-center text-sm`}>Đã xác nhận đặt phòng</p>
         </li>
       </ol>
-      <div className='mt-5 p-5 border rounded-xl'>
+
+      <div className='mt-5 p-5 border border-gray-300 rounded-xl'>
         {step === 1 ? (
-          <Information setStep={setStep} infoCustomer={infoCustomer} setInfoCustomer={setInfoCustomer} />
+          <Information setStep={setStep} infoCustomer={infoCustomer} setInfoCustomer={setInfoCustomer} handleOrder={handleOrder} dataRoom={dataRoom}/>
         )
           :
           step === 2
           ?
           (
-            <OrderDetail setStep={setStep} info={{ infoCustomer, state }} handleOrder={handleOrder} />
+            <Payment setStep={setStep} info={{ infoCustomer, state, dataRoom }} />
             )
             :
             (
-            <Payment setStep={setStep} info={{ infoCustomer, state }} />
+            {/* <Payment setStep={setStep} info={{ infoCustomer, state }} /> */}
           )}
       </div>
 

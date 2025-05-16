@@ -12,6 +12,7 @@ export const getPrices  = async() => {
 export const addPrices = async (data) => {
    try {
        const response = await apiConfig.post(`/admin/pricing`, data);
+       console.log("1",response.data)
        return response.data;
    } catch (error) {
        if (error.response) {

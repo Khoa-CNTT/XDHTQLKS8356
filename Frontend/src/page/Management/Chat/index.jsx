@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Icon } from "@iconify/react";
 import {
   MainContainer,
@@ -15,52 +15,47 @@ import {
   MessageSeparator,
 } from "@chatscope/chat-ui-kit-react";
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
+import { authService } from "../../../service/authService";
+import { messageService } from "../../../service/messageService";
+import { formatRelativeTime } from "../../../utils/FormatDate";
+import { socketConnect } from "../../../service/socket";
 
 const Chat = () => {
-  const fallbackUsers = [
-    {
-      id: 1,
-      name: "Kim Ya Sung",
-      status: "Online",
-      avatar:
-        "https://images.unsplash.com/photo-1548142813-c348350df52b?auto=format&fit=facearea&facepad=3&w=320&h=320&q=80",
-    },
-    {
-      id: 2,
-      name: "Chris Peti",
-      status: "Offline",
-      avatar:
-        "https://images.unsplash.com/photo-1610186593977-82a3e3696e7f?auto=format&fit=facearea&facepad=3&w=320&h=320&q=80",
-    },
-  ];
-  const messages = [
-    {
-      type: "bot",
-      avatar:
-        "https://images.unsplash.com/photo-1541101767792-f9b2b1c4f127?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=3&w=300&h=300&q=80",
-      text: "How can we help?",
-    },
-    {
-      type: "bot",
-      avatar:
-        "https://images.unsplash.com/photo-1541101767792-f9b2b1c4f127?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=3&w=300&h=300&q=80",
-      text: "You can ask questions like:\n- What's Preline UI?\n- How many examples?\n- Is there a PRO version?",
-    },
-    {
-      type: "user",
-      text: "What's Preline UI?",
-    },
-    {
-      type: "bot",
-      avatar:
-        "https://images.unsplash.com/photo-1541101767792-f9b2b1c4f127?ixlib=rb-4.0.3&auto=format&fit=facearea&facepad=3&w=300&h=300&q=80",
-      text: "Preline UI is a set of prebuilt UI components for Tailwind CSS.",
-    },
-  ];
-
   const [search, setSearch] = useState("");
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [activeChatUser, setActiveChatUser] = useState(null);
+  const [listUsers, setListUsers] = useState([]);
+  const [messages, setMessages] = useState([]);
+  const [message, setMessage] = useState();
+  const inputMessageRef = useRef(null);
+  const activeChatUserRef = useRef();
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const users = await messageService.getAllMessages();
+        if (users.status) setListUsers(users.mess);
+      } catch (error) {
+        console.error("Failed to fetch users:", error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  useEffect(() => {
+    activeChatUserRef.current = activeChatUser;
+    const fetchMessages = async () => {
+      try {
+        if (!activeChatUser || !activeChatUser.user_id) return;
+        const data = await messageService.getMessages(activeChatUser.user_id);
+        setMessages(data.mess.reverse());
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchMessages();
+  }, [activeChatUser]);
 
   useEffect(() => {
     if (!search.trim()) {
@@ -68,36 +63,75 @@ const Chat = () => {
       return;
     }
 
-    const fetchUsers = async () => {
-      setLoading(true);
+    const fetchSearchUser = async () => {
       try {
-        const response = await fetch(
-          `https://api.example.com/users?query=${search.trim()}`
-        );
-        const data = await response.json();
-        if (data.length > 0) {
-          setUsers(data);
-        } else {
-          setUsers(fallbackUsers);
-        }
+        const data = await authService.findUser(search);
+        if (data.success) setMessages(data.user);
+        console.log("data search: ", data.user);
       } catch (error) {
-        console.error("Fetch error:", error);
-        setUsers(fallbackUsers);
-      } finally {
-        setLoading(false);
+        console.error(error);
       }
     };
 
-    const timeoutId = setTimeout(fetchUsers, 500);
+    const timeoutId = setTimeout(fetchSearchUser, 500);
     return () => clearTimeout(timeoutId);
   }, [search]);
 
-  const sendMessage = (e) => {
-    e.preventDefault();
-    console.log("chat: ", e);
+  const sendMessage = async () => {
+    console.log("content chat: ", message);
+    if (!message.trim()) return;
+
+    try {
+      const data = {
+        messageContent: message.trim(),
+        image: "test",
+      };
+      await messageService.sendMessage(activeChatUser.user_id, data);
+      setMessage("");
+    } catch (error) {
+      console.error("Error sending message:", error);
+    }
   };
+
+  // Lắng nghe tin nhắn mới từ Socket.io
+  useEffect(() => {
+    const handleNewMessage = (message) => {
+      console.log("messageReceive: ", message)
+       console.log("active: ", activeChatUserRef.current?.user_id)
+      if (activeChatUserRef.current?.user_id === message.receiver_id || activeChatUserRef.current?.user_id === message.sender_id) {
+        setMessages((prev) => [...prev, message])
+       console.log("true")
+      } else {
+        setListUsers((prev) => {
+          const newList = prev.map((user) =>
+            user.user_id === message.sender_id
+              ? {
+                  ...user,
+                  unreadCount: (user.unreadCount || 0) + 1,
+                  message_content: message.messageContent,
+                  message_time: message.messageTime,
+                }
+              : user
+          );
+          newList.sort(
+            (a, b) => new Date(b.message_time) - new Date(a.message_time)
+          );
+          return newList;
+        });
+      }
+    };
+
+    socketConnect.connectSocket();
+    socketConnect.listenNewMessages(handleNewMessage);
+console.log("active: ",activeChatUser)
+    return () => {
+      socketConnect.stopListenNewMessages(handleNewMessage);
+    };
+  }, []);
+console.log("activeChat: ", activeChatUser)
+  console.log("listChat: ", listUsers)
   return (
-    <div className='flex gap-4 bg-neutral-50 h-full p-4 [&>div]:shadow [&>div]:rounded-xl [&>div]:bg-white'>
+    <div className='h-full [&>div]:shadow [&>div]:rounded-xl [&>div]:bg-white'>
       {/* <div className='basis-1/3'> */}
       {/* Search user */}
       {/* <div className='relative'>
@@ -156,122 +190,70 @@ const Chat = () => {
         style={{
           height: "100%",
           width: "100%",
+          boxSizing: "content-box",
         }}
       >
         <Sidebar position='left'>
           <Search placeholder='Search...' />
           <ConversationList>
-            <Conversation
-              info='Yes i can do it for you'
-              lastSenderName='Lilly'
-              name='Lilly'
-            >
-              <Avatar
-                name='Lilly'
-                src='https://chatscope.io/storybook/react/assets/lilly-aj6lnGPk.svg'
-                // status='available'
-              />
-            </Conversation>
-
-            <Conversation
-              info='Yes i can do it for you'
-              lastSenderName='Emily'
-              name='Emily'
-              unreadCnt={3}
-            >
-              <Avatar
-                name='Emily'
-                src='https://chatscope.io/storybook/react/assets/emily-xzL8sDL2.svg'
-                // status='available'
-              />
-            </Conversation>
+            {listUsers.map((user, i) => (
+              <Conversation
+                key={i}
+                active={user.user_id === activeChatUser?.user_id}
+                info={user.message_content}
+                lastSenderName={user.fullname}
+                lastActivityTime={formatRelativeTime(user.message_time)}
+                name={user.fullname}
+                unreadCnt={user.unreadCount}
+                onClick={() => setActiveChatUser(user)}
+              >
+                <Avatar
+                  name={user.fullname}
+                  src={user.image}
+                  // status='available'
+                />
+              </Conversation>
+            ))}
           </ConversationList>
         </Sidebar>
-        <ChatContainer>
-          <ConversationHeader>
-            <ConversationHeader.Back />
-            <Avatar
-              name='Zoe'
-              src='https://chatscope.io/storybook/react/assets/zoe-E7ZdmXF0.svg'
-            />
-            <ConversationHeader.Content
+        {activeChatUser && (
+          <ChatContainer>
+            <ConversationHeader>
+              <ConversationHeader.Back />
+              <Avatar
+                name={activeChatUser.fullname}
+                src={activeChatUser.image}
+              />
+              <ConversationHeader.Content
               // info='Active 10 mins ago'
-              userName='Zoe'
-            />
-          </ConversationHeader>
-
-          <MessageList>
-            <MessageSeparator content='Saturday, 30 November 2019' />
-            <Message
-              model={{
-                direction: "incoming",
-                message:
-                  "Hello my friend Hello my friend Hello my \nfriend Hello my friend Hello my friend Hello my friend Hello my friend Hello my friend ",
-                position: "single",
-                sender: "Zoe",
-                sentTime: "15 mins ago",
-              }}
-            >
-              <Avatar
-                name='Zoe'
-                src='https://chatscope.io/storybook/react/assets/zoe-E7ZdmXF0.svg'
+              // userName='Zoe'
               />
-            </Message>
-            <Message
-              model={{
-                direction: "outgoing",
-                message: "Hello my friend",
-                position: "last",
-                sender: "Patrik",
-                sentTime: "15 mins ago",
-              }}
-            />
+            </ConversationHeader>
 
-            <Message
-              avatarSpacer
-              model={{
-                direction: "incoming",
-                message: "Hello my friend",
-                position: "normal",
-                sender: "Zoe",
-                sentTime: "15 mins ago",
-              }}
+            <MessageList>
+              {messages?.map((message, i) => (
+                <Message
+                  key={i}
+                  model={{
+                    direction: message.sender_id === 1 ? 1 : 0,
+                    message: message.messageContent,
+                    position: "normal",
+                    sender: message.sender_id,
+                    sentTime: message.messageTime,
+                  }}
+                />
+              ))}
+            </MessageList>
+            <MessageInput
+              onSend={sendMessage}
+              autoFocus
+              onChange={setMessage}
+              value={message}
+              ref={inputMessageRef}
+              placeholder='Type message here'
             />
-            <Message
-              model={{
-                direction: "incoming",
-                message: "Hello my friend",
-                position: "last",
-                sender: "Zoe",
-                sentTime: "15 mins ago",
-              }}
-            >
-              <Avatar
-                name='Zoe'
-                src='https://chatscope.io/storybook/react/assets/zoe-E7ZdmXF0.svg'
-              />
-            </Message>
-            <Message
-              model={{
-                direction: "outgoing",
-                message: "Hello my friend\nHello my friend\nHello my friend\nHello my friend\nHello my friend\nHello my friend\nHello my friend\nHello my friend\nHello my friend\nHello my friend\nHello my friend\nHello my friend\n",
-                position: "first",
-                sender: "Patrik",
-                sentTime: "15 mins ago",
-              }}
-            />
-            <Message
-              model={{
-                direction: "outgoing",
-                message: "Hello my friend",
-                position: "last",
-                sender: "Patrik",
-                sentTime: "15 mins ago",
-              }}
-            />
-          </MessageList>
-          <MessageInput placeholder='Type message here' />
-        </ChatContainer>
+          </ChatContainer>
+        )}
       </MainContainer>
       {/* </div> */}
     </div>
@@ -279,108 +261,3 @@ const Chat = () => {
 };
 
 export default Chat;
-// {/* Message */}
-// <ul className='space-y-5 px-4'>
-// {messages.map((msg, index) => {
-//   const isUser = msg.type === "user";
-
-//   return (
-//     <li
-//       key={index}
-//       className={`flex items-start gap-3 ${
-//         isUser ? "justify-end" : "justify-start"
-//       }`}
-//     >
-//       {/* Bot Avatar */}
-//       {!isUser && (
-//         <img
-//           className='w-9 h-9 rounded-full'
-//           src={msg.avatar}
-//           alt='Bot Avatar'
-//         />
-//       )}
-
-//       {/* Message Bubble */}
-//       <div
-//         className={`max-w-[75%] p-3 rounded-2xl text-sm whitespace-pre-line
-//       ${
-//         isUser
-//           ? "bg-blue-600 text-white rounded-br-none"
-//           : "bg-gray-100 text-gray-800 dark:bg-neutral-800 dark:text-white rounded-bl-none"
-//       }
-//     `}
-//       >
-//         {msg.text}
-//       </div>
-
-//       {/* User Avatar */}
-//       {isUser && (
-//         <Icon icon="mdi:user" width={36} height={36} className="bg-neutral-200 text-black p-1.5 rounded-full"/>
-//       )}
-//     </li>
-//   );
-// })}
-// </ul>
-
-// {/* Chat */}
-// <form onSubmit={sendMessage}>
-// <label htmlFor="chat" className="sr-only">Your message</label>
-// <div className="flex items-center py-2 px-3 bg-gray-50 rounded-lg dark:bg-gray-700">
-// <button
-//   type="button"
-//   className="inline-flex justify-center p-2 text-gray-500 rounded-lg cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600"
-// >
-//   <svg
-//     className="w-6 h-6"
-//     fill="currentColor"
-//     viewBox="0 0 20 20"
-//     xmlns="http://www.w3.org/2000/svg"
-//   >
-//     <path
-//       fillRule="evenodd"
-//       d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
-//       clipRule="evenodd"
-//     ></path>
-//   </svg>
-// </button>
-
-// <button
-//   type="button"
-//   className="p-2 text-gray-500 rounded-lg cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600"
-// >
-//   <svg
-//     className="w-6 h-6"
-//     fill="currentColor"
-//     viewBox="0 0 20 20"
-//     xmlns="http://www.w3.org/2000/svg"
-//   >
-//     <path
-//       fillRule="evenodd"
-//       d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 100-2 1 1 0 000 2zm7-1a1 1 0 11-2 0 1 1 0 012 0zm-.464 5.535a1 1 0 10-1.415-1.414 3 3 0 01-4.242 0 1 1 0 00-1.415 1.414 5 5 0 007.072 0z"
-//       clipRule="evenodd"
-//     ></path>
-//   </svg>
-// </button>
-
-// <textarea
-//   id="chat"
-//   rows="1"
-//   className="block mx-4 p-2.5 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-//   placeholder="Your message..."
-// ></textarea>
-
-// <button
-//   type="submit"
-//   className="inline-flex justify-center p-2 text-blue-600 rounded-full cursor-pointer hover:bg-blue-100 dark:text-blue-500 dark:hover:bg-gray-600"
-// >
-//   <svg
-//     className="w-6 h-6 rotate-90"
-//     fill="currentColor"
-//     viewBox="0 0 20 20"
-//     xmlns="http://www.w3.org/2000/svg"
-//   >
-//     <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path>
-//   </svg>
-// </button>
-// </div>
-// </form>

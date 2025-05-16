@@ -12,7 +12,12 @@ import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 import { useRef } from "react";
 import { useEffect } from "react";
 import { messageService, sendMessage } from "../../service/messageService";
-import { connectSocket, listenNewMessages, stopListenNewMessages } from "../../service/socket";
+import {
+  connectSocket,
+  listenNewMessages,
+  socketConnect,
+  stopListenNewMessages,
+} from "../../service/socket";
 import { isAuthenticated } from "../../utils/AuthCheck";
 
 const ChatCustomer = () => {
@@ -43,13 +48,13 @@ const ChatCustomer = () => {
     };
 
     // if (isAuthenticated()) {
-      connectSocket()
-      listenNewMessages(handleNewMessage);
-      console.log("check: ", isAuthenticated());
+    socketConnect.connectSocket();
+    socketConnect.listenNewMessages(handleNewMessage);
+    console.log("check: ", isAuthenticated());
     // }
 
     return () => {
-      stopListenNewMessages(handleNewMessage);
+      socketConnect.stopListenNewMessages(handleNewMessage);
     };
   }, []);
 
@@ -62,7 +67,11 @@ const ChatCustomer = () => {
     if (!input.trim()) return;
 
     try {
-      await sendMessage(1, input);
+      const data = {
+        messageContent: input,
+        image: "test",
+      };
+      await messageService.sendMessage(1, data);
       setInput(""); // Xóa input sau khi gửi
     } catch (error) {
       console.error("Error sending message:", error);
@@ -83,60 +92,16 @@ const ChatCustomer = () => {
         }`}
       >
         <ChatContainer>
-          <ConversationHeader>
-            <ConversationHeader.Content userName='Name Hotel' />
+          <ConversationHeader className='!bg-blue-500/80 [&>div>div]:!bg-transparent'>
+            <ConversationHeader.Content>
+              <div className='text-white font-bold'>Name Hotel</div>
+            </ConversationHeader.Content>
+            <ConversationHeader.Actions>
+            <Icon icon='material-symbols:close' className="text-gray-300 cursor-pointer" onClick={()=>setIsOpen(false)} width='24' height='24' />
+          </ConversationHeader.Actions>
           </ConversationHeader>
-
+          
           <MessageList>
-            {/* <MessageSeparator content='Saturday, 30 November 2019' /> */}
-            <Message
-              model={{
-                direction: "incoming",
-                message:
-                  "Hello my friend Hello my friend Hello my \nfriend Hello my friend Hello my friend Hello my friend Hello my friend Hello my friend ",
-                position: "single",
-                sender: "Zoe",
-                sentTime: "15 mins ago",
-              }}
-            />
-            <Message
-              model={{
-                direction: "outgoing",
-                message: "Hello my friend",
-                position: "last",
-                sender: "Patrik",
-                sentTime: "15 mins ago",
-              }}
-            />
-
-            <Message
-              model={{
-                direction: "incoming",
-                message: "Hello my friend",
-                position: "normal",
-                sender: "Zoe",
-                sentTime: "15 mins ago",
-              }}
-            />
-            <Message
-              model={{
-                direction: "incoming",
-                message: "Hello my friend",
-                position: "last",
-                sender: "Zoe",
-                sentTime: "15 mins ago",
-              }}
-            />
-            <Message
-              model={{
-                direction: "outgoing",
-                message:
-                  "Hello my friend\nHello my friend\nHello my friend\nHello my friend\nHello my friend\nHello my friend\nHello my friend\nHello my friend\nHello my friend\nHello my friend\nHello my friend\nHello my friend\n",
-                position: "first",
-                sender: "Patrik",
-                sentTime: "15 mins ago",
-              }}
-            />
             <Message
               model={{
                 direction: "outgoing",
@@ -150,11 +115,11 @@ const ChatCustomer = () => {
               <Message
                 key={i}
                 model={{
-                  direction: "outgoing",
+                  direction: message.sender_id === 1 ? 0 : 1,
                   message: message.messageContent,
-                  position: "first",
-                  sender: "Patrik",
-                  sentTime: "15 mins ago",
+                  position: "normal",
+                  sender: message.sender_id,
+                  sentTime: message.messageTime,
                 }}
               />
             ))}

@@ -30,7 +30,7 @@ export const logout = () => {
 }
 
 // Tìm kiếm người dùng
-export const findMessages = async (name) => {
+export const findUser = async (name) => {
   try {
     const response = await apiConfig.get(`/admin/search_user?search=${name}`);
     return response.data; 
@@ -43,6 +43,6 @@ export const findMessages = async (name) => {
 export const authService = {
    login,
    logout,
-   findMessages
+   findUser
 }
 

@@ -5,9 +5,11 @@ import Footer from '../../components/Shared/Footer';
 import ChatCustomer from '../../page/Chat';
 import { AnimatePresence } from 'framer-motion';
 import PageTransitionWrapper from '../../components/PageTransition';
+import { isAuthenticated } from '../../utils/AuthCheck';
 
 const MainLayout = () => {
     const location = useLocation();
+    
 
     return (
         <div className="min-h-screen flex flex-col relative mx-auto" style={{ maxWidth: "100vw" }}>
@@ -19,7 +21,7 @@ const MainLayout = () => {
                     </PageTransitionWrapper>
                 </AnimatePresence>
             </main>
-            <ChatCustomer/> 
+            {isAuthenticated() && <ChatCustomer/> }
             <Footer />
         </div>
     );

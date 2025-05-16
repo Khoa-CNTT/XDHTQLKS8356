@@ -14,6 +14,7 @@ export const sendMessage = async (receiverId, messageData) => {
 // Lấy tất cả tin nhắn giữa hai người
 export const getMessages = async (userId) => {
   try {
+    if(!userId) return {}
     const response = await apiConfig.get(`/customer/chat/${userId}`);
     return response.data; 
   } catch (error) {

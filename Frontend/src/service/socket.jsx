@@ -48,3 +48,12 @@ export const sendNewMessage = (message) => {
 export const disconnectSocket = () => {
   socket.disconnect();
 };
+
+export const socketConnect = {
+  initSocket,
+  connectSocket,
+  sendNewMessage,
+  disconnectSocket,
+  stopListenNewMessages,
+  listenNewMessages
+}

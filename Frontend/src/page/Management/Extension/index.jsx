@@ -75,11 +75,7 @@ const Extension = () => {
             toast.error(result.message);
         }
         } catch (error) {
-<<<<<<< HEAD
             console.log(error)
-=======
-            
->>>>>>> 31a4ae11c8bab662ebc3ca4657cb314d2af7e62b
         }
        
     };

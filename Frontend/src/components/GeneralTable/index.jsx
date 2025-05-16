@@ -4,10 +4,14 @@ import { format } from "date-fns";
 import "./customStyles.css"
 import { Icon } from '@iconify/react';
 const GeneralTable = ({ datas, columns, renderExpandedRow, onDateChange, onSearchChange, placeholderSearch, functionButton, onEdit, onDelete, handleButton}) => {
-    const today = new Date().toISOString().split("T")[0];
+
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const today = tomorrow.toISOString().split("T")[0]; 
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
     const defaultStartDate = sevenDaysAgo.toISOString().split("T")[0];
+
     const [value, setValue] = useState({
         expandedRow: [],
         filters: {},
@@ -20,13 +24,17 @@ const GeneralTable = ({ datas, columns, renderExpandedRow, onDateChange, onSearc
     });
     useEffect(() => {
         if (datas && Array.isArray(datas)) {
-            setValue(prevValue => ({...prevValue, data: datas }));
+            setValue(prevValue => ({ ...prevValue, data: datas }));
+            if (onDateChange) {
+                onDateChange(defaultStartDate, today);
+            }
         }
-    }, [datas]); 
+    }, [datas]);
     const handleStartDateChange = (event) => {
         const newStartDate = event.target.value;
         setValue(prevValue => ({...prevValue, startDate: newStartDate, endDate: newStartDate > prevValue.endDate ? newStartDate : prevValue.endDate}));
         onDateChange(newStartDate, value.endDate);
+        console.log(value.endDate)
     };
 
     const handleEndDateChange = (event) => {
@@ -84,6 +92,12 @@ const GeneralTable = ({ datas, columns, renderExpandedRow, onDateChange, onSearc
     const handleSearchChange = (event) => {
         setValue(prevValue => ({...prevValue, search: event.target.value}));
         onSearchChange(value.search)
+    };
+    const formatDate = (value) => {
+        if (!value) return "";
+        const date = new Date(value);
+        if (isNaN(date.getTime())) return "Ngày không hợp lệ";
+        return format(date, "HH:mm, dd/MM/yyyy");
     };
     return (
         <div className='py-10 my-auto px-5 flex flex-col max-h-screen'>
@@ -180,18 +194,26 @@ const GeneralTable = ({ datas, columns, renderExpandedRow, onDateChange, onSearc
                                 <Fragment key={`${index}-${subIndex}`}>
                                 <tr onClick={() => handleRowClick(`${index}-${subIndex}`)}>
                                     {columns.map((column) => {
-                                        const value = detail[column.key] ?? row[column.key]; 
+                                        const value = detail[column.key] ?? row[column.key];
+                                        const isDateField = ["checkin", "checkout", "created_at", "start_date", "end_date"].includes(column.key);
+
                                         return (
                                             <td key={`${column.key}-${index}-${subIndex}`} className="py-2.5 border-b border-gray-200 text-center">
                                                 {column.render ? (
-                                                    column.render({ ...detail, name: row.name }) 
-                                                ) : column.key === "checkin" || column.key === "checkout" || column.key === "createdAt" ? (
-                                                    (() => {
-                                                    const date = new Date(value);
-                                                    return format(date, "HH:mm, dd/MM/yyyy");
-                                                    })()
+                                                    column.render({ ...detail, name: row.name })
+                                                ) : column.key === "image" && value ? ((() => {
+                                                    try {
+                                                        const images = JSON.parse(value); 
+                                                        const imageUrl = images?.[0]?.[0]; 
+                                                        return imageUrl ? (
+                                                            <img src={imageUrl} alt="Hình ảnh" className="w-16 h-16 object-cover rounded mx-auto"/>) : "Không có ảnh";
+                                                    } catch (e) {
+                                                        return "Lỗi ảnh";
+                                                    }})()
+                                                ) : isDateField ? (
+                                                    formatDate(value)
                                                 ) : (
-                                                    value
+                                                    value ?? ""
                                                 )}
                                             </td>
                                         );
@@ -210,19 +232,37 @@ const GeneralTable = ({ datas, columns, renderExpandedRow, onDateChange, onSearc
                             return (
                             <Fragment key={index}>
                                 <tr onClick={() => handleRowClick(index)}>
-                                    {columns.map((column) => (
+                                {columns.map((column) => {
+                                    const value = row[column.key];
+                                    const isDateField = ["checkin", "checkout", "created_at"].includes(column.key)
+                                    return (
                                         <td key={column.key} className="py-2.5 border-b border-gray-200 text-center">
-                                        {column.render ? (column.render(row)) 
-                                        : column.key === "checkin" || column.key === "checkout" || column.key === "createdAt" 
-                                        ? ((() => { const date = new Date(row[column.key]);
-                                            return format(date, "HH:mm, dd/MM/yyyy")})()
-                                        ) : column.key === "icon" ? (
-                                            <Icon icon={row[column.key]} width={28} height={28} className='mx-auto'/>
-                                        ) : (
-                                            row[column.key]
-                                        )}
+                                            {column.render ? (
+                                                column.render(row)
+                                            ) : column.key === "icon" ? (
+                                                <Icon icon={value} width={28} height={28} className="mx-auto" />
+                                            ) : column.key === "image" && value ? ((() => {
+                                                try {
+                                                    const images = JSON.parse(value); 
+                                                    const imageUrl = images?.[0]?.[0]; 
+                                                    return imageUrl ? (
+                                                        <img src={imageUrl} alt="Hình ảnh" className="w-24 h-16 object-cover rounded mx-auto"/>) : "Không có ảnh";
+                                                } catch (e) {
+                                                    return "Lỗi ảnh";
+                                                }})()
+                                            ) : isDateField ? (
+                                                (() => {
+                                                    const date = new Date(value);
+                                                    if (isNaN(date.getTime())) return "Ngày không hợp lệ";
+                                                    return format(date, "HH:mm, dd/MM/yyyy");
+                                                })()
+                                            ) : (
+                                                value ?? ""
+                                            )}
                                         </td>
-                                    ))}
+                                    );
+                                })}
+
                                 </tr>
                                 {value.expandedRow && value.expandedRow.includes(index) && (
                                     <tr>

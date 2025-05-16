@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 const Room = () => {
     const columns = [
         { key: "room_number", label: "Số phòng" },
-        { key: "room_type", label: "Loại phòng", isFilterable: true },
+        { key: "room_name", label: "Loại phòng", isFilterable: true },
         { key: "price_per_night", label: "Giá phòng" },
         {
             key: "edit",

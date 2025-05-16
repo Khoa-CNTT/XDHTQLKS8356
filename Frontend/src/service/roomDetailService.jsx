@@ -2,7 +2,7 @@ import apiConfig from "./axiosConfig"
 
 export const getRoom  = async() => {
    try {
-      const response = await apiConfig.get(`/admin/room_detail`)
+      const response = await apiConfig.get(`/admin/room_details`)
       console.log("res: ", response.data.room.map((item, index)=> ({
          id:index,
          name: item.room_number,

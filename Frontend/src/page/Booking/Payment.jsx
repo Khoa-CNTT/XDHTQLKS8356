@@ -2,10 +2,13 @@ import React, { useCallback, useEffect, useState } from "react";
 import { APP_ROUTER, QR } from "../../utils/Constants";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-
+import { TfiAlarmClock } from "react-icons/tfi";
+import { useLocation } from "react-router-dom";
 const Payment = (props) => {
   const { setStep, info } = props
-  const { totalAmount, totalDiscount } = info.state
+  console.log("prop",props)
+
+  const { final_amount: totalAmount, total_discount: totalDiscount } = info?.dataRoom;
   const navigate = useNavigate()
   const [qrData, setQrData] = useState('');
   const [transactionId, setTransactionId] = useState('');
@@ -75,7 +78,7 @@ const Payment = (props) => {
     generateQrCode();
   }, []);
 
-  console.log("payment:  ", transactionId);
+  // console.log("payment:  ", transactionId);
   return (
     <div >
       {paymentStatus ? (
@@ -86,28 +89,36 @@ const Payment = (props) => {
                </span>
         </div>
       ) : (
-        <div className="w-[90%] text-center" >
-          <h3 className="italic mb-5">Vui lòng quét mã QR để thực hiện thanh toán</h3>
+        <div className="w-full text-center" >
+        <div className="flex items-center gap-4 text-red-600 justify-center">
+          <div>Chúng tôi đang giữ phòng cho quý khách...</div>
+         
+          {timer > 0 && (
+              <div className="text-2xl font-semibold flex items-center gap-2">
+              <TfiAlarmClock />
+                {`${Math.floor(timer / 60)}:${timer % 60 < 10 ? '0' : ''}${timer % 60}`}
+              </div>
+            )}
+        </div>
+          <h3 className="italic mb-5 mt-2">Vui lòng quét mã QR để thực hiện thanh toán</h3>
           {qrData.length > 0 && (
             <img
               src={qrData}
               className={`w-1/3 mx-auto ${timer > 0 ? '' : 'blur-sm'}`}
             />
           )}
+          <div className="w-1/4 grid grid-cols-2 gap-x-2 gap-y-1 mt-2 text-sm text-left text-gray-700 mx-auto">
+            <div>Số tiền:</div>
+            <div className="font-medium">{(totalAmount - totalDiscount).toLocaleString()} VND</div>
 
-          {timer > 0 && (
-            <div className="text-2xl text-red-600">
-              {`${Math.floor(timer / 60)}:${timer % 60 < 10 ? '0' : ''}${timer % 60}`}
-            </div>
-          )}
-
-          <div>Số tiền: {(totalAmount-totalDiscount).toLocaleString()} VND</div>
-          <div>Nội dung: {transactionId}</div>
+            <div>Nội dung:</div>
+            <div className="font-medium">{transactionId}</div>
+          </div>
         </div>
       )}
-      <div className="flex justify-end gap-4">
-        <button onClick={generateQrCode} className="underline italic text-blue-500">Làm mới</button>
-        <button onClick={() => setStep(prev => prev - 1)} className="text-gray-900 bg-white border border-gray-10 hover:bg-gray-100 focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">
+      <div className="flex justify-end gap-1">
+        <button onClick={generateQrCode} className="text-gray-900 bg-white border border-gray-10 hover:bg-gray-100 focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 cursor-pointer">Làm mới</button>
+        <button onClick={() => setStep(prev => prev - 1)} className="text-white bg-gray-800 hover:bg-gray-900 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 cursor-pointer">
           Quay lại
         </button>
       </div>

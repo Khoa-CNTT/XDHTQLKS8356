@@ -1,6 +1,6 @@
 import apiConfig from "./axiosConfig"
 
-export const getExtension  = async() => {
+export const getExtension = async() => {
    try {
       const response = await apiConfig.get(`/admin/amenitie`)
       return response.data.amenitie

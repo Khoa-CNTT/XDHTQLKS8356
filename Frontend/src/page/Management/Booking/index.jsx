@@ -1,24 +1,38 @@
 import React, { useEffect, useState } from "react";
-import { orderServices } from "../../../service/orderServices";
 import { MdDeleteForever } from "react-icons/md";
 import GeneralTable from "../../../components/GeneralTable";
-
-const ListOrder = () => {
+import { bookingService } from "../../../service/bookingService";
+import { MdAddModerator } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
+const BookingManager = () => {
     const columns = [
         { key: "booking_id", label: "Mã đặt phòng" },
         { key: "booking_status", label: "Trạng thái", isFilterable: true},
-        { key: "createdAt", label: "Thời gian đặt" },
+        { key: "created_at", label: "Thời gian đặt" },
         { key: "checkin", label: "Thời gian nhận phòng" },
         { key: "checkout", label: "Thời gian trả phòng" },
-        { key: "fullname", label: "Khách hàng", isFilterable: true },
-        { key: "total_price", label: "Tổng tiền hàng" },
+        // { key: "fullname", label: "Khách hàng", isFilterable: true },
+        { key: "total_day", label: "Số ngày ở" },
+        { key: "total_price", label: "Tổng tiền" },
+        {
+            key: "booking",
+            label: "Đặt dịch vụ",
+            render: (row) => (
+                <button
+                    onClick={(event) => handleBookingService(event, row)}
+                    className="z-10 text-center mx-auto p-2 hover:bg-slate-200 hover:rounded-md cursor-pointer"
+                >
+                    <MdAddModerator className="h-6 w-6" />
+                </button>
+            ),
+        },
         {
             key: "button",
             label: "Xóa",
             render: (row) => (
                 <button
                     onClick={(event) => handleDeleteOrder(event, row)}
-                    className="z-10 text-center mx-auto p-2 hover:bg-slate-200 hover:rounded-md"
+                    className="z-10 text-center mx-auto p-2 hover:bg-slate-200 hover:rounded-md cursor-pointer"
                 >
                     <MdDeleteForever className="h-6 w-6" />
                 </button>
@@ -30,7 +44,8 @@ const ListOrder = () => {
     const [searchData, setSearchData] = useState('');
     const [data, setData] = useState([]);
     const fetchStores = async (startDate, endDate) => {
-        const result = await orderServices.getOrders(startDate, endDate);
+        const result = await bookingService.getBookingAdmin(startDate, endDate);
+        console.log(result)
         setData(result);
     };
 
@@ -108,10 +123,10 @@ const ListOrder = () => {
             </div>
         );
     };
+    const navigate = useNavigate()
     const handleDeleteOrder = (event, row) => {
         event.stopPropagation();
-        console.log("Editing service for booking:", row.booking_id);
-       
+        navigate(`/admin/booking-service/${row.id}`)
     };
     return (
         <>
@@ -130,4 +145,4 @@ const ListOrder = () => {
     );
 };
 
-export default ListOrder;
+export default BookingManager;

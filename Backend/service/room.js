@@ -1,9 +1,8 @@
 const {Room} = require("../model/room");
-const {Sequelize, Op} = require("sequelize");
 //const {find_room} = require("../helper/find_room");
 //const {convertData} = require("../helper/convertdata");
 const { sequelize } = require("../config/mysql");
-
+const {Sequelize, Op} = require("sequelize");
 
 
 //Gợi ý phòng

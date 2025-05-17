@@ -7,11 +7,18 @@ const Messenger = sequelize.define("Messenger",
             type: DataTypes.TEXT,
             allowNull: false,
         },
-        image : DataTypes.STRING,
+        status_user : {
+            type: DataTypes.TEXT,
+            defaultValue : "unread"
+        },
+        status_emp : {
+            type: DataTypes.TEXT,
+            defaultValue : "unread"
+        },
         messageTime: {
             type: DataTypes.DATE,
             defaultValue: Sequelize.fn("NOW")
-        },
+        }
     },
     {
         tableName: "messenger"

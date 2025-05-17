@@ -40,6 +40,7 @@ adminRouter.post("/room", createRoom);
 adminRouter.delete("/room/:id", deleteRoom);
 adminRouter.put("/room/:id", updateRoom);
 adminRouter.get("/room", getRoom);
+adminRouter.get("/status_room", getRoom);
 
 //room_detail
 adminRouter.post("/room_detail", createRoomDetail);
@@ -60,6 +61,8 @@ adminRouter.get("/services", getAllServices);
 adminRouter.get("/search_user", findUser);
 adminRouter.post("/user", findUser);
 adminRouter.post("/add_user", addEmployee);
+
+
 
 //booking
 adminRouter.get("/bookings", getAllBookingForAdmin);

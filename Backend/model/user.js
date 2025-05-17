@@ -1,8 +1,9 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const { sequelize } = require("../config/mysql");
 const bcryptjs = require("bcryptjs");
-const { Messenger } = require('./messenger');
 const { Booking } = require('./booking');
+const { Conversation } = require('./conversation');
+const { Messenger } = require('./messenger');
 
 const User = sequelize.define("User",
     {
@@ -32,18 +33,19 @@ const User = sequelize.define("User",
     }
 );
 
-//Messenger
 
-User.hasMany(Messenger, {foreignKey : "sender_id"});
-User.hasMany(Messenger, {foreignKey : "receiver_id"});
-
-Messenger.belongsTo(User, { foreignKey: "sender_id", as: 'sender' });
-Messenger.belongsTo(User, { foreignKey: "receiver_id", as: 'receiver' });
 
 //Booking
 Booking.belongsTo(User);
 User.hasMany(Booking);
 
+//Conversation
+Conversation.belongsTo(User);
+User.hasMany(Conversation);
+
+//Messenger
+Messenger.belongsTo(User);
+User.hasMany(Messenger);
 
 
 User.beforeCreate(async (user) => {

@@ -60,6 +60,7 @@ const getAllRoom = async (req, res) => {
 
 }
 
+
 //Tất cả phòng trống của khách sạn
 const getRoomEmpty = async (req, res) => {
 
@@ -95,6 +96,23 @@ const getRoom = async (req, res) => {
 
 }
 
+
+const getStatusRoom = async (req, res) => {
+
+    const room = await Room.getRoom(req.query);
+
+    if (room == "error") {
+        res.status(505).json("Lỗi hệ thống");
+    }
+    else {
+        res.status(201).json({
+            status: true,
+            message: "Danh sách tất cả loại phòng",
+            room
+        })
+    }
+
+}
 const getRoomById = async (req, res) => {
 
     const room = await Room.getRoomById(req.params.id);

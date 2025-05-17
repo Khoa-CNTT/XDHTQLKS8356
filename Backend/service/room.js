@@ -188,9 +188,11 @@ const getRoom = async (id) => {
     try {
         const sql = `SELECT 
                         r.id,
+                        r.square_meters,
                         r.room_type AS room_type,
                         r.adult_count,
                         r.price_per_night,
+                        r.image,
                         COUNT(rd.id) AS room_count
                     FROM 
                         Room r

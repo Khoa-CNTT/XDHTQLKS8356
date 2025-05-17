@@ -13,7 +13,6 @@ const getUser  = async (id) => {
         }
     })
     return users;
-    
 }
 
 const getAllUser  = async (id) => {
@@ -183,6 +182,9 @@ const putUser  = async (id, data) => {
             else{
                 return -1;
             }
+        }
+        else{
+            user.update(data);
         }
     } catch (error) {
         console.log(error);

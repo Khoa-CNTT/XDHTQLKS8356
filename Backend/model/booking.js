@@ -15,7 +15,9 @@ const Booking = sequelize.define("Booking",
             defaultValue : "booked"
         },
         type : DataTypes.TEXT,
-        total_price : DataTypes.INTEGER
+        total_price : DataTypes.INTEGER,
+        fullname : DataTypes.STRING,
+        phone : DataTypes.STRING
     },
     {
         tableName: "booking",

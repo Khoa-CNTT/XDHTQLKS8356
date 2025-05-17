@@ -31,7 +31,7 @@ const getMessages  = async(a, b) => {
         },
         order : [
             ["message_time", "DESC"]
-        ]
+        ]   
     })
     return message;
 

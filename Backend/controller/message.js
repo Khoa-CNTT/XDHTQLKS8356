@@ -4,7 +4,7 @@ const {io, getReceiverId} = require("../socket/socket");
 const sendMess = async (req, res) => {
     req.body.receiver_id = req.params.id;
 
-    if(req.params.id = 1){
+    if(req.params.id == 1){
         req.body.sender_id = req.user.id;
     }
     else{

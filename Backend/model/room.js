@@ -18,10 +18,10 @@ const Room = sequelize.define("Room",
     }
 );
 
+
 //Pricing
 Pricing.belongsTo(Room);
 Room.hasMany(Pricing);
-
 
 
 

@@ -94,11 +94,10 @@ const deleteBooking = async (req, res) => {
     }
 }
 
-//chưa sửa 
 //Cập nhật đơn đặt phòng
 const updateBooking = async (req, res) => {
-
-    const booking = await Booking.createBooking(req.body);
+    
+    const booking = await Booking.updateBooking(req.params.id, req.body);
 
     if (booking == "error") {
         res.status(505).json("Lỗi hệ thống");
@@ -106,8 +105,7 @@ const updateBooking = async (req, res) => {
     else {
         res.status(201).json({
             status: true,
-            message: "Đặt phòng thành công",
-            booking
+            message: "Cập nhật đơn đặt phòng thành công"
         })
     }
 }

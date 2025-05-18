@@ -10,7 +10,8 @@ const Hotel = sequelize.define("Hotel",
         name: DataTypes.STRING,
         image : DataTypes.TEXT,
         description: DataTypes.TEXT,
-        address: DataTypes.STRING
+        address: DataTypes.STRING,
+        phone: DataTypes.STRING
     },
     {
         tableName: "hotel"

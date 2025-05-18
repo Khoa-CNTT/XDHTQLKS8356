@@ -4,7 +4,7 @@ export const getSchedule  = async(start, end, status) => {
    if(!start || !end ||!status) return
    const fomatStatus = `(${status.map(key => `'${key}'`).join(",")})`;
    try {
-      const response = await apiConfig.get(`/receptionist/room_details?start='${start}'&end='${end}'`+ `${status.length>0 ? `&status=${fomatStatus}` : ''}`)
+      const response = await apiConfig.get(`/admin/bookings?start='${start}'&end='${end}'`+ `${status.length>0 ? `&status=${fomatStatus}` : ''}`)
       return response.data.room
    } catch (error) {
       console.log("Error getSchedule: " + error)
@@ -28,7 +28,7 @@ export const creatBooking = async(data) => {
       const response = await apiConfig.post(`/customer/booking`, data)
       return response.data
    } catch (error) {
-      console.log("Error getSchedule: " + error)
+      console.log("Error booking: " + error)
       return {}
    }
 }

@@ -25,6 +25,8 @@ import Payment from "../page/Booking/Payment";
 import BookingManager from "../page/Management/Booking";
 import Hotel from "../page/Management/Hotel";
 import BookingService from "../page/Management/BookingService";
+import Timeline from "../components/Calendar/Timeline";
+import RoomPage from "../page/Room";
 
 const router = createBrowserRouter([
     {
@@ -39,6 +41,10 @@ const router = createBrowserRouter([
             {
                 path: APP_ROUTER.BOOKING,
                 element: <Booking />,
+            },
+             {
+                path: APP_ROUTER.ROOMS,
+                element: <RoomPage />,
             },
             // {
             //     path: `${APP_ROUTER.HOTELDETAIL}/:hotelId`,
@@ -123,6 +129,10 @@ const router = createBrowserRouter([
             {
                 path: APP_ROUTER.BOOKINGSERVICE,
                 element: <BookingService />,
+            },
+               {
+                path: APP_ROUTER.ROOMDETAIL,
+                element: <Timeline />,
             },
         ],
     },

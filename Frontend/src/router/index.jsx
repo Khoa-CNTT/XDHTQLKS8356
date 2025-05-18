@@ -24,7 +24,8 @@ import Extension from "../page/Management/Extension";
 import Payment from "../page/Booking/Payment";
 import BookingManager from "../page/Management/Booking";
 import Hotel from "../page/Management/Hotel";
-import BookingService from "../page/Management/BookingService";
+import InformationBooking from "../page/Booking/Information";
+import Personnel from "../page/Management/Personnel";
 
 const router = createBrowserRouter([
     {
@@ -39,6 +40,16 @@ const router = createBrowserRouter([
             {
                 path: APP_ROUTER.BOOKING,
                 element: <Booking />,
+                children: [
+                    {
+                        path: APP_ROUTER.INFOR_BOOKING,
+                        element: <InformationBooking />,
+                    },
+                    {
+                        path: APP_ROUTER.PAYMENT,
+                        element: <Payment />,
+                    },
+                ]
             },
             // {
             //     path: `${APP_ROUTER.HOTELDETAIL}/:hotelId`,
@@ -121,8 +132,8 @@ const router = createBrowserRouter([
                 element: <Hotel />,
             },
             {
-                path: APP_ROUTER.BOOKINGSERVICE,
-                element: <BookingService />,
+                path: APP_ROUTER.PERSONNEL,
+                element: <Personnel />,
             },
         ],
     },

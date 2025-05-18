@@ -1,60 +1,16 @@
-import { useLocation, useNavigate } from 'react-router-dom'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import React, { useState } from 'react';
-import { IoCheckmark, IoStar, IoStarHalf } from 'react-icons/io5';
 import { FaCheckCircle } from "react-icons/fa";
 import { PiCardholderFill } from "react-icons/pi";
-import Payment from './Payment';
-import Information from './Information';
-import OrderDetail from './OrderDetail';
 import toast from 'react-hot-toast';
-import { MdChecklist, MdPayment } from 'react-icons/md';
 import { BiSolidUserDetail } from "react-icons/bi";
 import { bookingService } from '../../service/bookingService';
-import { APP_ROUTER } from '../../utils/Constants';
 const Booking = () => {
   const navigate = useNavigate()
-  const [infoCustomer, setInfoCustomer] = useState({
-    fullname: 'Mỹ Lệ',
-    email: 'myle@gmail.com',
-    phone: '0794636494',
-    address: 'Huế',
-    note: 'Ok',
-    status : "guest",
-    role : "guest"
-  });
-  const location = useLocation();
-  const state = location.state;
-  const [step, setStep] = useState(1)
+  
+  // const state = location.state;
 
-  const dataRoom = {
-    "booking_id": 123,
-    "checkin": "2025-01-01",
-    "checkout": "2025-01-03",
-    "total_nights": 2,
-    "total_guests": 7,
-    "note": "Yêu cầu phòng yên tĩnh.",
-    "rooms": [
-      {
-        "room_type": "Phòng cao cấp",
-        "room_number": "P705",
-        "price_per_night": 3000000,
-        "quantity": 1,
-        "nights": 3,
-        "total_price": 9000000
-      },
-      {
-        "room_type": "Phòng luxury",
-        "room_number": "P7056",
-        "price_per_night": 4000000,
-        "quantity": 1,
-        "nights": 3,
-        "total_price": 12000000
-      }
-    ],
-    "total_amount": 21000000,
-    "total_discount": 0,
-    "final_amount": 21000000
-  }
+  
   
   const handleOrder = async() => {
     const data = {
@@ -104,7 +60,8 @@ const Booking = () => {
     }
   }
 
-  console.log("state", state);
+  const location = useLocation();
+  const step = location.pathname.includes('payment') ? 2 : location.pathname.includes('information') ? 1 : 1;
 
   return (
     <div className='w-9/12 mb-10 mt-4 mx-auto'>
@@ -135,19 +92,7 @@ const Booking = () => {
       </ol>
 
       <div className='mt-5 p-5 border border-gray-300 rounded-xl'>
-        {step === 1 ? (
-          <Information setStep={setStep} infoCustomer={infoCustomer} setInfoCustomer={setInfoCustomer} handleOrder={handleOrder} dataRoom={dataRoom}/>
-        )
-          :
-          step === 2
-          ?
-          (
-            <Payment setStep={setStep} info={{ infoCustomer, state, dataRoom }} />
-            )
-            :
-            (
-            {/* <Payment setStep={setStep} info={{ infoCustomer, state }} /> */}
-          )}
+            <Outlet />
       </div>
 
     </div>

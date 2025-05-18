@@ -16,7 +16,9 @@ import {
     HddOutlined,
     LayoutOutlined,
     ThunderboltOutlined,
-    SunOutlined
+    SunOutlined,
+    TeamOutlined,
+    UsergroupAddOutlined
 } from "@ant-design/icons";
 import { Layout, Menu, theme } from "antd";
 import Logo from "../../components/Logo";
@@ -63,6 +65,9 @@ const ManagementLayout = () => {
             getItem(<Link to={APP_ROUTER.CLASSIFICATION}>Phân loại khách hàng</Link>, "8", <SisternodeOutlined />),
         ]),
         getItem(<Link to={APP_ROUTER.HOME}>Tư vấn khách hàng</Link>, "9", <CommentOutlined />),
+        getItem(<Link>Nhân viên</Link>, "sub3", <TeamOutlined />, [
+            getItem(<Link to={APP_ROUTER.PERSONNEL}>Thêm nhân viên</Link>, "15", <UsergroupAddOutlined />),
+        ]),
         getItem(<Link to={APP_ROUTER.HOME}>Báo cáo thống kê</Link>, "10", <BarChartOutlined />),
         getItem(<div onClick={handleLogout}>Đăng xuất</div>, "11", <LogoutOutlined />),
     ];
@@ -98,7 +103,7 @@ const ManagementLayout = () => {
                                     [&::-webkit-scrollbar-thumb]:bg-gray-300
                                     dark:[&::-webkit-scrollbar-track]:bg-neutral-700
                                     dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500">
-                    <Content className="bg-white p-4">
+                    <Content className="bg-white">
                         <AnimatePresence mode="wait">
                             <PageTransitionWrapper key={location.pathname}>
                                 <Outlet />

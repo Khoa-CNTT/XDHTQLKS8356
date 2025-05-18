@@ -99,7 +99,7 @@ const Room = () => {
                 try {
                     const result = await roomDetailService.updateRoom(selectedRoom.id, payload);
                     if(result.status == true){
-                        toast.success(result.message);
+                        toast.success("Cập nhật phòng thành công");
                         setResetFormTrigger(true);
                         setModalVisible(false);
                     }else{

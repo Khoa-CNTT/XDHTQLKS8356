@@ -1,7 +1,11 @@
 import React from 'react';
-const formatCurrency = (value) => {
-    return value.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
-  };
+const formatCurrency = (number) => {
+  if (typeof number !== "number") return "0₫"; // hoặc return ""; tùy ý
+  return number.toLocaleString("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  });
+};
   const formatDate = (dateStr) => {
     const date = new Date(dateStr);
     return date.toLocaleDateString('vi-VN');
@@ -44,12 +48,12 @@ const InforamtionRoom = ({dataRoomDetail}) => {
             </tr>
           </thead>
           <tbody>
-            {dataRoomDetail.rooms.map((room, idx) => (
+            {dataRoomDetail.details.map((room, idx) => (
               <tr key={idx} className="">
                 <td className="px-4 py-2">{room.room_type}</td>
                 <td className="px-4 py-2 text-center">{formatCurrency(room.price_per_night)}</td>
                 <td className="px-4 py-2 text-center">{room.quantity}</td>
-                <td className="px-4 py-2 text-center">{room.nights}</td>
+                <td className="px-4 py-2 text-center">{dataRoomDetail.rooms?.[0]?.nights || dataRoomDetail.total_nights}</td>
                 <td className="px-4 py-2 text-center">{formatCurrency(room.total_price)}</td>
               </tr>
             ))}

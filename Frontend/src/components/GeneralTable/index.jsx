@@ -3,7 +3,9 @@ import { FaCalendarDays } from "react-icons/fa6";
 import { format } from "date-fns";
 import "./customStyles.css"
 import { Icon } from '@iconify/react';
-const GeneralTable = ({ datas, columns, renderExpandedRow, onDateChange, onSearchChange, placeholderSearch, functionButton, onEdit, onDelete, handleButton}) => {
+import { MdAddModerator } from "react-icons/md";
+import { TbStatusChange } from "react-icons/tb";
+const GeneralTable = ({onUpdateStatusClick,onRowClick, datas, columns, renderExpandedRow, onDateChange, onSearchChange, placeholderSearch, functionButton, onEdit, onDelete, handleButton}) => {
 
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
@@ -97,7 +99,17 @@ const GeneralTable = ({ datas, columns, renderExpandedRow, onDateChange, onSearc
         if (!value) return "";
         const date = new Date(value);
         if (isNaN(date.getTime())) return "Ngày không hợp lệ";
-        return format(date, "HH:mm, dd/MM/yyyy");
+        return format(date, "dd/MM/yyyy");
+    };
+    const handleRowClickWithDetail = (bookingId) => {
+        console.log("Booking ID (details):", bookingId);
+    
+        setValue(prev => ({
+            ...prev,
+            expandedRow: prev.expandedRow.includes(bookingId)
+                ? prev.expandedRow.filter(id => id !== bookingId)
+                : [...prev.expandedRow, bookingId],
+        }));
     };
     return (
         <div className='py-10 my-auto px-5 flex flex-col max-h-screen'>
@@ -114,7 +126,7 @@ const GeneralTable = ({ datas, columns, renderExpandedRow, onDateChange, onSearc
                             className="peer h-full w-full outline-none text-sm text-gray-700 pr-2"
                             type="text"
                             id="search"
-                            autocomplete="off"
+                            autoComplete="off"
                             placeholder={placeholderSearch}
                             onChange={handleSearchChange}
                         />
@@ -189,46 +201,72 @@ const GeneralTable = ({ datas, columns, renderExpandedRow, onDateChange, onSearc
                     </thead>
                     <tbody className="max-h-full">
                         {resultData.map((row, index) => {
+                       
                             if (Array.isArray(row.details)) {
-                            return row.details.map((detail, subIndex) => (
-                                <Fragment key={`${index}-${subIndex}`}>
-                                <tr onClick={() => handleRowClick(`${index}-${subIndex}`)}>
+                            return (
+                                <Fragment key={`${index}`}>
+                                <tr
+                                    key={`${row.booking_id}`}
+                                    onClick={() => handleRowClickWithDetail(row.booking_id)}
+                                    className="cursor-pointer hover:bg-gray-100"
+                                >
                                     {columns.map((column) => {
-                                        const value = detail[column.key] ?? row[column.key];
-                                        const isDateField = ["checkin", "checkout", "created_at", "start_date", "end_date"].includes(column.key);
+                                    const value = row[column.key];
+                                    const isDateField = ["checkin", "checkout", "created_at", "start_date", "end_date"].includes(column.key);
 
-                                        return (
-                                            <td key={`${column.key}-${index}-${subIndex}`} className="py-2.5 border-b border-gray-200 text-center">
-                                                {column.render ? (
-                                                    column.render({ ...detail, name: row.name })
-                                                ) : column.key === "image" && value ? ((() => {
-                                                    try {
-                                                        const images = JSON.parse(value); 
-                                                        const imageUrl = images?.[0]?.[0]; 
-                                                        return imageUrl ? (
-                                                            <img src={imageUrl} alt="Hình ảnh" className="w-16 h-16 object-cover rounded mx-auto"/>) : "Không có ảnh";
-                                                    } catch (e) {
-                                                        return "Lỗi ảnh";
-                                                    }})()
-                                                ) : isDateField ? (
-                                                    formatDate(value)
-                                                ) : (
-                                                    value ?? ""
-                                                )}
-                                            </td>
-                                        );
+                                    return (
+                                        <td key={`${column.key}-${index}`} className="py-2.5 border-b border-gray-200 text-center">
+                                            {column.key === 'booking_services' ? (
+                                            <button
+                                                onClick={(e) => {
+                                                e.stopPropagation();
+                                                onRowClick(row);
+                                                }}
+                                                className="text-center mx-auto p-2 hover:bg-slate-200 hover:rounded-md cursor-pointer"
+                                            >
+                                                <MdAddModerator className="h-6 w-6" />
+                                            </button>
+                                            ) : column.key === 'update_status' ? (
+                                            <button
+                                                onClick={(e) => { e.stopPropagation(); onUpdateStatusClick(row);}}
+                                                className="text-center mx-auto p-2 hover:bg-slate-200 hover:rounded-md cursor-pointer"
+                                            >
+                                                <TbStatusChange className="h-6 w-6" />
+                                            </button>
+                                            ) : column.render ? (
+                                            column.render(row)
+                                            ) : column.key === "image" && value ? (() => {
+                                            try {
+                                                const images = JSON.parse(value);
+                                                const imageUrl = images?.[0]?.[0];
+                                                return imageUrl ? (
+                                                <img src={imageUrl} alt="Hình ảnh" className="w-16 h-16 object-cover rounded mx-auto" />
+                                                ) : "Không có ảnh";
+                                            } catch (e) {
+                                                return "Lỗi ảnh";
+                                            }
+                                            })() : isDateField ? (
+                                            formatDate(value)
+                                            ) : (
+                                            value ?? ""
+                                            )}
+                                        </td>
+                                    );
+
                                     })}
                                 </tr>
-                                {value.expandedRow && value.expandedRow.includes(`${index}-${subIndex}`) && (
+
+                                {value.expandedRow.includes(row.booking_id) && (
                                     <tr>
-                                        <td colSpan={columns.length + 1} className="px-4 py-2 shadow-inner">
-                                            <div>{renderExpandedRow(detail)}</div>
-                                        </td>
+                                    <td colSpan={columns.length + 1} className="px-4 py-2 shadow-inner bg-gray-50">
+                                        <div>{renderExpandedRow(row)}</div>
+                                    </td>
                                     </tr>
                                 )}
                                 </Fragment>
-                            ));
+                            );
                             }
+
                             return (
                             <Fragment key={index}>
                                 <tr onClick={() => handleRowClick(index)}>

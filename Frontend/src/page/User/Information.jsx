@@ -79,6 +79,31 @@ const Information = () => {
                     </div>
 
                     <div className="mt-5 flex">
+                        <div className="flex min-w-[150px] items-center text-md">Số điện thoại</div>
+                        <label htmlFor="phone" className="w-full max-w-[400px]">
+                        <input
+                            type="text"
+                            name="phone"
+                            id="phone"
+                            placeholder="Số điện thoại"
+                            className="text-sm placeholder:text-sm peer resize-none rounded-lg border border-[#B1C9DC] px-3 py-2 w-full font-medium leading-normal outline-none duration-200 placeholder:text-slate-500 hover:border-[#121F43] focus:border-[#2499ef] focus:ring-1 focus:ring-[#2499ef]"
+                        />
+                        </label>
+                    </div>
+                    <div className="mt-5 flex">
+                        <div className="flex min-w-[150px] items-center text-md">Mật khẩu</div>
+                        <label htmlFor="phone" className="w-full max-w-[400px]">
+                        <input
+                            type="password"
+                            name="phone"
+                            id="phone"
+                            placeholder="********"
+                            className="text-sm placeholder:text-sm peer resize-none rounded-lg border border-[#B1C9DC] px-3 py-2 w-full font-medium leading-normal outline-none duration-200 placeholder:text-slate-500 hover:border-[#121F43] focus:border-[#2499ef] focus:ring-1 focus:ring-[#2499ef]"
+                        />
+                        </label>
+                    </div>
+
+                    {/* <div className="mt-5 flex">
                         <div className="flex min-w-[150px] items-center text-md">Địa chỉ</div>
                         <div className="flex w-full max-w-[400px]">
                         <input
@@ -96,7 +121,7 @@ const Information = () => {
                             Thay đổi
                         </button>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
                 <div className="">
                     {imageUrl.length > 0 ? (

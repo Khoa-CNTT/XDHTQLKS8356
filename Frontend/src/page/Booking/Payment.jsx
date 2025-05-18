@@ -4,11 +4,12 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { TfiAlarmClock } from "react-icons/tfi";
 import { useLocation } from "react-router-dom";
-const Payment = (props) => {
-  const { setStep, info } = props
-  console.log("prop",props)
-
-  const { final_amount: totalAmount, total_discount: totalDiscount } = info?.dataRoom;
+const Payment = () => {
+  const location = useLocation();
+  const { infoCustomer, dataRoom } = location.state;
+  const totalAmount = dataRoom?.final_amount;
+  const totalDiscount = dataRoom?.total_discount;
+  console.log(totalAmount, totalDiscount)
   const navigate = useNavigate()
   const [qrData, setQrData] = useState('');
   const [transactionId, setTransactionId] = useState('');

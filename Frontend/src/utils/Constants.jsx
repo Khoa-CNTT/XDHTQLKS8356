@@ -4,14 +4,16 @@ export const APP_ROUTER = {
     ERROR: "/error",
     COMPONENT: "/component",
     BOOKING: "/booking",
+    PAYMENT: "/booking/payment",
+    INFOR_BOOKING: "/booking/information",
     AUTH: "auth",
     LOGIN: "/auth/login",
     REGISTER: "/auth/register",
     ROOM_DETAIL: "/room_detail",
     SERVICESPAGE: "/services",
     SEARCH: "/search",
-    PAYMENT: "/payment",
     ROOMS : "/rooms",
+    
     // admin, manager
     ADMIN: "/admin",
     BOOKING_MANAGER: "/admin/booking",
@@ -26,6 +28,7 @@ export const APP_ROUTER = {
     BOOKINGSERVICE: "/admin/booking-service/:bookingId",
     CUSTOMER: "/admin/customer",
     CLASSIFICATION: "/admin/customer/classification",
+    PERSONNEL: "/admin/personnel",
     //client
     USER: "/user",
     INFORMATION: "/user/information",

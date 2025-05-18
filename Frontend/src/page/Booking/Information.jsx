@@ -1,32 +1,58 @@
-import React from 'react';
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useLocation, useNavigate, useOutletContext } from 'react-router-dom';
 import { APP_ROUTER } from '../../utils/Constants';
 import InforamtionRoom from './InforamtionRoom';
+import { bookingService } from '../../service/bookingService';
 
-const Information = (props) => {
-   const { infoCustomer, setInfoCustomer, setStep, dataRoom } = props;
+const InformationBooking = (props) => {
+   const location = useLocation();
+   const searchParams = new URLSearchParams(location.search);
+   const [infoCustomer, setInfoCustomer] = useState(JSON.parse(searchParams.get('info')));
+   const [dataRoom, setDataRoom]= useState(JSON.parse(searchParams.get('room')))
+   const payload = {
+      type: "guest",
+      user_info: {
+      fullname: infoCustomer.fullname,
+      email: infoCustomer.email,
+      phone: infoCustomer.phone,
+      status: "temp",
+      role: "guest"
+    },
+    booking: {
+      checkin: dataRoom.checkin,
+      checkout: dataRoom.checkout,
+      adult_count: dataRoom.total_guests,
+      total_price: dataRoom.final_amount,
+      type: "guest",
+      phone: infoCustomer.phone,
+      fullname: infoCustomer.fullname,
+      status: "temporary"
+    },
+    booking_detail: dataRoom.details.map(room => ({
+      RoomId: room.id,
+      count: room.quantity,
+      price: room.total_price
+    }))
+   }
    const handleInfoChange = (e) => {
       const { name, value } = e.target;
       setInfoCustomer({ ...infoCustomer, [name]: value });
    };
    const navigate = useNavigate()
-   console.log("2",infoCustomer)
-   console.log("3", dataRoom)
-   const handleSubmit = () => {
-      setStep(prev=>prev+1)
-      const query = new URLSearchParams({
-        fullname: infoCustomer?.fullname,
-        email: infoCustomer?.email,
-        phone: infoCustomer?.phone,
-        address: infoCustomer?.address,
-        totalAmount: dataRoom?.final_amount,
-      }).toString();
-    
-      navigate(`/payment?${query}`);
+   const handleSubmit = async () => {
+      const order = await bookingService.creatBookingRoom(payload);
+      console.log("đặt phòng", order)
+      navigate(APP_ROUTER.PAYMENT, {
+        state: {
+          infoCustomer: infoCustomer,
+          dataRoom: dataRoom,
+        },
+      });
     };
+    
    return (
       <div>
-         <form className='basis-2/3' onSubmit={handleSubmit}>
+         <div className='basis-2/3'>
             <div>
                <h2 className="text-xl font-semibold mb-4">Thông tin khách hàng</h2>
                <div className="space-y-4">
@@ -99,14 +125,14 @@ const Information = (props) => {
             <InforamtionRoom dataRoomDetail={dataRoom}></InforamtionRoom>
             </div>
             <div className="flex justify-end mt-5">
-               <button type='submit' className="cursor-pointer text-white bg-gray-800 hover:bg-gray-900 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">
+               <button onClick={handleSubmit} className="cursor-pointer text-white bg-gray-800 hover:bg-gray-900 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">
                   Tiếp theo
                </button>
             </div>
 
-         </form>
+         </div>
       </div>
    );
 };
 
-export default Information;
+export default InformationBooking;

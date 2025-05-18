@@ -10,7 +10,7 @@ const RoomType = () => {
     const columns = [
         { key: "id", label: "Mã loại phòng"},
         { key: "image", label: "Hình ảnh"},
-        { key: "room_type", label: "Tên loại phòng", isFilterable: true },
+        { key: "room_type", label: "Tên loại phòng"},
         { key: "room_count", label: "Tổng số phòng" },
         { key: "adult_count", label: "Số người" },
         { key: "square_meters", label: "Diện tích" },
@@ -139,7 +139,8 @@ const RoomType = () => {
     };
     return (
         <div>
-            <GeneralTable
+            <GeneralTable//localhost:5173/booking/information?info=%7B%22fullname%22%3A%22M%E1%BB%B9%20L%E1%BB%87%22%2C%22email%22%3A%22myle%40gmail.com%22%2C%22phone%22%3A%220794636494%22%2C%22address%22%3A%22Hu%E1%BA%BF%22%2C%22note%22%3A%22Ok%22%2C%22status%22%3A%22guest%22%2C%22role%22%3A%22guest%22%7D&room=%7B%22checkin%22%3A%222025-01-01%22%2C%22checkout%22%3A%222025-01-03%22%2C%22total_nights%22%3A2%2C%22total_guests%22%3A7%2C%22note%22%3A%22Y%C3%AAu%20c%E1%BA%A7u%20ph%C3%B2ng%20y%C3%AAn%20t%C4%A9nh.%22%2C%22details%22%3A%5B%7B%22id%22%3A22%2C%22room_type%22%3A%22Ph%C3%B2ng%20%C4%91%C3%B4i%2023%22%2C%22adult_count%22%3A1%2C%22square_meters%22%3A25%2C%22price_per_night%22%3A100%2C%22image%22%3A%22aaaaaaaaa%22%2C%22room_count%22%3A%222%22%2C%22quantity%22%3A2%2C%22total_price%22%3A600%7D%2C%7B%22id%22%3A20%2C%22room_type%22%3A%22Ph%C3%B2ng%20%C4%91%C3%B4i%22%2C%22adult_count%22%3A1%2C%22square_meters%22%3A25%2C%22price_per_night%22%3A100%2C%22image%22%3A%22%5B%5D%22%2C%22room_count%22%3A%220%22%2C%22quantity%22%3A1%2C%22total_price%22%3A300%7D%5D%2C%22total_amount%22%3A900%2C%22total_discount%22%3A0%2C%22final_amount%22%3A900%7D
+Table
                 datas={data}
                 columns={columns}
                 renderExpandedRow={renderExpandedRow}

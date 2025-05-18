@@ -161,7 +161,7 @@ console.log(dataOrder.booking.checkin, dataOrder.booking.checkout)
                       }`}
                     >
                       <td className='p-2 text-left font-semibold flex gap-2'>
-                        {room.room_name}
+                        {room.room_type}
                         <span className='flex font-normal items-center text-xs'>
                           {room.adult_count}
                           <CiUser />
@@ -212,7 +212,7 @@ console.log(dataOrder.booking.checkin, dataOrder.booking.checkout)
               {emptyRoom.map((room, index) => (
                 <tr key={index} className=''>
                   <td className='p-2 text-left font-semibold '>
-                    {room.room_name}
+                    {room.room_type}
                     <span className='flex font-normal items-center text-xs'>
                       {room.adult_count}
                       <CiUser />

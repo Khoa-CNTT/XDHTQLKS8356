@@ -115,11 +115,11 @@ function Login() {
                             <FcGoogle className="h-8 w-8" />
                         </a>
                     </div> */}
-                    <div className="relative my-4 w-full flex items-center">
+                    {/* <div className="relative my-4 w-full flex items-center">
                         <div className="w-1/6 border-t border-gray-400"></div> 
                         <span className="mx-4 text-sm text-gray-500 whitespace-nowrap">Hoặc</span>
                         <div className="flex-1 border-t border-gray-400"></div> 
-                    </div>
+                    </div> */}
                     <div className="flex flex-col">
                         <label htmlFor="email" className={`mb-1 font-medium ${formData.isFocusedEmail ? "text-black font-bold" : "text-gray-500"} transition-colors`} >
                             Email
@@ -178,9 +178,9 @@ function Login() {
                         <Link to="/auth/register" className="cursor-pointer text-sm font-medium text-blue-700 hover:text-black">
                             Đăng ký tài khoản mới
                         </Link>
-                        <div className="cursor-pointer text-sm font-medium text-blue-700 hover:text-black">
+                        {/* <div className="cursor-pointer text-sm font-medium text-blue-700 hover:text-black">
                             Quên mật khẩu
-                        </div>
+                        </div> */}
                     </div>
                 </form>
             </div>

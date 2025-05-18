@@ -56,7 +56,7 @@ const ModalBooking = (props) => {
           price: item.total_price,
         })),
       };
-      const bookingId = await bookingService.creatBooking(data);
+      const bookingId = await bookingService.creatBookingRoom(data);
       if (bookingId.status) {
         setDataOrder({
           booking: {

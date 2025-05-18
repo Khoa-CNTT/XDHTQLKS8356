@@ -16,7 +16,9 @@ import {
     HddOutlined,
     LayoutOutlined,
     ThunderboltOutlined,
-    SunOutlined
+    SunOutlined,
+    TeamOutlined,
+    UsergroupAddOutlined
 } from "@ant-design/icons";
 import { Layout, Menu, theme } from "antd";
 import Logo from "../../components/Logo";
@@ -123,6 +125,18 @@ const ManagementLayout = () => {
     label: <Link to={APP_ROUTER.HOME}>Tư vấn khách hàng</Link>,
   },
   {
+    key: '12',
+    icon: <TeamOutlined />,
+    label: "Nhân viên",
+    children: [
+      {
+        key: '82',
+        icon: <UsergroupAddOutlined />,
+        label: <Link to={APP_ROUTER.PERSONNEL}>Thêm nhân viên</Link>,
+      },
+    ],
+  },
+  {
     key: '10',
     icon: <BarChartOutlined />,
     label: <Link to={APP_ROUTER.HOME}>Báo cáo thống kê</Link>,
@@ -165,7 +179,7 @@ const ManagementLayout = () => {
                                     [&::-webkit-scrollbar-thumb]:bg-gray-300
                                     dark:[&::-webkit-scrollbar-track]:bg-neutral-700
                                     dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500">
-                    <Content className="bg-white p-4">
+                    <Content className="bg-white">
                         <AnimatePresence mode="wait">
                             <PageTransitionWrapper key={location.pathname}>
                                 <Outlet />

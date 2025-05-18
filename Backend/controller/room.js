@@ -96,6 +96,7 @@ const getRoom = async (req, res) => {
 
 }
 
+//lưới
 
 const getStatusRoom = async (req, res) => {
 

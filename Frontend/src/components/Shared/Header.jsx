@@ -90,7 +90,7 @@ const Header = () => {
                             </Link>
                         </div>
                         <div className="relative flex flex-wrap gap-3 hover:bg-gray-100 px-10 py-1">
-                            <Link to={APP_ROUTER.HOME} className="text-lg m-6 group relative focus:outline-none">
+                            <Link to={APP_ROUTER.ROOMS} className="text-lg m-6 group relative focus:outline-none">
                                 <span className={`inline-block text-transparent bg-clip-text text-lg transition-all duration-300 ${ isActiveRoom
                                     ? "bg-gradient-to-r from-blue-700 via-blue-500 to-blue-300"
                                     : "bg-gradient-to-r from-pink-800 via-pink-600 to-pink-400 group-hover:from-blue-700 group-hover:via-blue-500 group-hover:to-blue-300"}`}>

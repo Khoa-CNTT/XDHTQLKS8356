@@ -1,9 +1,8 @@
 const {Room} = require("../model/room");
-const {Sequelize, Op} = require("sequelize");
 //const {find_room} = require("../helper/find_room");
 //const {convertData} = require("../helper/convertdata");
 const { sequelize } = require("../config/mysql");
-
+const {Sequelize, Op} = require("sequelize");
 
 
 //Gợi ý phòng
@@ -188,9 +187,11 @@ const getRoom = async (id) => {
     try {
         const sql = `SELECT 
                         r.id,
+                        r.square_meters,
                         r.room_type AS room_type,
                         r.adult_count,
                         r.price_per_night,
+                        r.image,
                         COUNT(rd.id) AS room_count
                     FROM 
                         Room r

@@ -1,6 +1,12 @@
-const {Server} = require("socket.io");
+const { Server } = require("socket.io");
 const http = require("http");
 const express = require("express");
+const jwt = require('jsonwebtoken');
+const { Messenger } = require("../model/messenger");
+const { Conversation } = require("../model/conversation");
+const { User } = require("../model/user");
+const { sequelize } = require("../config/mysql");
+const {Sequelize, Op} = require("sequelize");
 
 
 const app = express();
@@ -9,32 +15,73 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
 	cors: {
-		origin: ["http://localhost:3000"],
-		methods: ["GET", "POST"],
+		origin: '*'
 	},
 });
 
-const getReceiverId = (id) => {
-	return userSocket[id];
-};
+const user_onl = new Map();
 
-const userSocket = {};
+io.on('connection', (socket) => {
+	console.log('User connected:', socket.id);
+	
+
+	//Login lưu socket id và user_idid
+	// socket.on('login', (token) => {
+	// 	const users = jwt.verify(token, process.env.JWT);
+	// 	const id = users.user.id;
+	// 	user_onl.set(id, socket.id);
+	// })
 
 
-io.on("connection", (socket) => {
-	console.log("a user connected", socket.id);
+	const users = socket.handshake.query.userId;
+    const userId = jwt.verify(users, process.env.JWT).user.id;
+    if(userId != "undefined") user_onl[userId] = socket.id;
 
-	const userId = socket.handshake.query.userId;
+	socket.on('send_message', async ({token, message_content, image, conversationId}) => {
 
-	if(userId != "undefined") userSocket[userId] = socket.id;
+		// const users = jwt.verify(token, process.env.JWT);
+		// const userId = users.user.id;
 
-	io.emit("getOnlineUsers", Object.keys(userSocket));
+		//Lưu tin nhắn vào DB
+		const message = await Messenger.create({conversationId, userId, message_content, image});
+		
 
-	socket.on("disconnect", () => {
-		console.log("user disconnected", socket.id);
-		delete userSocket[userId];
-		io.emit("getOnlineUsers", Object.keys(userSocket));
+		//Lấy tất cả user trong conversation
+		const list_id = await Conversation.findOne({
+			where : {
+				id : conversationId
+			},
+			attributes : ["conversation_list"]
+		})
+
+		console.log(list_id);
+
+
+		//Phát tin nhắn đến tất cả user online trong conversation
+		list_id.forEach(({ userId: uid }) => {
+			const socketId = user_onl.get(uid.toString());
+			if (socketId) {
+				io.to(socketId).emit('receive_message', {
+					conversationId,
+					userId,
+					content,
+					createdAt: message.createdAt,
+				});
+			}
+		});
 	});
+
+
+	socket.on('disconnect', () => {
+		for (let [userId, socketId] of user_onl) {
+			if (socketId === socket.id) {
+				user_onl.delete(userId);
+				break;
+			}
+		}
+  	});
+
+
 });
 
-module.exports = {app, server, io, getReceiverId};
+module.exports = { app, server, io };

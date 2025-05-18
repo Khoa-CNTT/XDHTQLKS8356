@@ -35,7 +35,6 @@ const find_room = async (id, count, start, end) => {
 //Đặt phòng
 const createBooking = async (id, data) => {
     try {
-        console.log(id);
         data.booking.UserId = id;
         if(data.type != "customer"){
             const user = await User.create(data.user_info);
@@ -136,6 +135,8 @@ const getAllBookingForAdmin = async (data) => {
     try {
         const sql = `SELECT 
                         b.id AS booking_id,
+                        b.fullname,
+                        b.phone,
                         b."status" AS booking_status,
                         b.created_at,
                         b.checkin,

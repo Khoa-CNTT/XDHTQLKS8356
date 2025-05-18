@@ -48,24 +48,91 @@ const ManagementLayout = () => {
     };
 
     const items = [
-        getItem(<Link to={APP_ROUTER.HOME}>Trang chủ</Link>, "1", <HomeOutlined />),
-        getItem(<Link to={APP_ROUTER.HOTEL}>Thông tin khách sạn</Link>, "2", <FundViewOutlined />),
-        getItem(<Link to={APP_ROUTER.ROOMTYPE}>Loại phòng</Link>, "3", <HddOutlined />),
-        getItem(<Link to={APP_ROUTER.INFORHOTEL}>Phòng</Link>, "sub1", <LayoutOutlined />, [
-            getItem(<Link to={APP_ROUTER.ROOM}>Tất cả phòng</Link>, "12", <ProductOutlined />),
-            getItem(<Link to={APP_ROUTER.TIMELINE}>Trạng thái phòng</Link>, "4", <ProductOutlined />),
-            getItem(<Link to={APP_ROUTER.PRICE}>Giá phòng</Link>, "5", <DollarOutlined />),
-        ]),
-        getItem(<Link to={APP_ROUTER.EXTENTION}>Tiện ích</Link>, "13", <SunOutlined />),
-        getItem(<Link to={APP_ROUTER.BOOKING_MANAGER}>Đơn đặt phòng</Link>, "6", <ShoppingCartOutlined />),
-        getItem(<Link to={APP_ROUTER.SERVICE}>Dịch vụ</Link>, "7", <ThunderboltOutlined />),
-        getItem(<Link to={APP_ROUTER.USER}>Khách hàng</Link>, "sub2", <UserOutlined />, [
-            getItem(<Link to={APP_ROUTER.CLASSIFICATION}>Phân loại khách hàng</Link>, "8", <SisternodeOutlined />),
-        ]),
-        getItem(<Link to={APP_ROUTER.HOME}>Tư vấn khách hàng</Link>, "9", <CommentOutlined />),
-        getItem(<Link to={APP_ROUTER.HOME}>Báo cáo thống kê</Link>, "10", <BarChartOutlined />),
-        getItem(<div onClick={handleLogout}>Đăng xuất</div>, "11", <LogoutOutlined />),
-    ];
+  {
+    key: '1',
+    icon: <HomeOutlined />,
+    label: <Link to={APP_ROUTER.HOME}>Trang chủ</Link>,
+  },
+  {
+    key: '2',
+    icon: <FundViewOutlined />,
+    label: <Link to={APP_ROUTER.HOTEL}>Thông tin khách sạn</Link>,
+  },
+  {
+    key: '3',
+    icon: <HddOutlined />,
+    label: <Link to={APP_ROUTER.ROOMTYPE}>Loại phòng</Link>,
+  },
+  {
+    key: '4',
+    icon: <LayoutOutlined />,
+    label: "Phòng",
+    children: [
+      {
+        key: '41',
+        icon: <ProductOutlined />,
+        label: <Link to={APP_ROUTER.ROOM}>Tất cả phòng</Link>,
+      },
+      {
+        key: '42',
+        icon: <ProductOutlined />,
+        label: <Link to={APP_ROUTER.ROOMDETAIL}>Trạng thái phòng</Link>,
+      },
+      {
+        key: '43',
+        icon: <DollarOutlined />,
+        label: <Link to={APP_ROUTER.PRICE}>Giá phòng</Link>,
+      },
+    ],
+  },
+  {
+    key: '5',
+    icon: <SunOutlined />,
+    label: <Link to={APP_ROUTER.EXTENTION}>Tiện ích</Link>,
+  },
+  {
+    key: '6',
+    icon: <ShoppingCartOutlined />,
+    label: <Link to={APP_ROUTER.BOOKING_MANAGER}>Đơn đặt phòng</Link>,
+  },
+  {
+    key: '7',
+    icon: <ThunderboltOutlined />,
+    label: <Link to={APP_ROUTER.SERVICE}>Dịch vụ</Link>,
+  },
+  {
+    key: '8',
+    icon: <UserOutlined />,
+    label: "Khách hàng",
+    children: [
+      {
+        key: '81',
+        icon: <UserOutlined />,
+        label: <Link to={APP_ROUTER.USER}>Thông tin khách hàng</Link>,
+      },
+      {
+        key: '82',
+        icon: <SisternodeOutlined />,
+        label: <Link to={APP_ROUTER.CLASSIFICATION}>Phân loại khách hàng</Link>,
+      },
+    ],
+  },
+  {
+    key: '9',
+    icon: <CommentOutlined />,
+    label: <Link to={APP_ROUTER.HOME}>Tư vấn khách hàng</Link>,
+  },
+  {
+    key: '10',
+    icon: <BarChartOutlined />,
+    label: <Link to={APP_ROUTER.HOME}>Báo cáo thống kê</Link>,
+  },
+  {
+    key: '11',
+    icon: <LogoutOutlined />,
+    label: <div onClick={handleLogout}>Đăng xuất</div>,
+  },
+];
 
     return (
         <div className="mx-auto w-full" style={{ maxWidth: "100vw" }}>
@@ -84,7 +151,7 @@ const ManagementLayout = () => {
                 >
                     <Logo />
                     <Menu
-                        defaultSelectedKeys={["1"]}
+                        // defaultSelectedKeys={["1"]}
                         mode="inline"
                         items={items}
                         theme={darkTheme ? "dark" : "light"}

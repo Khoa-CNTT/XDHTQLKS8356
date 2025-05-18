@@ -90,4 +90,22 @@ const logout = async (req, res) => {
     });
 }
 
-module.exports = {loginUser, getUser,  getAllUser, findUser, getAllUserGroup, addEmployee, logout}
+
+const putUser = async (req, res) => {
+    const id = req.user.id;
+    const user = await User.putUser(id, req.body);
+    if (user == -1) {
+        res.status(400).json({
+            success: false,
+            message: "Mật khẩu cũ không đúng",
+        });
+    }
+    else {
+        res.status(200).json({
+            success: true,
+            message: "Sửa thông tin của người dùng thành công",
+        });
+    }
+}
+
+module.exports = {loginUser, getUser,  getAllUser, findUser, getAllUserGroup, addEmployee, logout, putUser}

@@ -51,6 +51,15 @@ export const getBookingAdmin = async (startDate, endDate) => {
        return []
    } 
 };
+export const getBookingCustomer = async () => { 
+   try {
+       const response = await apiConfig.get(`/customer/bookings`,{withCredentials: true});
+       return response.data.booking || [] 
+   } catch (error) {
+       console.error(error);
+       return []
+   } 
+};
 export const getBookingDetail  = async(id) => {
    // if(!id) return
    try {
@@ -63,9 +72,11 @@ export const getBookingDetail  = async(id) => {
 }
 
 export const bookingService = {
+   
    getSchedule,
    getBookingDetail,
    creatBookingRoom,
    getBookingAdmin,
-   creatBookingService
+   creatBookingService,
+   getBookingCustomer
 }

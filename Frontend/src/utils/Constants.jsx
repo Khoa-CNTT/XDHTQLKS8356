@@ -29,6 +29,7 @@ export const APP_ROUTER = {
     CUSTOMER: "/admin/customer",
     CLASSIFICATION: "/admin/customer/classification",
     PERSONNEL: "/admin/personnel",
+    CLASSIFY: "/admin/classify",
     //client
     USER: "/user",
     INFORMATION: "/user/information",

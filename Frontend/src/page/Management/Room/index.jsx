@@ -64,7 +64,7 @@ const Room = () => {
     const handleDeleteRoom = async (event, row) => {
         event.stopPropagation();
         try {
-            const result = await roomDetailService.deleteRoom(row.id);
+            const result = await roomDetailService.deleteRoom(row.room_detail_id);
             if(result.status == true){
                 toast.success(result.message);
                 fetchRooms();     
@@ -97,7 +97,7 @@ const Room = () => {
         try {
             if (selectedRoom) {
                 try {
-                    const result = await roomDetailService.updateRoom(selectedRoom.id, payload);
+                    const result = await roomDetailService.updateRoom(selectedRoom.room_detail_id, payload);
                     if(result.status == true){
                         toast.success("Cập nhật phòng thành công");
                         setResetFormTrigger(true);

@@ -6,6 +6,9 @@ import { CiCalendar } from "react-icons/ci";
 import { FaUserTie } from "react-icons/fa6";
 import { MdChildCare } from "react-icons/md";
 import { GrAdd, GrSubtract } from "react-icons/gr";
+import { useNavigate } from "react-router-dom";
+import { APP_ROUTER } from "../../utils/Constants";
+import { formatDate } from "../../utils/FormatDate";
 const { RangePicker } = DatePicker;
 const SearchBar = () => {
   const [isOpenAdults, setIsOpenAdults] = useState(false);
@@ -17,6 +20,7 @@ const SearchBar = () => {
   const [adults, setAdults] = useState(2);
   const [searchButtonHeight, setSearchButtonHeight] = useState(0);
   const adultRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleAdultsClickOutside = (event) => {
@@ -36,6 +40,13 @@ const SearchBar = () => {
   }, []);
 
   const handleSearch = () =>{
+      const query = new URLSearchParams({
+    checkin: formatDate(date.startDate,'YYYY-MM-DD'), 
+    checkout: formatDate(date.endDate,'YYYY-MM-DD'), 
+    adults: adults.toString(),          
+  }).toString();
+
+  navigate(`${APP_ROUTER.SEARCH}?${query}`);
     console.log(date, adults)
   }
   return (

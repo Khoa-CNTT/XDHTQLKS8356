@@ -72,7 +72,7 @@ const Room = () => {
                 toast.error(result.message);
             }
         } catch (error) {
-            
+            console.log(error)
         }
        
     };

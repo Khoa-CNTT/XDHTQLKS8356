@@ -97,7 +97,7 @@ const Extension = () => {
             name: formData.name,
             icon: formData.icon,
             price: formData.price,
-            image: formData.image,
+            image: JSON.stringify(formData.image),
         }; 
         try {
             if (selectedExtension) {

@@ -8,4 +8,4 @@ const Order = () => {
     );
 };
 
-export default index;
+export default Order;

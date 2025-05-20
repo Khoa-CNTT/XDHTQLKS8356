@@ -39,6 +39,17 @@ export const getRoomType  = async() => {
       return {}
    }
 }
+
+export const getRoomTypeById  = async(id) => {
+   try {
+      const response = await apiConfig.get(`/admin/room/${id}`)
+      return response.data
+      
+   } catch (error) {
+      console.log("Error getRoomType: " + error)
+      return {}
+   }
+}
 export const addRoomType = async (data) => {
    try {
      const response = await apiConfig.post(`/admin/room`, data);
@@ -54,7 +65,7 @@ export const addRoomType = async (data) => {
  export const updateRoomType = async (id,data) => {
    try {
      const response = await apiConfig.put(`/admin/room/${id}`, data);
-     return response.data;
+     return response.data?.room;
    } catch (error) {
      if (error.response) {
        return error.response.data;
@@ -81,6 +92,7 @@ export const roomService =  {
    getRoomType,
    addRoomType,
    updateRoomType,
-   deleteRoomType
+   deleteRoomType,
+   getRoomTypeById
 }
    

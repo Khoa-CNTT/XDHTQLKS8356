@@ -139,7 +139,7 @@ const ManagementLayout = () => {
   {
     key: '10',
     icon: <BarChartOutlined />,
-    label: <Link to={APP_ROUTER.HOME}>Báo cáo thống kê</Link>,
+    label: <Link to={APP_ROUTER.REPORT}>Báo cáo thống kê</Link>,
   },
   {
     key: '11',

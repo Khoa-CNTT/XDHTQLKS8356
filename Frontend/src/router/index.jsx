@@ -29,6 +29,7 @@ import RoomPage from "../page/Room";
 import InformationBooking from "../page/Booking/Information";
 import Personnel from "../page/Management/Personnel";
 import ClassifyCustomer from "../page/Management/ClassifyCustomer";
+import Report from "../page/Management/Report";
 
 const router = createBrowserRouter([
     {
@@ -145,6 +146,10 @@ const router = createBrowserRouter([
             {
                 path: APP_ROUTER.CLASSIFY,
                 element: <ClassifyCustomer />,
+            },
+            {
+                path: APP_ROUTER.REPORT,
+                element: <Report />,
             },
         ],
     },

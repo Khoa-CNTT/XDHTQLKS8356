@@ -62,7 +62,7 @@ const createBooking = async (id, data) => {
         }
 
         await Booking_Details.bulkCreate(booking_detail);
-
+        return booking
     } catch (error) {
         console.log(error);
         return "error";
@@ -76,6 +76,8 @@ const getBookingById = async (id) => {
         const sql = `SELECT 
                         b.id AS booking_id,
                         b."status" AS booking_status,
+                        b.fullname,
+                        b.phone,
                         b.created_at,
                         b.checkin,
                         b.checkout,

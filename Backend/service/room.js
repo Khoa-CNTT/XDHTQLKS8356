@@ -124,6 +124,7 @@ const getRoomEmpty = async (data) => {
                         JSONB_AGG(
                             DISTINCT JSONB_BUILD_OBJECT(
                                 'room_id', r.id,
+                                'image', r.image,
                                 'count',
                                     (
                                         SELECT

@@ -1,4 +1,4 @@
-import { createBrowserRouter} from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 import { APP_ROUTER } from "../utils/Constants";
 import MainLayout from "../layout/Main/MainLayout";
 import HomePage from "../page/Home/HomePage";
@@ -30,6 +30,7 @@ import InformationBooking from "../page/Booking/Information";
 import Personnel from "../page/Management/Personnel";
 import ClassifyCustomer from "../page/Management/ClassifyCustomer";
 import Report from "../page/Management/Report";
+import HomeDefault from "../page/Home/HomeDefault";
 
 const router = createBrowserRouter([
     {
@@ -139,17 +140,9 @@ const router = createBrowserRouter([
                 path: APP_ROUTER.PERSONNEL,
                 element: <Personnel />,
             },
-            {
+               {
                 path: APP_ROUTER.ROOMDETAIL,
                 element: <Timeline />,
-            },
-            {
-                path: APP_ROUTER.CLASSIFY,
-                element: <ClassifyCustomer />,
-            },
-            {
-                path: APP_ROUTER.REPORT,
-                element: <Report />,
             },
         ],
     },

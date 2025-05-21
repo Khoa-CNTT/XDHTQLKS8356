@@ -1,20 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { MdDeleteForever } from "react-icons/md";
 import GeneralTable from "../../../components/GeneralTable";
 import { bookingService } from "../../../service/bookingService";
-import { MdAddModerator } from "react-icons/md";
 import BookingService from "../BookingService";
-
 import { format } from "date-fns";
 const BookingManager = () => {
     const columns = [
         { key: "booking_id", label: "Mã đặt phòng" },
+        { key: "fullname", label: "Tên khách hàng" },
         { key: "booking_status", label: "Trạng thái", isFilterable: true},
         { key: "created_at", label: "Thời gian đặt" },
-        { key: "checkin", label: "Thời gian nhận phòng" },
-        { key: "checkout", label: "Thời gian trả phòng" },
-        // { key: "fullname", label: "Khách hàng", isFilterable: true },
-        { key: "total_day", label: "Số ngày ở" },
+        { key: "booking_status", label: "Trạng thái" },
         { key: "total_price", label: "Tổng tiền" },
         {
             key: "booking_services",
@@ -24,18 +19,6 @@ const BookingManager = () => {
         {
             key: "update_status",
             label: "Cập nhật trạng thái",
-        },
-        {
-            key: "button",
-            label: "Xóa",
-            render: (row) => (
-                <button
-                    onClick={(event) => handleDeleteOrder(event, row)}
-                    className="z-10 text-center mx-auto p-2 hover:bg-slate-200 hover:rounded-md cursor-pointer"
-                >
-                    <MdDeleteForever className="h-6 w-6" />
-                </button>
-            ),
         },
     ];
     const [open, setOpen] = useState(false);
@@ -52,6 +35,7 @@ const BookingManager = () => {
         fetchBooking(startDate, endDate);
     }, [startDate, endDate]);
     const handleDateChange = (newStartDate, newEndDate) => {
+        console.log("New dates:", newStartDate, newEndDate);
         setStartDate(newStartDate);
         setEndDate(newEndDate);
     };
@@ -64,6 +48,16 @@ const BookingManager = () => {
             <div>
                  <div className="">
                     <h3 className="font-bold text-lg mb-2">Chi tiết đặt phòng:</h3>
+                    <div className="flex gap-30 text-base mb-2">
+                        <div>Khách hàng: {row.fullname} </div>
+                        <div>Số điện thoại: {row.phone} </div>
+
+                    </div>
+                    <div className="flex gap-20 text-base mb-4">
+                        <div>Ngày đến: {format(row.checkin, "dd/MM/yyyy")} </div>
+                        <div>Ngày đi: {format(row.checkout, "dd/MM/yyyy")}  </div>
+                        <div>Số ngày ở: {row.total_day}  </div>
+                    </div>
                     <div className="overflow-x-auto">
                     <>
                         <table className="min-w-full border-collapse border border-gray-300 mb-6">

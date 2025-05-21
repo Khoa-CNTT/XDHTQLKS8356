@@ -48,18 +48,6 @@ const Services = () => {
     useEffect(() => {
         fetchServices();
     }, []);
-    const renderExpandedRow = (row) => {
-        return (
-            <div>
-                 <div className="">
-                    <h3 className="font-bold text-lg mb-2">Chi tiếtphòng:</h3>
-                    <div className="overflow-x-auto">
-            
-                    </div>
-                </div>
-            </div>
-        );
-    };
     const handleDeleteService = async (event, row) => {
         event.stopPropagation();
         try {
@@ -128,7 +116,7 @@ const Services = () => {
             <GeneralTable
                 datas={data}
                 columns={columns}
-                renderExpandedRow={renderExpandedRow}
+             
                 functionButton="Thêm dịch vụ"
                 onDelete={handleDeleteService}
                 onEdit={handleEditService}

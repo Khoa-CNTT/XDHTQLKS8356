@@ -103,16 +103,16 @@ const Timeline = () => {
       // } else setBookingSchedule([])
       setBookingSchedule([
         {
-          resource: 2,
+          resource: 12,
           start: "2024-11-25",
           end: "2024-11-27",
           text: 6,
           color: status["completed"].color,
-          booking_id: 3,
+          booking_id: 13,
           booking_detail_id: 6,
         },
         {
-          resource: 3,
+          resource: 13,
           start: "2024-11-25",
           end: "2024-11-27",
           text: 7,
@@ -121,7 +121,7 @@ const Timeline = () => {
           booking_detail_id: 7,
         },
         {
-          resource: 5,
+          resource: 16,
           start: "2024-11-25",
           end: "2024-11-27",
           text: 5,
@@ -130,7 +130,7 @@ const Timeline = () => {
           booking_detail_id: 8,
         },
         {
-          resource: 5,
+          resource: 14,
           start: "2025-05-02",
           end: "2025-05-05",
           text: 21,
@@ -139,7 +139,7 @@ const Timeline = () => {
           booking_detail_id: 21,
         },
         {
-          resource: 2,
+          resource: 15,
           start: "2025-05-03",
           end: "2025-05-04",
           text: 22,
@@ -148,7 +148,7 @@ const Timeline = () => {
           booking_detail_id: 22,
         },
         {
-          resource: 3,
+          resource: 17,
           start: "2025-05-07",
           end: "2025-05-10",
           text: 23,
@@ -157,7 +157,7 @@ const Timeline = () => {
           booking_detail_id: 23,
         },
         {
-          resource: 2,
+          resource: 14,
           start: "2025-05-10",
           end: "2025-05-12",
           text: "test",
@@ -166,22 +166,22 @@ const Timeline = () => {
           booking_detail_id: 3,
         },
         {
-          resource: 3,
+          resource: 13,
           start: "2025-05-05",
           end: "2025-05-07",
           text: "5",
           color: status["booked"].color,
           booking_id: 6,
-          booking_detail_id: 5,
+          booking_detail_id: 16,
         },
         {
-          resource: 2,
+          resource: 12,
           start: "2025-05-05",
           end: "2025-05-07",
           text: "4",
           color: status["booked"].color,
-          booking_id: 6,
-          booking_detail_id: 4,
+          booking_id: 25,
+          booking_detail_id: 14,
         },
       ]);
     }

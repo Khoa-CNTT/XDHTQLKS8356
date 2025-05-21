@@ -1,4 +1,5 @@
 import React from 'react';
+import { getPreciseDuration } from '../../utils/FormatDate';
 const formatCurrency = (number) => {
   if (typeof number !== "number") return "0₫"; // hoặc return ""; tùy ý
   return number.toLocaleString("vi-VN", {
@@ -10,7 +11,17 @@ const formatCurrency = (number) => {
     const date = new Date(dateStr);
     return date.toLocaleDateString('vi-VN');
   };  
-const InforamtionRoom = ({dataRoomDetail}) => {
+const InforamtionRoom = (props) => {
+  console.log("props", props)
+  const dataRoomDetail = {
+    checkin: props.booking.checkin,
+    checkout: props.booking.checkout,
+    total_nights: getPreciseDuration(props.booking.checkin, props.booking.checkout),
+    total_guests: props.booking.adult_count,
+    total_room: props.booking_detail.reduce((sum, room) => sum + room.count, 0),
+    details: props.booking_detail,
+    total_amount: props.booking_detail.reduce((sum, room) => sum + room.count*room.total_price, 0)
+  }
     return (
         <div className="space-y-4 text-sm text-gray-800">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -24,7 +35,7 @@ const InforamtionRoom = ({dataRoomDetail}) => {
                 </div>
                 <div className='flex gap-2'>
                     <div className='block text-sm font-medium text-gray-900 dark:text-white'>Số ngày ở:</div> 
-                    <div>{dataRoomDetail.rooms?.[0]?.nights || dataRoomDetail.total_nights} đêm</div>
+                    <div>{dataRoomDetail.total_nights} đêm</div>
                 </div>
                 <div className='flex gap-2'>
                     <div className='block text-sm font-medium text-gray-900 dark:text-white'>Số lượng người:</div>
@@ -43,7 +54,7 @@ const InforamtionRoom = ({dataRoomDetail}) => {
               <th className="px-4 py-2">Loại phòng</th>
               <th className="px-4 py-2">Giá mỗi đêm</th>
               <th className="px-4 py-2 text-center">Số lượng</th>
-              <th className="px-4 py-2 text-center">Số ngày</th>
+              {/* <th className="px-4 py-2 text-center">Số ngày</th> */}
               <th className="px-4 py-2">Thành tiền (VND)</th>
             </tr>
           </thead>
@@ -51,10 +62,10 @@ const InforamtionRoom = ({dataRoomDetail}) => {
             {dataRoomDetail.details.map((room, idx) => (
               <tr key={idx} className="">
                 <td className="px-4 py-2">{room.room_type}</td>
-                <td className="px-4 py-2 text-center">{formatCurrency(room.price_per_night)}</td>
-                <td className="px-4 py-2 text-center">{room.quantity}</td>
-                <td className="px-4 py-2 text-center">{dataRoomDetail.rooms?.[0]?.nights || dataRoomDetail.total_nights}</td>
                 <td className="px-4 py-2 text-center">{formatCurrency(room.total_price)}</td>
+                <td className="px-4 py-2 text-center">{room.count}</td>
+                {/* <td className="px-4 py-2 text-center">{dataRoomDetail.rooms?.[0]?.nights || dataRoomDetail.total_nights}</td> */}
+                <td className="px-4 py-2 text-center">{formatCurrency(room.total_price*room.count)}</td>
               </tr>
             ))}
           </tbody>
@@ -65,14 +76,14 @@ const InforamtionRoom = ({dataRoomDetail}) => {
           <span>Tổng tiền phòng (VND)</span>
           <span>{formatCurrency(dataRoomDetail.total_amount)}</span>
         </div>
-        <div className="flex justify-between mb-1">
+        {/* <div className="flex justify-between mb-1">
           <span>Giảm giá (VND)</span>
           <span>{formatCurrency(dataRoomDetail.total_discount)}</span>
-        </div>
+        </div> */}
         <hr className="my-2 text-gray-300" />
         <div className="flex justify-between font-semibold text-lg text-black">
           <span>Tổng cộng (VND)</span>
-          <span>{formatCurrency(dataRoomDetail.final_amount)}</span>
+          <span>{formatCurrency(dataRoomDetail.total_amount)}</span>
         </div>
       </div>
     </div>

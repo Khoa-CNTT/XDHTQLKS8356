@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { roomService } from "../../service/roomService";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import { APP_ROUTER } from "../../utils/Constants";
+import { Link } from "react-router-dom";
 
 const RoomPage = () => {
   const [rooms, setRooms] = useState();
@@ -50,7 +52,7 @@ const RoomPage = () => {
       {(rooms && rooms.length) > 0 ? (
         <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-10 mb-6 p-10'>
           {rooms.map((room) => (
-            <div key={room.id} className='bg-white p-4 shadow-sm rounded-lg'>
+            <Link key={room.id} to={APP_ROUTER.ROOM_DETAIL.replace(":id", room.id)} className='bg-white p-4 shadow-sm rounded-lg hover:shadow-xl'>
               <div className='text-center'>
                 <img
                   src={(() => {
@@ -119,7 +121,7 @@ const RoomPage = () => {
                       </span>
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       ) : (

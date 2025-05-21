@@ -73,14 +73,7 @@ const Price = () => {
     };
 
 
-    const renderExpandedRow = (row) => {
-        return (
-            <div className="transition-all duration-300">
-                <h3 className="font-bold mb-2">Chi tiết dịch vụ</h3>
-                <p>Email: {row.email}</p>
-            </div>
-        );
-    };
+    
     const handleSubmit = async (formData) => {
         console.log(formData)
         // for (let key in formData) {
@@ -140,7 +133,6 @@ const Price = () => {
             <GeneralTable
                 datas={data}
                 columns={columns}
-                renderExpandedRow={renderExpandedRow}
                 functionButton="Thêm giá phòng"
                 onDelete={handleDeletePrices}
                 onEdit={handleEditPrices}

@@ -40,9 +40,22 @@ export const findUser = async (name) => {
   }
 };
 
+
+export const getInfoUser = async (name) => {
+  try {
+    const response = await apiConfig.get(`/customer/user`);
+    return response.data; 
+  } catch (error) {
+    console.error("Error finding messages:", error);
+    throw error; 
+  }
+};
+
+
 export const authService = {
    login,
    logout,
-   findUser
+   findUser,
+   getInfoUser
 }
 

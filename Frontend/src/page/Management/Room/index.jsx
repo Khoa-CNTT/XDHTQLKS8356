@@ -72,7 +72,7 @@ const Room = () => {
                 toast.error(result.message);
             }
         } catch (error) {
-            
+            console.log(error)
         }
        
     };
@@ -88,7 +88,7 @@ const Room = () => {
         //         return;
         //     }
         // }
-       console.log(formData)
+       console.log("2",formData)
         const payload = {
             room_number: formData.roomNumber,
             description: formData.description,

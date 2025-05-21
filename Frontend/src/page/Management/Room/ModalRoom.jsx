@@ -5,6 +5,7 @@ import axios from "axios";
 import toast from 'react-hot-toast';
 import { roomService } from "../../../service/roomService";
 const ModalRoom = ({ handleClose, lable, handleSubmit, data, resetTrigger, functionButton}) => {
+    console.log("dữ liệu:", data)
     const [isLoading, setIsLoading] = useState(false);
     const [imageUrl, setImageUrl] = useState([]);
     const [formData, setFormData] = useState({
@@ -35,7 +36,7 @@ const ModalRoom = ({ handleClose, lable, handleSubmit, data, resetTrigger, funct
             setFormData({
                 roomNumber: data.room_number || "",
                 description: data.description || "",
-                roomID: data.id_room_type || "",
+                roomID: data.room_id || "",
                 roomType: data.room_type || [], 
             });
         } else {

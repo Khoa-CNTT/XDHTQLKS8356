@@ -24,11 +24,12 @@ import Extension from "../page/Management/Extension";
 import Payment from "../page/Booking/Payment";
 import BookingManager from "../page/Management/Booking";
 import Hotel from "../page/Management/Hotel";
-import BookingService from "../page/Management/BookingService";
 import Timeline from "../components/Calendar/Timeline";
 import RoomPage from "../page/Room";
 import InformationBooking from "../page/Booking/Information";
 import Personnel from "../page/Management/Personnel";
+import ClassifyCustomer from "../page/Management/ClassifyCustomer";
+import Report from "../page/Management/Report";
 import HomeDefault from "../page/Home/HomeDefault";
 
 const router = createBrowserRouter([

@@ -93,21 +93,19 @@ const RoomType = () => {
                 return;
             }
         }
-     
-        const isEdit = !!selectedRoom?.id;
         const payload = {
             adult_count: formData.adultCount,
             room_type: formData.name,
             square_meters: formData.squareMeters,
             price_per_night: formData.pricePerNight,
             image: formData.image,
-            ...(isEdit ? {} : { HotelId: 1 }) 
         }; 
         console.log("dữ liệu",payload)
         try {
-            if (selectedRoom && isEdit) {
+            if (selectedRoom) {
                 try {
                     const result = await roomService.updateRoomType(selectedRoom.id, payload);
+                  
                     if(result.status == true){
                         toast.success(result.message);
                         setResetFormTrigger(true);
@@ -116,6 +114,7 @@ const RoomType = () => {
                         toast.error(result.message);
                     }
                 } catch (error) {
+                    console.log("lỗi",error)
                     navigate("/error")
                 }
             } else { 
@@ -129,6 +128,7 @@ const RoomType = () => {
                         toast.error(result.message);
                     }
                 } catch (error) {
+                    console.log(error)
                     navigate("/error")
                 }
             }

@@ -38,34 +38,39 @@ const GeneralTable = ({
   });
   
   useEffect(() => {
+    if (onDateChange) {
+      onDateChange(defaultStartDate, today);
+    }
+  }, []);
+  useEffect(() => {
     if (datas && Array.isArray(datas)) {
       setValue((prevValue) => ({ ...prevValue, data: datas }));
-      if (onDateChange) {
-        onDateChange(defaultStartDate, today);
-      }
     }
   }, [datas]);
   const handleStartDateChange = (event) => {
     const newStartDate = event.target.value;
-    setValue((prevValue) => ({
-      ...prevValue,
-      startDate: newStartDate,
-      endDate:
-        newStartDate > prevValue.endDate ? newStartDate : prevValue.endDate,
-    }));
-    onDateChange(newStartDate, value.endDate);
-    console.log(value.endDate);
+    setValue((prevValue) => {
+      const newEndDate = newStartDate > prevValue.endDate ? newStartDate : prevValue.endDate;
+      if (onDateChange) onDateChange(newStartDate, newEndDate);
+      return {
+        ...prevValue,
+        startDate: newStartDate,
+        endDate: newEndDate,
+      };
+    });
   };
-
-console.log("data", value)
+  
   const handleEndDateChange = (event) => {
     const newEndDate = event.target.value;
-    setValue((prevValue) => ({
-      ...prevValue,
-      endDate:
-        newEndDate < prevValue.startDate ? prevValue.startDate : newEndDate,
-    }));
-    onDateChange(value.startDate, newEndDate);
+    setValue((prevValue) => {
+      const newStartDate = newEndDate < prevValue.startDate ? prevValue.startDate : newEndDate;
+      if (onDateChange) onDateChange(newStartDate, newEndDate);
+      return {
+        ...prevValue,
+        startDate: newStartDate,
+        endDate: newEndDate,
+      };
+    });
   };
 
   const handleFilterChange = (key, value) => {
@@ -326,67 +331,161 @@ console.log("data", value)
           </thead>
           <tbody className='max-h-full'>
             {resultData.map((row, index) => {
-              if (Array.isArray(row.details)) {
+              const hasDetails = Array.isArray(row.details);
+              const isBooking = !!row.booking_id;
+              const isNameDetails = !!row.name && hasDetails;
+              if (isNameDetails) {
+                return row.details.map((detail, subIndex) => (
+                  <Fragment key={`${index}-${subIndex}`}>
+                    <tr onClick={() => handleRowClick(`${index}-${subIndex}`)} className="cursor-pointer hover:bg-gray-100">
+                      {columns.map((column) => {
+                        // Lấy giá trị ưu tiên detail trước, fallback sang row (parent)
+                        const value = detail[column.key] ?? row[column.key];
+                        const isDateField = ["checkin", "checkout", "created_at", "start_date", "end_date"].includes(column.key);
+
+                        return (
+                          <td key={`${column.key}-${index}-${subIndex}`} className="py-2.5 border-b border-gray-200 text-center">
+                            {column.render ? (
+                              // Truyền name parent cùng detail vào render
+                              column.render({ ...detail, name: row.name })
+                            ) : column.key === "image" && value ? (
+                              (() => {
+                                try {
+                                  const images = JSON.parse(value);
+                                  const imageUrl = images?.[0]?.[0];
+                                  return imageUrl ? (
+                                    <img src={imageUrl} alt="Hình ảnh" className="w-16 h-16 object-cover rounded mx-auto" />
+                                  ) : "Không có ảnh";
+                                } catch {
+                                  return "Lỗi ảnh";
+                                }
+                              })()
+                            ) : isDateField ? (
+                              formatDate(value)
+                            ) : (
+                              value ?? ""
+                            )}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                    {renderExpandedRow && value.expandedRow && value.expandedRow.includes(`${index}-${subIndex}`) && (
+                      <tr>
+                        <td colSpan={columns.length + 1} className="px-4 py-2 shadow-inner">
+                          <div>{renderExpandedRow(detail)}</div>
+                        </td>
+                      </tr>
+                    )}
+                  </Fragment>
+                ));
+              }
+              if (!isBooking) {
+                return (
+                  <Fragment key={index}>
+                    <tr onClick={() => handleRowClick(index)} className="cursor-pointer hover:bg-gray-100">
+                      {columns.map((column) => {
+                        const value = row[column.key];
+                        const isDateField = ["checkin", "checkout", "created_at"].includes(column.key);
+
+                        return (
+                          <td key={column.key} className="py-2.5 border-b border-gray-200 text-center">
+                            {column.render ? (
+                              column.render(row)
+                            ) : column.key === "icon" ? (
+                              <Icon icon={value} width={28} height={28} className="mx-auto" />
+                            ) : column.key === "image" && value ? (
+                              (() => {
+                                try {
+                                  const images = JSON.parse(value);
+                                  const imageUrl = images?.[0];
+                                  return imageUrl ? (
+                                    <img src={imageUrl} alt="Hình ảnh" className="w-24 h-16 object-cover rounded mx-auto" />
+                                  ) : "Không có ảnh";
+                                } catch {
+                                  return "Lỗi ảnh";
+                                }
+                              })()
+                            ) : isDateField ? (
+                              (() => {
+                                const date = new Date(value);
+                                if (isNaN(date.getTime())) return "Ngày không hợp lệ";
+                                return format(date, "HH:mm, dd/MM/yyyy");
+                              })()
+                            ) : (
+                              value ?? ""
+                            )}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                    {renderExpandedRow && value.expandedRow && value.expandedRow.includes(index) && (
+                      <tr>
+                        <td colSpan={columns.length + 1} className="px-4 py-2 shadow-inner">
+                          <div>{renderExpandedRow(row)}</div>
+                        </td>
+                      </tr>
+                    )}
+                  </Fragment>
+                );
+              }
+
+              if (isBooking) {
                 return (
                   <Fragment key={`${index}`}>
                     <tr
                       key={`${row.booking_id}`}
                       onClick={() => handleRowClickWithDetail(row.booking_id)}
-                      className='cursor-pointer hover:bg-gray-100'
+                      className="cursor-pointer hover:bg-gray-100 border-b border-gray-200"
                     >
                       {columns.map((column) => {
                         const value = row[column.key];
-                        const isDateField = [
-                          "checkin",
-                          "checkout",
-                          "created_at",
-                          "start_date",
-                          "end_date",
-                        ].includes(column.key);
+                        const isDateField = ["checkin", "checkout", "created_at", "start_date", "end_date"].includes(column.key);
 
-                        return (
-                          <td
-                            key={`${column.key}-${index}`}
-                            className='py-2.5 border-b border-gray-200 text-center'
-                          >
-                            {column.key === "booking_services" ? (
+                        if (column.key === "booking_services") {
+                          return (
+                            <td key={column.key} className="text-center">
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   onRowClick(row);
                                 }}
-                                className='text-center mx-auto p-2 hover:bg-slate-200 hover:rounded-md cursor-pointer'
+                                className="text-center mx-auto p-2 hover:bg-slate-200 hover:rounded-md cursor-pointer"
                               >
-                                <MdAddModerator className='h-6 w-6' />
+                                <MdAddModerator className="h-6 w-6" />
                               </button>
-                            ) : column.key === "update_status" ? (
+                            </td>
+                          );
+                        }
+
+                        if (column.key === "update_status") {
+                          return (
+                            <td key={column.key} className="text-center">
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   onUpdateStatusClick(row);
                                 }}
-                                className='text-center mx-auto p-2 hover:bg-slate-200 hover:rounded-md cursor-pointer'
+                                className="text-center mx-auto p-2 hover:bg-slate-200 hover:rounded-md cursor-pointer"
                               >
-                                <TbStatusChange className='h-6 w-6' />
+                                <TbStatusChange className="h-6 w-6" />
                               </button>
-                            ) : column.render ? (
+                            </td>
+                          );
+                        }
+
+                        return (
+                          <td key={`${column.key}-${index}`} className="py-2.5 border-b border-gray-200 text-center">
+                            {column.render ? (
                               column.render(row)
                             ) : column.key === "image" && value ? (
                               (() => {
                                 try {
-                                  const images = parseImage(value)
-                                  console.log("images", value)
+                                  const images = parseImage(value);
                                   const imageUrl = images?.[0];
                                   return imageUrl ? (
-                                    <img
-                                      src={imageUrl}
-                                      alt='Hình ảnh'
-                                      className='w-16 h-16 object-cover rounded mx-auto'
-                                    />
-                                  ) : (
-                                    "Không có ảnh"
-                                  );
-                                } catch (e) {
+                                    <img src={imageUrl} alt="Hình ảnh" className="w-16 h-16 object-cover rounded mx-auto" />
+                                  ) : "Không có ảnh";
+                                } catch {
                                   return "Lỗi ảnh";
                                 }
                               })()
@@ -400,12 +499,9 @@ console.log("data", value)
                       })}
                     </tr>
 
-                    {value.expandedRow.includes(row.booking_id) && (
+                    {renderExpandedRow && value.expandedRow && value.expandedRow.includes(row.booking_id) && (
                       <tr>
-                        <td
-                          colSpan={columns.length + 1}
-                          className='px-4 py-2 shadow-inner bg-gray-50'
-                        >
+                        <td colSpan={columns.length + 1} className="px-4 py-2 shadow-inner bg-gray-50">
                           <div>{renderExpandedRow(row)}</div>
                         </td>
                       </tr>
@@ -413,76 +509,8 @@ console.log("data", value)
                   </Fragment>
                 );
               }
-
-              return (
-                <Fragment key={index}>
-                  <tr onClick={() => handleRowClick(index)}>
-                    {columns.map((column) => {
-                      const value = row[column.key];
-                      const isDateField = [
-                        "checkin",
-                        "checkout",
-                        "created_at",
-                      ].includes(column.key);
-                      return (
-                        <td
-                          key={column.key}
-                          className='py-2.5 border-b border-gray-200 text-center'
-                        >
-                          {column.render ? (
-                            column.render(row)
-                          ) : column.key === "icon" ? (
-                            <Icon
-                              icon={value}
-                              width={28}
-                              height={28}
-                              className='mx-auto'
-                            />
-                          ) : column.key === "image" && value ? (
-                            (() => {
-                              try {
-                                const images = parseImage(value)
-                                const imageUrl = images?.[0]
-                                return imageUrl ? (
-                                  <img
-                                    src={imageUrl}
-                                    alt='Hình ảnh'
-                                    className='w-24 h-16 object-cover rounded mx-auto'
-                                  />
-                                ) : (
-                                  "Không có ảnh"
-                                );
-                              } catch (e) {
-                                return "Lỗi ảnh";
-                              }
-                            })()
-                          ) : isDateField ? (
-                            (() => {
-                              const date = new Date(value);
-                              if (isNaN(date.getTime()))
-                                return "Ngày không hợp lệ";
-                              return format(date, "HH:mm, dd/MM/yyyy");
-                            })()
-                          ) : (
-                            value ?? ""
-                          )}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                  {value.expandedRow && value.expandedRow.includes(index) && (
-                    <tr>
-                      <td
-                        colSpan={columns.length + 1}
-                        className='px-4 py-2 shadow-inner'
-                      >
-                        <div>{renderExpandedRow(row)}</div>
-                      </td>
-                    </tr>
-                  )}
-                </Fragment>
-              );
             })}
+
           </tbody>
         </table>
       </div>

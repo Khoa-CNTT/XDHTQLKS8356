@@ -115,7 +115,7 @@ const ManagementLayout = () => {
       {
         key: '82',
         icon: <SisternodeOutlined />,
-        label: <Link to={APP_ROUTER.CLASSIFICATION}>Phân loại khách hàng</Link>,
+        label: <Link to={APP_ROUTER.CLASSIFY}>Phân loại khách hàng</Link>,
       },
     ],
   },
@@ -130,7 +130,7 @@ const ManagementLayout = () => {
     label: "Nhân viên",
     children: [
       {
-        key: '82',
+        key: '83',
         icon: <UsergroupAddOutlined />,
         label: <Link to={APP_ROUTER.PERSONNEL}>Thêm nhân viên</Link>,
       },
@@ -139,7 +139,7 @@ const ManagementLayout = () => {
   {
     key: '10',
     icon: <BarChartOutlined />,
-    label: <Link to={APP_ROUTER.HOME}>Báo cáo thống kê</Link>,
+    label: <Link to={APP_ROUTER.REPORT}>Báo cáo thống kê</Link>,
   },
   {
     key: '11',

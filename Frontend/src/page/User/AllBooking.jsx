@@ -7,30 +7,20 @@ import toast from 'react-hot-toast';
 import { format } from "date-fns";
 import { Link } from "react-router-dom";
 import { RiListUnordered } from "react-icons/ri";
+import { bookingService } from "../../service/bookingService";
 const AllBooking = () => {
     const [orders, setOrders] = useState([]);
     const fetchData = async () => {
-        try {
-            const response = await axios.get(
-                "http://localhost:8080/api/customer/booking",
-                {
-                    withCredentials: true,
-                }
-            );
-
-            if (response.data.status === true) {
-                setOrders(response.data.booking);
-            }
-        } catch (error) {
-            console.error("Lỗi khi fetch dữ liệu:", error);
-        }
+        const result = await bookingService.getBookingCustomer();
+        console.log(result)
+        setOrders(result);
     };
     useEffect(() => {
         fetchData();
     }, []);
     const [dataOrders, setDataOrders] = useState([]);
     const [groupedOrders, setGroupedOrders] = useState([]);
-    const [currentStatus, setCurrentStatus] = useState("pending");
+    const [currentStatus, setCurrentStatus] = useState("booker");
     const [showModal, setShowModal] = useState(false);
     const [showRateModal, setShowRateModal] = useState(false);
     const [rating, setRating] = useState(null);
@@ -69,7 +59,7 @@ const AllBooking = () => {
     
     useEffect(() => {
         if (orders.length > 0) {
-            fetchOrdersByStatus("pending");
+            fetchOrdersByStatus("booker");
         }
     }, [orders]);
     const calculateTotalPriceByOrderId = () => {
@@ -179,10 +169,10 @@ const AllBooking = () => {
                 <RiListUnordered className="mr-2 h-6 w-6" />
                 <div className="my-5 text-2xl font-bold">ĐƠN ĐẶT PHÒNG</div>
             </div>
-            <hr className="mb-3 flex" />
+            <hr className="mb-3 flex text-gray-300" />
             <div className="flex justify-around">
                 <a
-                    onClick={() => handleStatusClick("pending")}
+                    onClick={() => handleStatusClick("booker")}
                     className={`group text-black transition-all duration-300 ease-in-out focus:text-pink-500 ${
                         currentStatus === "pending" && "text-pink-500"
                     }`}
@@ -227,7 +217,7 @@ const AllBooking = () => {
                     </span>
                 </a>
             </div>
-            <hr className="my-3 flex" />
+            <hr className="my-3 flex text-gray-300" />
             <div>
                 {currentStatus && dataOrders && (
                     <div>
@@ -235,7 +225,7 @@ const AllBooking = () => {
                             dataOrders.map((order, orderIndex) => (
                                 <div
                                     key={orderIndex}
-                                    className="mb-8 p-4 rounded-md shadow-md text-base"
+                                    className="mb-8 p-4 border border-gray-300 rounded-md shadow-md text-base"
                                 >
                                     
                                     <div className="flex gap-10 items-center">
@@ -265,68 +255,53 @@ const AllBooking = () => {
                                         </div>
                                     </div>
                                     <div className="">
-                                        <h3 className="font-bold text-lg mb-2">Chi tiết đặt phòng:</h3>
+                                        <h3 className="font-bold text-lg mb-3">Chi tiết đặt phòng:</h3>
                                         <div className="overflow-x-auto">
-                                            <table className="min-w-full border-collapse border border-gray-300">
-                                                <thead>
-                                                    <tr className="bg-gray-100">
-                                                    <th className="border border-gray-300 px-4 py-2">Tên Phòng/Dịch Vụ</th>
-                                                    <th className="border border-gray-300 px-4 py-2">Số Lượng</th>
-                                                    <th className="border border-gray-300 px-4 py-2">Giá</th>
-                                                    <th className="border border-gray-300 px-4 py-2">Tổng Giá</th>
-                                                    </tr>
+                                        <div className="relative w-full overflow-auto rounded-xl shadow bg-white">
+                                            <table className="min-w-full text-left table-auto text-sm text-slate-800">
+                                                <thead className="bg-blue-100/70 text-slate-500">
+                                                <tr>
+                                                    <th className="p-4 border-b border-slate-300 font-normal">Tên Phòng/Dịch Vụ</th>
+                                                    <th className="p-4 border-b border-slate-300 font-normal text-center">Số Lượng</th>
+                                                    <th className="p-4 border-b border-slate-300 font-normal text-right">Giá</th>
+                                                    <th className="p-4 border-b border-slate-300 font-normal text-right">Tổng Giá</th>
+                                                </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {order.details.map((detail, detailIndex) => (
-                                                    <>
-                                                        <tr
-                                                        key={`${orderIndex}-${detailIndex}-room`}
-                                                        className="bg-blue-100/70"
-                                                        >
-                                                        <td className="border border-gray-300 px-4 py-2">
-                                                            {detail.room_name} (Số phòng: {detail.room_number})
+                                                {order.details.map((detail, detailIndex) => (
+                                                    <React.Fragment key={`${orderIndex}-${detailIndex}`}>
+                                                    <tr className="hover:bg-blue-50  transition">
+                                                        <td className="p-4 border-b font-semibold border-slate-200">{detail.room_name} (Số phòng: {detail.room_number})</td>
+                                                        <td className="p-4 border-b font-semibold border-slate-200 text-center">1</td>
+                                                        <td className="p-4 border-b font-semibold border-slate-200 text-right">
+                                                        {detail.price.toLocaleString()} VND
                                                         </td>
-                                                        <td className="border border-gray-300 px-4 py-2 text-center">1</td>
-                                                        <td className="border border-gray-300 px-4 py-2 text-right">
-                                                            {detail.price.toLocaleString()} VND
-                                                        </td>
-                                                        <td className="border border-gray-300 px-4 py-2 text-right">
-                                                            {detail.price.toLocaleString()} VND
-                                                        </td>
-                                                        </tr>
-                                                        {detail.services && detail.services.map((service, serviceIndex) => (
-                                                            <tr
-                                                            key={`${orderIndex}-${detailIndex}-${serviceIndex}-service`}
-                                                            className="bg-white"
-                                                            >
-                                                            <td className="border border-gray-300 px-4 py-2 ">
-                                                                {service.service_name}
-                                                            </td>
-                                                            <td className="border border-gray-300 px-4 py-2 text-center">
-                                                                {service.quantity}
-                                                            </td>
-                                                            <td className="border border-gray-300 px-4 py-2 text-right">
-                                                                {service.price.toLocaleString()} VND
-                                                            </td>
-                                                            <td className="border border-gray-300 px-4 py-2 text-right">
-                                                                {service.total_price.toLocaleString()} VND
-                                                            </td>
-                                                            </tr>
-                                                        ))}
-                                                    </>
-                                                    ))}
-                                                </tbody>
-                                                <tfoot>
-                                                    <tr className="font-bold">
-                                                        <td colSpan="3" className="border border-gray-300 px-4 py-2 text-right">
-                                                        Tổng cộng:
-                                                        </td>
-                                                        <td className="border border-gray-300 px-4 py-2 text-right">
-                                                        {order.total_price.toLocaleString()} VND
+                                                        <td className="p-4 border-b font-semibold border-slate-200 text-right">
+                                                        {detail.price.toLocaleString()} VND
                                                         </td>
                                                     </tr>
+                                                    {order.services && order.services.map((service, serviceIndex) => (
+                                                        <tr key={`${orderIndex}-${detailIndex}-${serviceIndex}`} className="hover:bg-slate-50 bg-white transition">
+                                                        <td className="p-4 border-b border-slate-200">{service.service_name}</td>
+                                                        <td className="p-4 border-b border-slate-200 text-center">{service.quantity}</td>
+                                                        <td className="p-4 border-b border-slate-200 text-right">{service.price.toLocaleString()} VND</td>
+                                                        <td className="p-4 border-b border-slate-200 text-right">{service.total_price.toLocaleString()} VND</td>
+                                                        </tr>
+                                                    ))}
+                                                    </React.Fragment>
+                                                ))}
+                                                </tbody>
+                                                <tfoot>
+                                                <tr className="bg-slate-100 font-semibold">
+                                                    <td colSpan="3" className="p-4 border-t border-slate-300 text-right">Tổng cộng:</td>
+                                                    <td className="p-4 border-t border-slate-300 text-right">
+                                                    {order.total_price.toLocaleString()} VND
+                                                    </td>
+                                                </tr>
                                                 </tfoot>
                                             </table>
+                                        </div>
+
                                         </div>
                                     </div>
                                 </div>

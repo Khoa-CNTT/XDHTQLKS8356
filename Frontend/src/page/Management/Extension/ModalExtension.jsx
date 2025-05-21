@@ -6,6 +6,7 @@ import Loading from "../../../components/Loading";
 import { IoSearch } from "react-icons/io5";
 import { updateImage } from "../../../service/updateImage";
 import toast from "react-hot-toast";
+import { IoIosRemoveCircle } from "react-icons/io";
 const ModalExtension = ({
   handleClose,
   lable,
@@ -92,6 +93,13 @@ const ModalExtension = ({
     } finally {
       setLoading(false);
     }
+  };
+  const handleRemoveImage = (indexToRemove) => {
+    setFormData((prev) => ({
+      ...prev,
+      image: prev.image.filter((_, index) => index !== indexToRemove),
+    }));
+    setImageUrl((prevUrls) => prevUrls.filter((_, index) => index !== indexToRemove));
   };
   return (
     <div className='rounded-lg h-full overflow-hidden relative'>
@@ -286,27 +294,36 @@ const ModalExtension = ({
                   )}
                 </div>
                 {imageUrl.length > 0 ? (
-                  <div className='mt-4 grid grid-cols-4 gap-2 w-full p-2'>
+                  <div className="mt-4 grid grid-cols-2 gap-2 w-full p-2">
                     {imageUrl.map((url, index) => (
                       <div
                         key={index}
-                        className='flex justify-center p-1 border border-gray-200 rounded-md'
+                        className="relative group flex mx-auto p-2 border border-gray-200 rounded-md"
                       >
                         <img
                           src={url}
                           alt={`Uploaded ${index}`}
-                          className='h-[160px] w-[240px]'
+                          className="h-[160px] w-[240px] object-cover rounded-md"
                         />
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveImage(index)}
+                          className="cursor-pointer absolute top-1 right-1 bg-red-400 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                          title="Xóa ảnh"
+                        >
+                          <IoIosRemoveCircle className="w-6 h-6" />
+                        </button>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <div className='mt-4 flex justify-center'>
-                    <div className='h-[150px] w-[150px] border-2 border-gray-300 border-dashed flex items-center justify-center'>
-                      <BsImageFill className='h-[100px] w-[100px] text-gray-300 ' />
+                  <div className="mt-4 flex justify-center">
+                    <div className="h-[150px] w-[150px] border-2 border-gray-300 border-dashed flex items-center justify-center">
+                      <BsImageFill className="h-[100px] w-[100px] text-gray-300 " />
                     </div>
                   </div>
                 )}
+
               </div>
             </div>
           </div>

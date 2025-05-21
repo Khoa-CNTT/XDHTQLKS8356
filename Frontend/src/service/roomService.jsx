@@ -65,7 +65,7 @@ export const addRoomType = async (data) => {
  export const updateRoomType = async (id,data) => {
    try {
      const response = await apiConfig.put(`/admin/room/${id}`, data);
-     return response.data;
+     return response.data?.room;
    } catch (error) {
      if (error.response) {
        return error.response.data;

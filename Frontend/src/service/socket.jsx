@@ -30,17 +30,18 @@ export const connectSocket = () => {
 
 // Lắng nghe các tin nhắn mới
 export const listenNewMessages = (callback) => {
-  socket.on("new", callback);
+  socket.on("receive_message", callback);
 };
 
 //Ngừng việc lắng nghe
 export const stopListenNewMessages = (callback) => {
-  socket.off("new", callback);
+  socket.off("receive_message", callback);
 };
 
 // Gửi tin nhắn mới đến người nhận
-export const sendNewMessage = (message) => {
-  socket.emit("sendMessage", message); 
+export const sendNewMessage = (token, message_content, image, conversationId) => {
+  if(!token||!message_content) return
+  socket.emit("send_message", {token, message_content, image: '', conversationId: 1}); 
 };
 
 

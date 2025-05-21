@@ -18,7 +18,7 @@ import {
   socketConnect,
   stopListenNewMessages,
 } from "../../service/socket";
-import { isAuthenticated } from "../../utils/AuthCheck";
+import { getToken, isAuthenticated } from "../../utils/AuthCheck";
 
 const ChatCustomer = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -42,15 +42,23 @@ const ChatCustomer = () => {
 
   // Lắng nghe tin nhắn mới từ Socket.io
   useEffect(() => {
-    const handleNewMessage = (message) => {
-      setMessages((prev) => [...prev, message]);
-      console.log(message);
+    const handleNewMessage = ({conversationId, user_id, message_content, message_time}) => {
+      console.log(conversationId, user_id, message_content, message_time)
+      setMessages((prev) => [
+        ...prev,
+        {
+          fullname: "",
+          image: "",
+          user_id: user_id,
+          message_content: message_content,
+          message_time: message_time,
+        },
+      ]);
     };
 
     // if (isAuthenticated()) {
     socketConnect.connectSocket();
     socketConnect.listenNewMessages(handleNewMessage);
-    console.log("check: ", isAuthenticated());
     // }
 
     return () => {
@@ -67,11 +75,14 @@ const ChatCustomer = () => {
     if (!input.trim()) return;
 
     try {
-      const data = {
-        messageContent: input,
-        image: "test",
-      };
-      await messageService.sendMessage(1, data);
+      // const data = {
+      //   messageContent: input,
+      //   image: "test",
+      // };
+      // await messageService.sendMessage(1, data);
+      const token = getToken();
+      if (!token) return;
+      else socketConnect.sendNewMessage(token, input, "", "");
       setInput(""); // Xóa input sau khi gửi
     } catch (error) {
       console.error("Error sending message:", error);
@@ -97,10 +108,16 @@ const ChatCustomer = () => {
               <div className='text-white font-bold'>Name Hotel</div>
             </ConversationHeader.Content>
             <ConversationHeader.Actions>
-            <Icon icon='material-symbols:close' className="text-gray-300 cursor-pointer" onClick={()=>setIsOpen(false)} width='24' height='24' />
-          </ConversationHeader.Actions>
+              <Icon
+                icon='material-symbols:close'
+                className='text-gray-300 cursor-pointer'
+                onClick={() => setIsOpen(false)}
+                width='24'
+                height='24'
+              />
+            </ConversationHeader.Actions>
           </ConversationHeader>
-          
+
           <MessageList>
             <Message
               model={{
@@ -115,11 +132,11 @@ const ChatCustomer = () => {
               <Message
                 key={i}
                 model={{
-                  direction: message.sender_id === 1 ? 0 : 1,
-                  message: message.messageContent,
+                  direction: message.user_id === 1 ? 0 : 1,
+                  message: message.message_content,
                   position: "normal",
-                  sender: message.sender_id,
-                  sentTime: message.messageTime,
+                  sender: message.user_id,
+                  sentTime: message.message_time,
                 }}
               />
             ))}

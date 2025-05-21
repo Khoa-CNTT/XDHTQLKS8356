@@ -19,6 +19,8 @@ import { authService } from "../../../service/authService";
 import { messageService } from "../../../service/messageService";
 import { formatRelativeTime } from "../../../utils/FormatDate";
 import { socketConnect } from "../../../service/socket";
+import { getToken } from "../../../utils/AuthCheck";
+import { data } from "react-router-dom";
 
 const Chat = () => {
   const [search, setSearch] = useState("");
@@ -48,7 +50,8 @@ const Chat = () => {
     const fetchMessages = async () => {
       try {
         if (!activeChatUser || !activeChatUser.user_id) return;
-        const data = await messageService.getMessages(activeChatUser.user_id);
+        // const data = await messageService.getMessages(activeChatUser.user_id);
+          const data = await messageService.getMessages(1);
         setMessages(data.mess.reverse());
       } catch (error) {
         console.error(error);
@@ -82,11 +85,14 @@ const Chat = () => {
     if (!message.trim()) return;
 
     try {
-      const data = {
-        messageContent: message.trim(),
-        image: "test",
-      };
-      await messageService.sendMessage(activeChatUser.user_id, data);
+      // const data = {
+      //   messageContent: message.trim(),
+      //   image: "test",
+      // };
+      // await messageService.sendMessage(activeChatUser.user_id, data);
+      const token = getToken();
+      if (!token) return;
+      else socketConnect.sendNewMessage(token, message);
       setMessage("");
     } catch (error) {
       console.error("Error sending message:", error);
@@ -95,41 +101,48 @@ const Chat = () => {
 
   // Lắng nghe tin nhắn mới từ Socket.io
   useEffect(() => {
-    const handleNewMessage = (message) => {
-      console.log("messageReceive: ", message)
-       console.log("active: ", activeChatUserRef.current?.user_id)
-      if (activeChatUserRef.current?.user_id === message.receiver_id || activeChatUserRef.current?.user_id === message.sender_id) {
-        setMessages((prev) => [...prev, message])
-       console.log("true")
-      } else {
-        setListUsers((prev) => {
-          const newList = prev.map((user) =>
-            user.user_id === message.sender_id
-              ? {
-                  ...user,
-                  unreadCount: (user.unreadCount || 0) + 1,
-                  message_content: message.messageContent,
-                  message_time: message.messageTime,
-                }
-              : user
-          );
-          newList.sort(
-            (a, b) => new Date(b.message_time) - new Date(a.message_time)
-          );
-          return newList;
-        });
-      }
+    const handleNewMessage = ({conversationId, user_id, message_content, message_time}) => {
+      console.log("messageReceive: ", conversationId, user_id, message_content, message_time);
+      console.log("active: ", activeChatUserRef.current?.user_id);
+      // if (
+      //   activeChatUserRef.current?.user_id === message.receiver_id ||
+      //   activeChatUserRef.current?.user_id === message.sender_id
+      // ) {
+        setMessages((prev) => [...prev, 
+          {
+          fullname: "",
+          image: "",
+          user_id: user_id,
+          message_content: message_content,
+          message_time: message_time,
+        }
+        ]);
+      // } else {
+      //   setListUsers((prev) => {
+      //     const newList = prev.map((user) =>
+      //       user.user_id === message.sender_id
+      //         ? {
+      //             ...user,
+      //             unreadCount: (user.unreadCount || 0) + 1,
+      //             message_content: message.messageContent,
+      //             message_time: message.messageTime,
+      //           }
+      //         : user
+      //     );
+      //     newList.sort(
+      //       (a, b) => new Date(b.message_time) - new Date(a.message_time)
+      //     );
+      //     return newList;
+      //   });
+      // }
     };
 
     socketConnect.connectSocket();
     socketConnect.listenNewMessages(handleNewMessage);
-console.log("active: ",activeChatUser)
     return () => {
       socketConnect.stopListenNewMessages(handleNewMessage);
     };
   }, []);
-console.log("activeChat: ", activeChatUser)
-  console.log("listChat: ", listUsers)
   return (
     <div className='h-full [&>div]:shadow [&>div]:rounded-xl [&>div]:bg-white'>
       {/* <div className='basis-1/3'> */}
@@ -235,11 +248,11 @@ console.log("activeChat: ", activeChatUser)
                 <Message
                   key={i}
                   model={{
-                    direction: message.sender_id === 1 ? 1 : 0,
-                    message: message.messageContent,
+                    direction: message.user_id === 1 ? 1 : 0,
+                    message: message.message_content,
                     position: "normal",
-                    sender: message.sender_id,
-                    sentTime: message.messageTime,
+                    sender: message.user_id,
+                    sentTime: message.message_time,
                   }}
                 />
               ))}

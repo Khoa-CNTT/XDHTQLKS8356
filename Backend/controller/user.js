@@ -1,6 +1,52 @@
 const User = require("../service/user");
 const tokenCookie = require("../middleware/cookie");
 
+const registerUser = async (req, res) => {
+    const user = await User.registerUser(req.body);
+
+    if (user == -1) {
+        res.status(404).json({
+            status: false,
+            message: "Email đã tồn tại"
+        })
+    }
+    else if (user == "error") {
+        res.status(505).json("Lỗi hệ thống");
+    }
+    else {
+        res.status(201).json({
+            status: true,
+            message: `Kiểm tra email : ${req.body.email}`,
+            token: user.token,
+            otp: user.code
+        })
+    }
+
+}
+
+
+const activeUser = async (req, res) => {
+    const user = await User.activeUser(req.body);
+    if (user == -1) {
+        res.status(404).json({
+            success: false,
+            message: "Mã OTP sai",
+        })
+    }
+    else if (user == "error") {
+        res.status(505).json("Lỗi hệ thống");
+    }
+    else {
+        res.status(201).json({
+            success: true,
+            message: "Đăng ký thành công",
+        })
+    }
+
+}
+
+
+
 
 
 const getUser = async (req, res) => {
@@ -16,7 +62,7 @@ const getUser = async (req, res) => {
 
 
 const getAllUser = async (req, res) => {
-    const user = await User.getAllUser(req.query.sort);
+    const user = await User.getAllUser();
     res.status(200).json({
         success: true,
         message: "Danh sách người dùng",
@@ -49,7 +95,7 @@ const addEmployee = async (req, res) => {
 }
 
 const getAllUserGroup = async (req, res) => {
-    const user = await User.getAllUserGroup(req.params.id);
+    const user = await User.getAllUserGroup();
     res.status(200).json({
         success: true,
         message: "Danh sách người dùng",
@@ -108,4 +154,4 @@ const putUser = async (req, res) => {
     }
 }
 
-module.exports = {loginUser, getUser,  getAllUser, findUser, getAllUserGroup, addEmployee, logout, putUser}
+module.exports = {activeUser, registerUser, loginUser, getUser,  getAllUser, findUser, getAllUserGroup, addEmployee, logout, putUser}

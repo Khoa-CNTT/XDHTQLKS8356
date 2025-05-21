@@ -2,8 +2,8 @@ const customerRouter = require("express").Router();
 const {authentication} = require("../middleware/authentication");
 
 const {createBooking, getBookingById, getAllBookingForCustomer} = require("../controller/booking");
-const { sendMess, getMessages, getAllMessages, putMessage } = require("../controller/message");
-const {loginUser, logout, getUser, putUser} = require("../controller/user");
+const { getMessages, getAllMessages, putMessage } = require("../controller/message");
+const {loginUser, logout, getUser, putUser, registerUser, activeUser} = require("../controller/user");
 const { getRoomEmpty } = require("../controller/room");
 const { bookingServices } = require("../controller/services");
 const { createRatting, getRatting } = require("../controller/ratting");
@@ -23,6 +23,8 @@ customerRouter.get("/ratting/:id", getRatting);
 
 
 //user
+customerRouter.post("/signup", registerUser);
+customerRouter.post("/active", activeUser);
 customerRouter.post("/login", loginUser);
 customerRouter.get("/user", authentication, getUser);
 customerRouter.put("/user", authentication, putUser);

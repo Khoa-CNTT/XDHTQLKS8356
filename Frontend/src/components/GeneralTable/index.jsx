@@ -15,6 +15,8 @@ const GeneralTable = ({
   onSearchChange,
   placeholderSearch,
   functionButton,
+  onEdit,
+  onDelete,
   handleButton,
 }) => {
   const tomorrow = new Date();

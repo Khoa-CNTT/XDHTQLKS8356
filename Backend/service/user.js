@@ -4,6 +4,9 @@ const jwt = require("jsonwebtoken");
 const { Sequelize, Op} = require("sequelize");
 const { sequelize } = require("../config/mysql");
 const {kmeans} = require('ml-kmeans');
+const activeToken = require("../middleware/active_token");
+const sendMail = require("../config/sendMail");
+const { Conversation } = require("../model/conversation");
 
 
 const getUser  = async (id) => {
@@ -15,17 +18,17 @@ const getUser  = async (id) => {
     return users;
 }
 
-const getAllUser  = async (id) => {
+const getAllUser  = async () => {
     const users = await User.findAll({
         where : {
-            role : "guest"
+            role : "customer"
         }
     })
     return users;
     
 }
 
-const getAllUserGroup  = async (id) => {
+const getAllUserGroup  = async () => {
     const sql = `WITH tmp AS (
                     SELECT
                         b.id AS booking_id,
@@ -35,19 +38,13 @@ const getAllUserGroup  = async (id) => {
                     FROM
                         booking b
                     JOIN
-                        "user" u ON b."UserId" = u.id
-                    JOIN
-                        booking_detail bd ON bd."BookingId" = b.id
-                    JOIN
-                        roomdetails rd ON rd.id = bd."RoomDetailId"
-                    JOIN
-                        room r ON r.id = rd."RoomId"
+                        "user" u ON b.user_id = u.id
                     GROUP BY
                         b.id, u.id
                 )
                 SELECT
-                COUNT(p.booking_id) AS total,
-                SUM(p.total_price) AS price,
+                COUNT(p.booking_id) AS total_booking,
+                SUM(p.total_price) AS total_price,
                 p.id,
                 p.fullname
                 FROM
@@ -58,19 +55,18 @@ const getAllUserGroup  = async (id) => {
     const user = await sequelize.query(sql, { type: Sequelize.QueryTypes.SELECT });
 
     const data = user.map(customer => [
-        parseInt(customer.total),
-        parseInt(customer.price),
+        parseInt(customer.total_booking),
+        parseInt(customer.total_price),
     ]);
 
     //3 nhóm
-    const result = kmeans(data, 3);
+    const result = kmeans(data, 2);
 
     user.forEach((user, index) => {
         user.cluster = result.clusters[index];
     });
     return user;
 }
-
 
 const findUser  = async (data) => {
     const sql = `SELECT 
@@ -81,7 +77,7 @@ const findUser  = async (data) => {
                     FROM 
                     "user" u
                 WHERE
-                    u.fullname ILIKE '%${data}%'`;
+                    u.fullname ILIKE '%${data}%' and u.role = "customer"`;
 
     const user = await sequelize.query(sql, { type: Sequelize.QueryTypes.SELECT });
     return user;
@@ -92,7 +88,8 @@ const registerUser = async (data) => {
     try {
         const check = await User.findOne({
             where : {
-                email : data.email
+                email : data.email,
+                role : "customer"
             }
         });
     
@@ -105,7 +102,8 @@ const registerUser = async (data) => {
             email    : data.email,
             password : data.password,
             phone    : data.phone,
-            role : "customer"
+            role : "customer",
+            status : "customer"
         }
     
         const token = activeToken(user);
@@ -128,7 +126,8 @@ const activeUser = async(data) => {
         if(newUser.code != data.code){
             return -1;
         } 
-        await User.create(newUser.user)
+        const user = await User.create(newUser.user)
+        //await Conversation.create({})
     } catch (error) {
         console.log(error);
         return "error";
@@ -210,4 +209,4 @@ const addEmployee  = async (data) => {
     }
 }
 
-module.exports = {getUser, getAllUserGroup, findUser, getAllUser, registerUser, activeUser, loginUser, putUser, addEmployee}
+module.exports = {getUser, getAllUserGroup, findUser, getAllUser, registerUser, activeUser, loginUser, putUser, addEmployee, activeUser}

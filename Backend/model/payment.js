@@ -4,7 +4,7 @@ const { sequelize } = require("../config/mysql");
 const Payment = sequelize.define("Payment",
     {
         amount : DataTypes.INTEGER,
-        status : DataTypes.TEXT,
+        type : DataTypes.TEXT,
         payment_gateway : DataTypes.TEXT
     },
     {

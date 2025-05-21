@@ -18,9 +18,7 @@ const Hotel = sequelize.define("Hotel",
     }
 );
 
-//User
-User.belongsTo(Hotel);
-Hotel.hasMany(User);
+
 
 
 //Services

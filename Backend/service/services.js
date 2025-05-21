@@ -58,6 +58,15 @@ const deleteServices = async (id) => {
 
 const updateServices = async (id, data) => {
     try {
+        const check = await Services.findOne({
+            where : {
+               id : { [Op.ne]  : id},
+               service_name : data.service_name 
+            }
+        })
+        if(check){
+            return -1;
+        }
         const service = await Services.findByPk(id);
         service.update(data);
     } catch (error) {

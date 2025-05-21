@@ -29,4 +29,9 @@ Room.hasMany(Pricing);
 Room_Details.belongsTo(Room);
 Room.hasMany(Room_Details);
 
+
+//Amenitie
+Amenitie.belongsTo(Room);
+Room.hasMany(Amenitie);
+
 module.exports = { Room };

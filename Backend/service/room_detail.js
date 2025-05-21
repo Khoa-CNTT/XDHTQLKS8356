@@ -26,6 +26,7 @@ const getRoomDetail = async (id) => {
     try {
         const sql = `SELECT
                         rd.room_number,
+                        rd.description,
                         r.room_type AS room_name,
                         r.price_per_night
                     FROM 

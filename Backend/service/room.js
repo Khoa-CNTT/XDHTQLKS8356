@@ -1,68 +1,65 @@
-const {Room} = require("../model/room");
-//const {find_room} = require("../helper/find_room");
-//const {convertData} = require("../helper/convertdata");
+const { Room } = require("../model/room");
+const {find_room} = require("../helper/find_room");
+const {convertData} = require("../helper/convertdata");
 const { sequelize } = require("../config/mysql");
-const {Sequelize, Op} = require("sequelize");
-
+const { Sequelize, Op } = require("sequelize");
+const { Room_Details } = require("../model/room_details");
 
 //Gợi ý phòng
-const getSuggestRoom = async (id, data) => {
-    try {
-        const sql = `WITH RECURSIVE DateRange AS (
-                        SELECT DATE ${data.start} AS "date"
-                        UNION ALL
-                        SELECT ("date" + INTERVAL '1 day')::DATE
-                        FROM DateRange
-                        WHERE "date" < DATE ${data.end} - INTERVAL '1 day'
-                    )
+const suggestRooms = async () => {
+    const sql = `WITH RECURSIVE DateRange AS (
+                    SELECT DATE '2026-11-05' AS "date"
+                    UNION ALL
+                    SELECT ("date" + INTERVAL '1 day')::DATE
+                    FROM DateRange
+                    WHERE "date" < DATE '2026-12-05' - INTERVAL '1 day')
 
-                    SELECT 
-                        r.id AS room_id,
-                        rd.id AS room_detail_id,
-                        r.name AS room_name, 
-                        r.adult_count,
-                        SUM(
-                            COALESCE(
-                                (SELECT p.price FROM pricing p 
-                                WHERE p."RoomId" = r.id AND d.date BETWEEN p.start_date AND p.end_date LIMIT 1), 
-                                r.price_per_night
-                            )
-                        ) AS total_price
-                    FROM 
-                        DateRange d
-                    CROSS JOIN 
-                        roomdetails rd
-                    JOIN 
-                        room r ON rd."RoomId" = r.id
-                    LEFT JOIN 
-                        inventory i ON rd.id = i."RoomDetailId" 
-                                AND i.inventory_date BETWEEN  ${data.start} AND  ${data.end}
-                    WHERE
-                        r."HotelId" = ${id} AND i."RoomDetailId" IS NULL AND r.adult_count <= ${data.num}
-                    GROUP BY 
-                        rd.id, r.id, r.name;`;
+                SELECT 
+                    r.id AS room_id,
+                    rd.id AS room_detail_id,
+                    r.room_type AS room_type, 
+                    r.adult_count,
+                    SUM(
+                        COALESCE(
+                            (SELECT p.price FROM pricing p 
+                            WHERE p.room_id = r.id AND d.date BETWEEN p.start_date AND p.end_date LIMIT 1), 
+                            r.price_per_night
+                        )
+                    ) AS total_price
+                FROM 
+                    DateRange d
+                CROSS JOIN 
+                    room_details rd
+                JOIN 
+                    room r ON rd.room_id = r.id
+                LEFT JOIN 
+                    inventory i ON rd.id = i.room_detail_id
+                            AND i.inventory_date BETWEEN  '2026-11-05' AND  '2026-12-05'
+                WHERE
+                    i.room_detail_id IS NULL AND r.adult_count <= 3
+                GROUP BY 
+                    rd.id, r.id, r.room_type;`;
 
-        const room = await sequelize.query(sql, { type: Sequelize.QueryTypes.SELECT });
-        let result = [];
-        find_room(room, 0, data.num, [], result);
-        
-        return convertData(result);
-    } catch (error) {
-        console.log(error);
-        return "error";
-    }
-}
+    const room = await sequelize.query(sql, {
+        type: Sequelize.QueryTypes.SELECT,
+    });
+
+
+    let result = [];
+    find_room(room, 0, 3, [], result);
+     
+    return convertData(result);
+};
 
 
 //Trạng thái của phòng trong khách sạn
-const getAllRoom = async (id, data) => {
+const getStatusRoom = async (data) => {
     try {
+        // let select = "";
 
-        let select = "";
-
-        if(data.status){
-            select = "AND b.status IN" + data.status;
-        }
+        // if (data.status) {
+        //     select = "AND b.status IN" + data.status;
+        // }
 
         const sql = `SELECT
                         b.id AS booking_id,
@@ -82,33 +79,29 @@ const getAllRoom = async (id, data) => {
                     FROM
                         booking b
                     JOIN
-                        "user" u ON u.id = b."UserId"
+                        "user" u ON u.id = b.user_id
                     JOIN
-                        booking_detail bd ON bd."BookingId" = b.id
+                        booking_details bd ON bd.booking_id = b.id
                     JOIN
-                        roomdetails rd ON rd.id = bd."RoomDetailId"
+                        room_details rd ON rd.id = bd.room_detail_id
                     JOIN
-                        room r ON r.id = rd."RoomId"
-                    JOIN
-                        hotel h ON r."HotelId" = h.id
-                        AND (
-                            b.checkin BETWEEN ${data.start} AND ${data.end}
-                            OR b.checkout BETWEEN ${data.start} AND ${data.end}
-                        )
+                        room r ON r.id = rd.room_id
                     WHERE
-                        h."UserId" = ${id} ${select}
+                        b.checkin BETWEEN ${data.start} AND ${data.end}
+                        OR b.checkout BETWEEN ${data.start} AND ${data.end}
                     ORDER BY
                         rd.room_number;`;
 
-        
-        const room = await sequelize.query(sql, { type: Sequelize.QueryTypes.SELECT });      
+        const room = await sequelize.query(sql, {
+            type: Sequelize.QueryTypes.SELECT,
+        });
 
         return room;
     } catch (error) {
         console.log(error);
         return "error";
     }
-}
+};
 
 const getRoomEmpty = async (data) => {
     try {
@@ -152,26 +145,28 @@ const getRoomEmpty = async (data) => {
                         ) AS room_empty
                     FROM 
                         room r`;
-        
-        const room = await sequelize.query(sql, { type: Sequelize.QueryTypes.SELECT });
 
-        return room;
+        const room = await sequelize.query(sql, {
+            type: Sequelize.QueryTypes.SELECT,
+        });
+        const suggest = await suggestRooms();
+        
+        return {room, suggest};
     } catch (error) {
         console.log(error);
         return "error";
     }
-}
-
+};
 
 const createRoom = async (data) => {
     try {
         const check = await Room.findOne({
-            where : {
-                room_type : data.room_type
-            }
+            where: {
+                room_type: data.room_type,
+            },
         });
-    
-        if(check){
+
+        if (check) {
             return -1;
         }
 
@@ -180,8 +175,7 @@ const createRoom = async (data) => {
         console.log(error);
         return "error";
     }
-}
-
+};
 
 const getRoom = async (id) => {
     try {
@@ -199,15 +193,18 @@ const getRoom = async (id) => {
                         room_details rd ON rd."room_id" = r.id
                     GROUP BY
                         r.id`;
-        
-        const room = await sequelize.query(sql, { type: Sequelize.QueryTypes.SELECT });
+
+        const room = await sequelize.query(sql, {
+            type: Sequelize.QueryTypes.SELECT,
+        });
 
         return room;
     } catch (error) {
         console.log(error);
         return "error";
     }
-}
+};
+
 
 
 const getRoomById = async (id) => {
@@ -218,32 +215,54 @@ const getRoomById = async (id) => {
         console.log(error);
         return "error";
     }
-}
-
-
+};
 
 const deleteRoom = async (id) => {
     try {
-        await Room.destroy({
+        const check = await Room_Details.findOne({
             where : {
-                id : id
+                room_id : id
             }
         })
+        if(check){
+            return -1;
+        }
+        await Room.destroy({
+            where: {
+                id: id,
+            }
+        });
     } catch (error) {
         console.log(error);
         return "error";
     }
-}
-
+};
 
 const updateRoom = async (id, data) => {
     try {
+        const check = await Room.findOne({
+            where : {
+               id : { [Op.ne]  : id},
+               room_type : data.room_type 
+            }
+        })
+        if(check){
+            return -1;
+        }
         const room = await Room.findByPk(id);
         room.update(data);
     } catch (error) {
         console.log(error);
         return "error";
     }
-}
+};
 
-module.exports = {createRoom, getSuggestRoom, getAllRoom, getRoom, getRoomById, getRoomEmpty, deleteRoom, updateRoom}
+module.exports = {
+    createRoom,
+    getStatusRoom,
+    getRoom,
+    getRoomById,
+    getRoomEmpty,
+    deleteRoom,
+    updateRoom
+};

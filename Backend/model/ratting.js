@@ -14,7 +14,8 @@ const Ratting = sequelize.define("Ratting",
             defaultValue: Sequelize.fn("NOW")
         },
         start : DataTypes.DATEONLY,
-        end : DataTypes.DATEONLY
+        end : DataTypes.DATEONLY,
+        description : DataTypes.STRING
     },
     {
         tableName: "ratting"

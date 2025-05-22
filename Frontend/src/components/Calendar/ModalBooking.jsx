@@ -66,13 +66,19 @@ const ModalBooking = (props) => {
           },
           booking_detail: [],
         });
-        e.target.reset()
-        setIsModalOpen(false)
-        toast.success("Đặt phòng thành công")
+        e.target.reset();
+        setIsModalOpen(false);
+        toast.success("Đặt phòng thành công");
       }
     }
   };
 
+  const handleDeleteRoom = (index) => {
+    setDataOrder((prev) => ({
+      ...prev,
+      booking_detail: prev.booking_detail.filter((_, i) => i !== index),
+    }));
+  };
   return (
     <>
       <Modal
@@ -259,19 +265,22 @@ const ModalBooking = (props) => {
                     className={` rounded-lg text-center border-b`}
                   >
                     <td className='p-2 text-left font-semibold flex gap-2'>
-                      {room.room_name}
+                      {room.room_type}
                       <span className='flex font-normal items-center text-xs'>
                         {room.adult_count}
                         <CiUser />
                       </span>
                     </td>
                     <td className='p-2'>
-                      {room.total_price.toLocaleString()} VND
+                      {room.total_price?.toLocaleString()} VND
                     </td>
                     <td className='p-2'>{room.count}</td>
                     <td className='p-2 font-semibold '>
                       {(room.total_price * room.count).toLocaleString()} VND
-                      <span className='py-2 text-lg float-right'>
+                      <span
+                        onClick={() => handleDeleteRoom(index)}
+                        className='py-2 text-lg float-right cursor-pointer'
+                      >
                         <RiDeleteBin6Line />
                       </span>
                     </td>

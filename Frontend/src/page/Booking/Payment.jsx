@@ -25,7 +25,7 @@ const Payment = () => {
     setQrData(
       `https://img.vietqr.io/image/${QR.BANK_ID}-${QR.ACCOUNT_NO}-${
         QR.TEMPLATE
-      }.png?amount=${order.total_price * 100}&addInfo=${encodeURIComponent(
+      }.png?amount=${order.total_price}&addInfo=${encodeURIComponent(
         newTransactionId
       )}&accountName=${encodeURIComponent(QR.ACCOUNT_NAME)}`
     );

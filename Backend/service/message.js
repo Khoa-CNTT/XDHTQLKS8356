@@ -9,6 +9,7 @@ const getMessages  = async(id) => {
     const sql = `SELECT
                     u.fullname,
                     u.image,
+                    m.user_id,
                     m.message_content,
                     m.message_time
                 FROM
@@ -32,6 +33,7 @@ const getAllMessages  = async() => {
     const sql = `SELECT
                     u.fullname,
                     u.image,
+                    m.user_id,
                     m.message_content,
                     m.status_user,
                     m.status_emp,

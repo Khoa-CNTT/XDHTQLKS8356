@@ -100,14 +100,9 @@ const SearchRoom = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const suggest = await roomService.getSuggestRoom(
-        checkin,
-        checkout,
-        adults
-      );
-      const empty = await roomService.getEmptyRoombyUser(checkin, checkout);
-      if (suggest) setSuggestedRooms(suggest);
-      if (empty) setEmptyRoom(empty);
+      const room = await roomService.getEmptyRoombyUser(checkin, checkout);
+      if (room) setSuggestedRooms(room.room_suggest);
+      if (room) setEmptyRoom(room.room_empty);
     };
     fetchData();
   }, [checkin, checkout, adults]);
@@ -116,6 +111,7 @@ const SearchRoom = () => {
     let booking_detail;
     if (type === "suggest") {
       booking_detail = rooms;
+      console.log(booking_detail)
       //   setDataOrder((prev) => ({ ...prev, booking_detail: rooms }));
     }
     if (type === "empty") {
@@ -135,149 +131,179 @@ const SearchRoom = () => {
     navigate(`${APP_ROUTER.INFOR_BOOKING}?${query}`);
   };
   console.log("dataOrder", dataOrder);
+
+  
   const parseImage = (img) => {
-      try {
-        const parsed = JSON.parse(img);
-        return Array.isArray(parsed) ? parsed : [];
-      } catch {
-        return [];
-      }
-    };
+    try {
+      const parsed = JSON.parse(img);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  };
 
   return (
     <div>
       <div className=' mt-10 bg-white rounded-lg'>
         <h2 className='text-2xl font-bold mb-6'>Đề xuất</h2>
-        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4 shadow-md rounded-md mb-6'>
-          {roomData.map((room, index) => (
-            <div key={room.id} className='bg-white p-4 shadow-sm rounded-lg'>
-              <div className='text-center'>
-                <img
-                  src='https://dyf.vn/wp-content/uploads/2021/01/tai-sao-thiet-ke-phong-ngu-khach-san-quan-trong-nhat.jpg'
-                  alt='Room Image'
-                  className='object-cover rounded-md w-full h-40'
-                />
-              </div>
-              <div className='mt-4 text-gray-700'>
-                <h4 className='text-base font-bold text-black'>{room.type}</h4>
-                <p className='text-sm text-gray-900 mt-2'>{room.description}</p>
-                <p className='text-sm text-gray-900 mt-2 flex items-center justify-between gap-4'>
-                  <div className='text-blue-800 font-semibold'>
-                    {room.price.toLocaleString()} VNĐ/đêm
-                  </div>
-                  <div className='font-semibold flex items-center'>
-                    {room.adultsCount <= 2
-                      ? Array.from({ length: room.adultsCount }).map(
-                          (_, index) => (
-                            <FaUser
-                              key={index}
-                              className='inline text-gray-700 mr-1'
-                            />
-                          )
-                        )
-                      : `${room.adultsCount} x `}
-                    {room.adultsCount > 2 && (
-                      <FaUser className='inline text-gray-700 ml-1' />
-                    )}
-                    <div className='text-black'>/ 1 phòng</div>
-                  </div>
-                </p>
+        {suggestedRooms && (
+          <>
+            {suggestedRooms.map((suggest, i) => (
+              <div k={i} className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4 shadow-md rounded-md'>
+                {suggest.map((room, index) => (
+                  <div
+                    key={index}
+                    className='bg-white p-4 shadow-sm rounded-lg'
+                  >
+                    <div className='text-center'>
+                      <img
+                        src={parseImage(room.image)?.[0]}
+                        alt='Room Image'
+                        className='object-cover rounded-md w-full h-40'
+                      />
+                    </div>
+                    <div className='mt-4 text-gray-700'>
+                      <h4 className='text-base font-bold text-black'>
+                        {room.count||0} x {room.room_type||''}
+                      </h4>
+                      <p className='text-sm text-gray-900 mt-2'>
+                        {room.description||""}
+                      </p>
+                      <p className='text-sm text-gray-900 mt-2 flex items-center justify-between gap-4'>
+                        <div className='text-blue-800 font-semibold'>
+                          {room.total_price?.toLocaleString("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          })} VNĐ/đêm
+                        </div>
+                        <div className='font-semibold flex items-center'>
+                          {room.adult_count <= 2
+                            ? Array.from({ length: room.adult_count }).map(
+                                (_, index) => (
+                                  <FaUser
+                                    key={index}
+                                    className='inline text-gray-700 mr-1'
+                                  />
+                                )
+                              )
+                            : `${room.adult_count} x `}
+                          {room.adult_count > 2 && (
+                            <FaUser className='inline text-gray-700 ml-1' />
+                          )}
+                          <div className='text-black'>/ 1 phòng</div>
+                        </div>
+                      </p>
 
-                <div className='mt-1 flex items-center gap-1'>
-                  <FaStar className='text-yellow-500 h-4 w-4' />
-                  <span className='text-black font-semibold'>
-                    {room.rating}
+                      {/* <div className='mt-1 flex items-center gap-1'>
+                        <FaStar className='text-yellow-500 h-4 w-4' />
+                        <span className='text-black font-semibold'>
+                          {room.rating}
+                        </span>
+                        <span className='text-sm text-black font-semibold ml-2'>
+                          {room.reviews} reviews
+                        </span>
+                        <span className='text-sm text-black font-semibold ml-2 flex items-center gap-1'>
+                          <RiServiceFill className='text-green-500 h-4 w-4' />
+                          {room.facilities}+ tiện ích
+                        </span>
+                      </div> */}
+                    </div>
+                  </div>
+                ))}
+                <div className='col-span-1 sm:col-span-2 lg:col-span-3 flex justify-end gap-8 items-center rounded-lg'>
+                  <div className='text-lg font-bold text-black flex gap-2'>
+                    <div>Tổng giá:</div>
+                    <span className='text-lg'>
+                      {suggest.reduce((sum, room) => sum + room.total_price*room.count, 0).toLocaleString('vi-VN')} /đêm
+                    </span>
+                  </div>
+                  <div className='flex justify-center items-center gap-4'>
+                    <button onClick={()=>handleOrder("suggest", suggestedRooms[i])} className='text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center cursor-pointer'>
+                      Đặt phòng
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+
+
+
+
+
+            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4 shadow-md rounded-md mb-6'>
+              {roomData.map((room, index) => (
+                <div
+                  key={room.id}
+                  className='bg-white p-4 shadow-sm rounded-lg'
+                >
+                  <div className='text-center'>
+                    <img
+                      src='https://dyf.vn/wp-content/uploads/2021/01/tai-sao-thiet-ke-phong-ngu-khach-san-quan-trong-nhat.jpg'
+                      alt='Room Image'
+                      className='object-cover rounded-md w-full h-40'
+                    />
+                  </div>
+                  <div className='mt-4 text-gray-700'>
+                    <h4 className='text-base font-bold text-black'>
+                      {room.type}
+                    </h4>
+                    <p className='text-sm text-gray-900 mt-2'>
+                      {room.description}
+                    </p>
+                    <p className='text-sm text-gray-900 mt-2 flex items-center justify-between gap-4'>
+                      <div className='text-blue-800 font-semibold'>
+                        {room.price.toLocaleString()} VNĐ/đêm
+                      </div>
+                      <div className='font-semibold flex items-center'>
+                        {room.adultsCount <= 2
+                          ? Array.from({ length: room.adultsCount }).map(
+                              (_, index) => (
+                                <FaUser
+                                  key={index}
+                                  className='inline text-gray-700 mr-1'
+                                />
+                              )
+                            )
+                          : `${room.adultsCount} x `}
+                        {room.adultsCount > 2 && (
+                          <FaUser className='inline text-gray-700 ml-1' />
+                        )}
+                        <div className='text-black'>/ 1 phòng</div>
+                      </div>
+                    </p>
+
+                    <div className='mt-1 flex items-center gap-1'>
+                      <FaStar className='text-yellow-500 h-4 w-4' />
+                      <span className='text-black font-semibold'>
+                        {room.rating}
+                      </span>
+                      <span className='text-sm text-black font-semibold ml-2'>
+                        {room.reviews} reviews
+                      </span>
+                      <span className='text-sm text-black font-semibold ml-2 flex items-center gap-1'>
+                        <RiServiceFill className='text-green-500 h-4 w-4' />
+                        {room.facilities}+ tiện ích
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              <div className='col-span-1 sm:col-span-2 lg:col-span-3 flex justify-end gap-8 items-center rounded-lg'>
+                <div className='text-lg font-bold text-black flex gap-2'>
+                  <div>Tổng giá:</div>
+                  <span className='text-lg'>
+                    {totalPrice.toLocaleString()} VNĐ/đêm
                   </span>
-                  <span className='text-sm text-black font-semibold ml-2'>
-                    {room.reviews} reviews
-                  </span>
-                  <span className='text-sm text-black font-semibold ml-2 flex items-center gap-1'>
-                    <RiServiceFill className='text-green-500 h-4 w-4' />
-                    {room.facilities}+ tiện ích
-                  </span>
+                </div>
+                <div className='flex justify-center items-center gap-4'>
+                  <button className='text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center cursor-pointer'>
+                    Đặt phòng
+                  </button>
                 </div>
               </div>
             </div>
-          ))}
-          <div className='col-span-1 sm:col-span-2 lg:col-span-3 flex justify-end gap-8 items-center rounded-lg'>
-            <div className='text-lg font-bold text-black flex gap-2'>
-              <div>Tổng giá:</div>
-              <span className='text-lg'>
-                {totalPrice.toLocaleString()} VNĐ/đêm
-              </span>
-            </div>
-            <div className='flex justify-center items-center gap-4'>
-              <button className='text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center cursor-pointer'>
-                Đặt phòng
-              </button>
-            </div>
-          </div>
-        </div>
-        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4 shadow-md rounded-md'>
-          {roomData2.map((room, index) => (
-            <div key={room.id} className='bg-white p-4 shadow-sm rounded-lg'>
-              <div className='text-center'>
-                <img
-                  src='https://dyf.vn/wp-content/uploads/2021/01/tai-sao-thiet-ke-phong-ngu-khach-san-quan-trong-nhat.jpg'
-                  alt='Room Image'
-                  className='object-cover rounded-md w-full h-40'
-                />
-              </div>
-              <div className='mt-4 text-gray-700'>
-                <h4 className='text-base font-bold text-black'>{room.type}</h4>
-                <p className='text-sm text-gray-900 mt-2'>{room.description}</p>
-                <p className='text-sm text-gray-900 mt-2 flex items-center justify-between gap-4'>
-                  <div className='text-blue-800 font-semibold'>
-                    {room.price.toLocaleString()} VNĐ/đêm
-                  </div>
-                  <div className='font-semibold flex items-center'>
-                    {room.adultsCount <= 2
-                      ? Array.from({ length: room.adultsCount }).map(
-                          (_, index) => (
-                            <FaUser
-                              key={index}
-                              className='inline text-gray-700 mr-1'
-                            />
-                          )
-                        )
-                      : `${room.adultsCount} x `}
-                    {room.adultsCount > 2 && (
-                      <FaUser className='inline text-gray-700 ml-1' />
-                    )}
-                    <div className='text-black'>/ 1 phòng</div>
-                  </div>
-                </p>
-
-                <div className='mt-1 flex items-center gap-1'>
-                  <FaStar className='text-yellow-500 h-4 w-4' />
-                  <span className='text-black font-semibold'>
-                    {room.rating}
-                  </span>
-                  <span className='text-sm text-black font-semibold ml-2'>
-                    {room.reviews} reviews
-                  </span>
-                  <span className='text-sm text-black font-semibold ml-2 flex items-center gap-1'>
-                    <RiServiceFill className='text-green-500 h-4 w-4' />
-                    {room.facilities}+ tiện ích
-                  </span>
-                </div>
-              </div>
-            </div>
-          ))}
-          <div className='col-span-1 sm:col-span-2 lg:col-span-3 flex justify-end gap-8 items-center rounded-lg'>
-            <div className='text-lg font-bold text-black flex gap-2'>
-              <div>Tổng giá:</div>
-              <span className='text-lg'>
-                {totalPrice.toLocaleString()} VNĐ/đêm
-              </span>
-            </div>
-            <div className='flex justify-center items-center gap-4'>
-              <button className='text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center cursor-pointer'>
-                Đặt phòng
-              </button>
-            </div>
-          </div>
-        </div>
+          </>
+        )}
       </div>
 
       <div className=' mt-10 bg-white rounded-lg mb-10'>
@@ -324,7 +350,11 @@ const SearchRoom = () => {
                             </div>
                           </td>
                           <td className='px-6 py-4 w-[300px] whitespace-nowrap text-gray-800 dark:text-neutral-200'>
-                            <img src={parseImage(room.image)?.[0] } alt="" className="w-full aspect-[2/1]"/>
+                            <img
+                              src={parseImage(room.image)?.[0]}
+                              alt=''
+                              className='w-full aspect-[2/1]'
+                            />
                           </td>
                           <td className='px-6 py-4 text-center whitespace-nowrap text-gray-800 dark:text-neutral-200'>
                             {room.total_price.toLocaleString()} VND

@@ -62,7 +62,7 @@ const createBooking = async (id, data) => {
         }
 
         await Booking_Details.bulkCreate(booking_detail);
-
+        return booking
     } catch (error) {
         console.log(error);
         return "error";
@@ -84,6 +84,7 @@ const getBookingById = async (id) => {
                         COALESCE(SUM(p.amount), 0) AS amount,
                         JSONB_AGG(
                             DISTINCT JSONB_BUILD_OBJECT(
+                                    'booking_detail_id', bd.id,
                                     'room_type', r.room_type,
                                     'room_number', rd.room_number,
                                     'price', bd.price
@@ -147,6 +148,7 @@ const getAllBookingForAdmin = async (data) => {
                         COALESCE(SUM(p.amount), 0) AS amount,
                         JSONB_AGG(
                             DISTINCT JSONB_BUILD_OBJECT(
+                                    'id', rd.id,
                                     'room_type', r.room_type,
                                     'room_number', rd.room_number,
                                     'price', bd.price

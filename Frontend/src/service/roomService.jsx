@@ -18,7 +18,11 @@ export const getEmptyRoombyUser = async (checkin, checkout) =>{
    try {
       const response = await apiConfig.get(`/customer/room_empty?start='${checkin}'&end='${checkout}'`)
       // console.log("empty",response.data.room[0].room_empty)
-      return response.data.room[0].room_empty.map(i=> ({...i, available: i.count, count: 0}))
+      const empty=response.data.room.room[0].room_empty.map(i=> ({...i, available: i.count, count: 0}))
+      return {
+        room_empty: empty,
+        room_suggest: response.data.room.suggest
+      }
    } catch (error) {
       console.log("Error getSchedule: " + error)
       return {}
@@ -65,7 +69,7 @@ export const addRoomType = async (data) => {
  export const updateRoomType = async (id,data) => {
    try {
      const response = await apiConfig.put(`/admin/room/${id}`, data);
-     return response.data?.room;
+     return response.data;
    } catch (error) {
      if (error.response) {
        return error.response.data;

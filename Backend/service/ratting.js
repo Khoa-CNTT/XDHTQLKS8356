@@ -9,10 +9,11 @@ const createRatting = async (data) => {
 const getRatting = async (id) => {
     const sql = `SELECT
                     ra.rate,
-                    ra.image,
+                    ra.image as rating_image,
                     ra.start,
                     ra.end,
                     ra.create_at,
+                    ra.description,
                     r.room_type,
                     u.fullname,
                     u.image

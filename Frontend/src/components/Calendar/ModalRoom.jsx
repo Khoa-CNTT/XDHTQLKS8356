@@ -16,20 +16,12 @@ const ModalRoom = (props) => {
   const [emptyRoom, setEmptyRoom] = useState([]);
 
   const fetchData = async () => {
-    const checkin = formatDate(dataOrder.booking.checkin, "YYYY-MM-DD")
-    const checkout = formatDate(dataOrder.booking.checkout, "YYYY-MM-DD")
-    const suggest = await roomService.getSuggestRoom(
-      checkin,
-      checkout,
-      dataOrder.booking.adult_count
-    );
-    const empty = await roomService.getEmptyRoombyUser(
-      checkin,
-      checkout
-    );
+    const checkin = formatDate(dataOrder.booking.checkin, "YYYY-MM-DD");
+    const checkout = formatDate(dataOrder.booking.checkout, "YYYY-MM-DD");
+    const room = await roomService.getEmptyRoombyUser(checkin, checkout);
 
-    if (suggest) setSuggestedRooms(suggest);
-    if (empty) setEmptyRoom(empty);
+    if (room) setSuggestedRooms(room.room_suggest);
+    if (room) setEmptyRoom(room.room_empty);
   };
 
   useEffect(() => {
@@ -41,7 +33,10 @@ const ModalRoom = (props) => {
   ]);
   const handleOrder = (type, rooms) => {
     if (type === "suggest") {
-      setDataOrder((prev) => ({ ...prev, booking_detail: rooms }));
+      setDataOrder((prev) => ({
+        ...prev,
+        booking_detail: [...prev.booking_detail, ...rooms],
+      }));
     }
     if (type === "empty") {
       const filteredRooms = emptyRoom.filter((room) => room.count > 0);
@@ -49,12 +44,27 @@ const ModalRoom = (props) => {
         toast.error("Chọn số lượng phòng > 0");
         return;
       }
-      setDataOrder((prev) => ({ ...prev, booking_detail: filteredRooms }));
+      setDataOrder((prev) => ({
+        ...prev,
+        booking_detail: filteredRooms.map(
+          (room) => {
+            const existing = dataOrder.booking_detail.find((r) => r.room_id === room.room_id);
+            let count
+            if (existing) {
+              count = existing.count + room.count;
+            } else {
+              acc.push({ ...room });
+            }
+            return {...room, count: count<room.available?count:room.available};
+          },
+          [...prev.booking_detail]
+        ),
+      }));
     }
     setIsModalOpen(false);
   };
 
-console.log(dataOrder.booking.checkin, dataOrder.booking.checkout)
+  console.log(dataOrder.booking.checkin, dataOrder.booking.checkout);
   return (
     <Modal
       title='Tìm kiếm phòng'
@@ -99,15 +109,16 @@ console.log(dataOrder.booking.checkin, dataOrder.booking.checkout)
             </label>
             <div class='relative flex items-center max-w-[8rem] border rounded-md overflow-hidden'>
               <span
-                onClick={() =>{
-                    if(dataOrder.booking.adult_count===1) return 
-                    else setDataOrder((prev) => ({
-                    ...prev,
-                    booking: {
-                      ...prev.booking,
-                      adult_count: prev.booking.adult_count - 1,
-                    },
-                  }))
+                onClick={() => {
+                  if (dataOrder.booking.adult_count === 1) return;
+                  else
+                    setDataOrder((prev) => ({
+                      ...prev,
+                      booking: {
+                        ...prev.booking,
+                        adult_count: prev.booking.adult_count - 1,
+                      },
+                    }));
                 }}
                 className='p-1.5 text-lg hover:bg-gray-100 hover:cursor-pointer'
               >

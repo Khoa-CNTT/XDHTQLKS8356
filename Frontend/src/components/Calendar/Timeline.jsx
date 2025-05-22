@@ -36,8 +36,8 @@ const Timeline = () => {
       color: "#f5942766",
       isChecked: false,
     },
-    cancelled: {
-      title: "Đã huỷ",
+    temporary: {
+      title: "Đặt tạm thời",
       color: "#1a99ee66",
       isChecked: false,
     },
@@ -88,19 +88,20 @@ const Timeline = () => {
           .map(([key]) => key)
       : [];
     if (date) {
-      // const schedule = await bookingService.getSchedule(date.start, date.end, checkedKeys)
-      // console.log(schedule)
-      // if (schedule?.length > 0) {
-      //     setBookingSchedule(schedule.map(i => ({
-      //         resource: i.room_detail_id,
-      //         start: i.checkin,
-      //         end: i.checkout,
-      //         text: i.booking_detail_id,
-      //         color: status[i.status].color,
-      //         booking_id: i.booking_id,
-      //         booking_detail_id: i.booking_detail_id
-      //     })))
-      // } else setBookingSchedule([])
+      const schedule = await bookingService.getSchedule(date.start, date.end, checkedKeys)
+      console.log(schedule)
+      if (schedule.status&&schedule?.room?.length > 0) {
+        console.log(true)
+          setBookingSchedule(schedule.room.map(i => ({
+              resource: i.room_detail_id,
+              start: i.checkin,
+              end: i.checkout,
+              text: i.booking_detail_id,
+              color: status[i.status].color,
+              booking_id: i.booking_id,
+              booking_detail_id: i.booking_detail_id
+          })))
+      } else setBookingSchedule([])
       setBookingSchedule([
         {
           resource: 12,

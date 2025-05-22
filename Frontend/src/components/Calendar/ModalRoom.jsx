@@ -53,7 +53,7 @@ const ModalRoom = (props) => {
             if (existing) {
               count = existing.count + room.count;
             } else {
-              acc.push({ ...room });
+              return room
             }
             return {...room, count: count<room.available?count:room.available};
           },

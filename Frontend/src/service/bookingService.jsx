@@ -1,11 +1,13 @@
 import apiConfig from "./axiosConfig"
 
 export const getSchedule  = async(start, end, status) => {
-   if(!start || !end ||!status) return
+   // if(!start || !end ||!status) return
+      if(!start || !end) return
    const fomatStatus = `(${status.map(key => `'${key}'`).join(",")})`;
    try {
-      const response = await apiConfig.get(`/admin/bookings?start='${start}'&end='${end}'`+ `${status.length>0 ? `&status=${fomatStatus}` : ''}`)
-      return response.data.room
+      // const response = await apiConfig.get(`/admin/bookings?start='${start}'&end='${end}'`+ `${status.length>0 ? `&status=${fomatStatus}` : ''}`)
+      const response = await apiConfig.get(`/admin/status_room?start='${start}'&end='${end}'`)
+      return response.data
    } catch (error) {
       console.log("Error getSchedule: " + error)
       return []

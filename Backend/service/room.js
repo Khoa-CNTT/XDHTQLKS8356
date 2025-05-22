@@ -67,6 +67,7 @@ const getStatusRoom = async (data) => {
         const sql = `SELECT
                         b.id AS booking_id,
                         rd.room_number,
+                        rd.id AS room_detail_id,
                         r.id AS room_id,
                         u.fullname,
                         bd.id AS booking_detail_id,

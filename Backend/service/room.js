@@ -6,13 +6,13 @@ const { Sequelize, Op } = require("sequelize");
 const { Room_Details } = require("../model/room_details");
 
 //Gợi ý phòng
-const suggestRooms = async () => {
+const suggestRooms = async (data) => {
     const sql = `WITH RECURSIVE DateRange AS (
-                    SELECT DATE '2026-11-05' AS "date"
+                    SELECT DATE ${data.start} AS "date"
                     UNION ALL
                     SELECT ("date" + INTERVAL '1 day')::DATE
                     FROM DateRange
-                    WHERE "date" < DATE '2026-12-05' - INTERVAL '1 day')
+                    WHERE "date" < DATE ${data.end} - INTERVAL '1 day')
 
                 SELECT 
                     r.id AS room_id,
@@ -37,9 +37,9 @@ const suggestRooms = async () => {
                     room r ON rd.room_id = r.id
                 LEFT JOIN 
                     inventory i ON rd.id = i.room_detail_id
-                            AND i.inventory_date BETWEEN  '2026-11-05' AND  '2026-12-05'
+                            AND i.inventory_date BETWEEN  ${data.start} AND  ${data.end}
                 WHERE
-                    i.room_detail_id IS NULL AND r.adult_count <= 3
+                    i.room_detail_id IS NULL AND r.adult_count <= ${data.people}
                 GROUP BY 
                     rd.id, r.id, r.room_type, r.image;`;
 
@@ -107,6 +107,7 @@ const getStatusRoom = async (data) => {
     }
 };
 
+
 const getRoomEmpty = async (data) => {
     try {
         const sql = `WITH RECURSIVE DateRange AS (
@@ -149,12 +150,18 @@ const getRoomEmpty = async (data) => {
                             )
                         ) AS room_empty
                     FROM 
-                        room r`;
+                        room_details rd
+                    LEFT JOIN 
+                        inventory i ON rd.id = i.room_detail_id AND i.inventory_date BETWEEN ${data.start} AND  ${data.end}
+                    JOIN
+                        room r ON r.id = rd.room_id
+                    WHERE
+                        i.room_detail_id IS NULL`;
 
         const room = await sequelize.query(sql, {
             type: Sequelize.QueryTypes.SELECT,
         });
-        const suggest = await suggestRooms();
+        const suggest = await suggestRooms(data);
         
         return {room, suggest};
     } catch (error) {

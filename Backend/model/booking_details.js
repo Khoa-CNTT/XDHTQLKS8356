@@ -41,6 +41,7 @@ Booking_Details.afterBulkCreate(async (data) => {
             const day = new Date(checkinDate);
             day.setDate(checkinDate.getDate() + i);
             await Inventory.create({
+                BookingId : data[0].dataValues.BookingId,
                 inventory_date : day,
                 RoomDetailId : booking.dataValues.RoomDetailId
             })

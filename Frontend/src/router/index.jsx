@@ -28,9 +28,12 @@ import Timeline from "../components/Calendar/Timeline";
 import RoomPage from "../page/Room";
 import InformationBooking from "../page/Booking/Information";
 import Personnel from "../page/Management/Personnel";
-import ClassifyCustomer from "../page/Management/ClassifyCustomer";
-import Report from "../page/Management/Report";
 import HomeDefault from "../page/Home/HomeDefault";
+import AllCustomer from "../page/Management/Customer/AllCustomer";
+import ClassifyCustomer from "../page/Management/Customer/ClassifyCustomer";
+import ReportByTotal from "../page/Management/Report/ReportByTotal";
+import ReportByRoomType from "../page/Management/Report/ReportByRoomType";
+import ReportByService from "../page/Management/Report/ReportByService";
 
 const router = createBrowserRouter([
   {
@@ -146,6 +149,33 @@ const router = createBrowserRouter([
         path: APP_ROUTER.ROOMDETAIL,
         element: <Timeline />,
       },
+      {
+        path: APP_ROUTER.ALLCUSTOMER,
+        element: <AllCustomer />,
+      },
+      {
+        path: APP_ROUTER.CLASSIFY,
+        element: <ClassifyCustomer />,
+      },
+      {
+        path: APP_ROUTER.REPORT,
+        children: [
+          {
+            path: APP_ROUTER.REPORTTOTAL,
+            element: <ReportByTotal />,
+          },
+          {
+            path: APP_ROUTER.REPORTROOMTYPE,
+            element: <ReportByRoomType />,
+          },
+          {
+            path: APP_ROUTER.REPORTSERVICE,
+            element: <ReportByService />,
+          },
+        ],
+      },
+      
+
     ],
   },
   {

@@ -30,7 +30,12 @@ export const APP_ROUTER = {
     CLASSIFICATION: "/admin/customer/classification",
     PERSONNEL: "/admin/personnel",
     CLASSIFY: "/admin/classify",
+    
+    ALLCUSTOMER: "/admin/customer",
     REPORT: "/admin/report",
+    REPORTTOTAL: "/admin/report/report_total",
+    REPORTROOMTYPE: "/admin/report/report_roomtype",
+    REPORTSERVICE: "/admin/report/report_service",
     //client
     USER: "/user",
     INFORMATION: "/user/information",

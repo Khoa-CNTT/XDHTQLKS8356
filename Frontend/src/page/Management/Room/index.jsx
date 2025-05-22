@@ -145,7 +145,7 @@ const Room = () => {
                         className="fixed inset-0 bg-gray-800/50 flex justify-center items-center z-50"
                     >
                         <div
-                            className="bg-white rounded-lg w-[50%] h-[78%] relative"
+                            className="bg-white rounded-lg w-[50%] h-[50%] relative"
                             onClick={(e) => e.stopPropagation()}
                         >
                             <ModalRoom

@@ -334,6 +334,7 @@ const GeneralTable = ({
               const hasDetails = Array.isArray(row.details);
               const isBooking = !!row.booking_id;
               const isNameDetails = !!row.name && hasDetails;
+              console.log(hasDetails, isBooking, isNameDetails)
               if (isNameDetails) {
                 return row.details.map((detail, subIndex) => (
                   <Fragment key={`${index}-${subIndex}`}>
@@ -351,8 +352,8 @@ const GeneralTable = ({
                             ) : column.key === "image" && value ? (
                               (() => {
                                 try {
-                                  const images = JSON.parse(value);
-                                  const imageUrl = images?.[0]?.[0];
+                                  const images = parseImage(value)
+                                  const imageUrl = images?.[0]
                                   return imageUrl ? (
                                     <img src={imageUrl} alt="Hình ảnh" className="w-16 h-16 object-cover rounded mx-auto" />
                                   ) : "Không có ảnh";
@@ -396,11 +397,21 @@ const GeneralTable = ({
                             ) : column.key === "image" && value ? (
                               (() => {
                                 try {
-                                  const images = JSON.parse(value);
-                                  const imageUrl = images?.[0];
-                                  return imageUrl ? (
-                                    <img src={imageUrl} alt="Hình ảnh" className="w-24 h-16 object-cover rounded mx-auto" />
-                                  ) : "Không có ảnh";
+                                  if (typeof value === "string" && value.trim().startsWith("[")) {
+                                    const images = parseImage(value); 
+                                    const imageUrl = images?.[0];
+                                    return imageUrl ? (
+                                      <img src={imageUrl} alt="Hình ảnh" className="w-24 h-16 object-cover rounded mx-auto"/>
+                                    ) : (
+                                      "Không có ảnh"
+                                    );
+                                  }
+                                  if (typeof value === "string" && (value.startsWith("http://") || value.startsWith("https://"))) {
+                                    return (
+                                      <img src={value} alt="Hình ảnh" className="w-12 h-12 rounded-full object-cover mx-auto"/>
+                                    );
+                                  }
+                                  return "Không có ảnh";
                                 } catch {
                                   return "Lỗi ảnh";
                                 }
@@ -415,6 +426,7 @@ const GeneralTable = ({
                               value ?? ""
                             )}
                           </td>
+
                         );
                       })}
                     </tr>
@@ -433,7 +445,7 @@ const GeneralTable = ({
                 return (
                   <Fragment key={`${index}`}>
                     <tr
-                      key={`${row.booking_id}`}
+                      key={`${row.booking_id}-${index}`} 
                       onClick={() => handleRowClickWithDetail(row.booking_id)}
                       className="cursor-pointer hover:bg-gray-100 border-b border-gray-200"
                     >

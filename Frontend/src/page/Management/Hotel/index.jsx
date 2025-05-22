@@ -67,7 +67,7 @@ console.log(data)
 
   return (
     <div className='h-screen'>
-      <div className=' mt-6 flex justify-end'>
+      <div className='mr-6 mt-6 flex justify-end'>
         <Button
           color='blue'
           textColor='white'

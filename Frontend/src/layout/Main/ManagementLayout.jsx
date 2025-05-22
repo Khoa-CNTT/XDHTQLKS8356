@@ -51,11 +51,6 @@ const ManagementLayout = () => {
 
     const items = [
   {
-    key: '1',
-    icon: <HomeOutlined />,
-    label: <Link to={APP_ROUTER.HOME}>Trang chủ</Link>,
-  },
-  {
     key: '2',
     icon: <FundViewOutlined />,
     label: <Link to={APP_ROUTER.HOTEL}>Thông tin khách sạn</Link>,
@@ -110,7 +105,7 @@ const ManagementLayout = () => {
       {
         key: '81',
         icon: <UserOutlined />,
-        label: <Link to={APP_ROUTER.USER}>Thông tin khách hàng</Link>,
+        label: <Link to={APP_ROUTER.CUSTOMER}>Thông tin khách hàng</Link>,
       },
       {
         key: '82',
@@ -139,7 +134,24 @@ const ManagementLayout = () => {
   {
     key: '10',
     icon: <BarChartOutlined />,
-    label: <Link to={APP_ROUTER.REPORT}>Báo cáo thống kê</Link>,
+    label: "Báo cáo thống kê",
+    children: [
+      {
+        key: '90',
+        icon: <UserOutlined />,
+        label: <Link to={APP_ROUTER.REPORTTOTAL}>Tổng doanh thu</Link>,
+      },
+      {
+        key: '91',
+        icon: <SisternodeOutlined />,
+        label: <Link to={APP_ROUTER.REPORTROOMTYPE}>Loại phòng</Link>,
+      },
+      {
+        key: '92',
+        icon: <SisternodeOutlined />,
+        label: <Link to={APP_ROUTER.REPORTSERVICE}>Dịch vụ</Link>,
+      },
+    ],
   },
   {
     key: '11',

@@ -121,7 +121,7 @@ const ModalRoom = ({ handleClose, lable, handleSubmit, data, resetTrigger, funct
                                         ))}
                                 </select>
                             </div>
-                            <div className="mb-4 flex items-start">
+                            {/* <div className="mb-4 flex items-start">
                                 <label className="text-sm font-medium text-gray-700 text-nowrap w-44">
                                     Mô tả
                                 </label>
@@ -140,7 +140,7 @@ const ModalRoom = ({ handleClose, lable, handleSubmit, data, resetTrigger, funct
                                         e.target.style.height = `${e.target.scrollHeight}px`;
                                     }}
                                 ></textarea>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>

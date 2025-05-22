@@ -22,8 +22,27 @@ export const getUser = async() => {
      }
    }
  };
-
+ export const getAllUser = async() => {
+  try {
+     const response = await apiConfig.get(`/admin/all_user`)
+     return response.data.user
+  } catch (error) {
+     console.log("Error getUser: " + error)
+     return {}
+  }
+}
+export const getUserClassification = async() => {
+   try {
+      const response = await apiConfig.get(`/admin/group_user`)
+      return response.data.user
+   } catch (error) {
+      console.log("Error getUser: " + error)
+      return {}
+   }
+ }
 export const userServices = {
    getUser,
    updateUser,
+   getAllUser,
+   getUserClassification
 }

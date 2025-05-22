@@ -86,17 +86,17 @@ const BookingService = ({ onClose, isOpen, dataRow, fetchBooking }) => {
                             <table className="w-full text-left table-auto min-w-max">
                                 <thead className="bg-gray-200">
                                 <tr >
-                                    <th className="px-2 py-2 border-b border-gray-100 bg-gray-50">
+                                    <th className="px-2 py-2 border-b border-gray-100 bg-gray-100">
                                     <p className="block font-sans text-sm antialiased font-normal leading-none text-gray-900 opacity-70 text-center">
                                         Loại phòng
                                     </p>
                                     </th>
-                                    <th className="px-2 py-2 border-b border-gray-100 bg-gray-50">
+                                    <th className="px-2 py-2 border-b border-gray-100 bg-gray-100">
                                     <p className="block font-sans text-sm antialiased font-normal leading-none text-gray-900 opacity-70 text-center">
                                         Số phòng
                                     </p>
                                     </th>
-                                    <th className="px-2 py-2 border-b border-gray-100 bg-gray-50 rounded-tr-xl">
+                                    <th className="px-2 py-2 border-b border-gray-100 bg-gray-100 rounded-tr-xl">
                                     <p className="block font-sans text-sm antialiased font-normal leading-none text-gray-900 opacity-70 text-center">
                                         Giá/ngày
                                     </p>
@@ -129,22 +129,22 @@ const BookingService = ({ onClose, isOpen, dataRow, fetchBooking }) => {
                                 </tbody>
                             </table>
                         </div>
-                        <table className="w-full text-left table-auto min-w-max mb-10">
-                            <thead className="bg-gray-200">
+                        <table className="w-full text-left table-auto min-w-max mb-10 mt-6">
+                            <thead className="bg-gray-300">
                             <tr>
-                                <th className="px-2 py-2 border-b border-gray-100 bg-gray-50 rounded-tl-xl">
+                                <th className="px-2 py-2 border-b border-gray-100 bg-gray-100 rounded-tl-xl">
                                 <p className="block font-sans text-sm antialiased font-normal leading-none text-gray-900 opacity-70 text-center">
                                     Tên dịch vụ
                                 </p>
                                 </th>
-                                <th className="px-2 py-2 border-b border-gray-100 bg-gray-50">
+                                <th className="px-2 py-2 border-b border-gray-100 bg-gray-100">
                                 <p className="block font-sans text-sm antialiased font-normal leading-none text-gray-900 opacity-70 text-center">
                                     Số lượng
                                 </p>
                                 </th>
-                                <th className="px-2 py-2 border-b border-gray-100 bg-gray-50 rounded-tr-xl">
+                                <th className="px-2 py-2 border-b border-gray-100 bg-gray-100 rounded-tr-xl">
                                 <p className="block font-sans text-sm antialiased font-normal leading-none text-gray-900 opacity-70 text-center">
-                                    Giá tổng
+                                    Tổng giá
                                 </p>
                                 </th>
                             </tr>
@@ -174,105 +174,111 @@ const BookingService = ({ onClose, isOpen, dataRow, fetchBooking }) => {
 
                         <div className="text-base font-semibold mb-2 text-blue-600">Thông tin dịch vụ muốn đặt</div>
                         <div className="relative overflow-x-auto">
-                        <div className="relative flex flex-col w-full h-full overflow-auto text-gray-700 bg-white shadow-md rounded-lg bg-clip-border">
-                            <table className="w-full text-left table-auto min-w-max table-fixed">
-                                <thead>
-                                    <tr>
-                                    <th className="py-2 px-3 border-b border-slate-300 bg-slate-50 text-sm font-normal text-slate-500 text-center rounded-tl-lg">
-                                        Tên dịch vụ
-                                    </th>
-                                    <th className="py-2 px-3 border-b border-slate-300 bg-slate-50 text-sm font-normal text-slate-500 text-center">
-                                        Số lượng
-                                    </th>
-                                    <th className="py-2 px-3 border-b border-slate-300 bg-slate-50 text-sm font-normal text-slate-500 text-center">
-                                        Giá
-                                    </th>
-                                    <th className="py-2 px-3 border-b border-slate-300 bg-slate-50 text-sm font-normal text-slate-500 text-center rounded-tr-lg">
-                                        Thao tác
-                                    </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                <tbody>
-  {selectedServices.length === 0 ? (
-    <tr>
-      <td
-        colSpan={5}
-        className="py-4 text-center text-sm text-gray-500"
-      >
-        Chưa có dịch vụ nào
-      </td>
-    </tr>
-  ) : (
-    selectedServices.map((service) => (
-      <tr key={service.id} className="hover:bg-slate-50">
-        <td className="py-2 px-3 border-b border-slate-200 text-sm text-slate-800 text-center font-medium whitespace-nowrap leading-none">
-          {service.service_name}
-        </td>
-        <td className="py-2 px-3 border-b border-slate-200 text-sm text-slate-800 text-center">
-          <div className="inline-flex items-center justify-center gap-2">
-            <button
-              onClick={() => handleDecrease(service.id)}
-              className={`w-6 h-6 rounded ${
-                service.quantity <= 1
-                  ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                  : "bg-gray-300 text-black cursor-pointer"
-              }`}
-              disabled={service.quantity <= 1}
-            >
-              -
-            </button>
-            <span className="w-5 text-center leading-none">{service.quantity}</span>
-            <button
-              onClick={() => handleIncrease(service.id)}
-              className="w-6 h-6 bg-gray-200 rounded cursor-pointer"
-            >
-              +
-            </button>
-          </div>
-        </td>
-        <td className="py-2 px-3 border-b border-slate-200 text-sm text-slate-800 text-center leading-none">
-          {(service.price * service.quantity).toLocaleString()}₫
-        </td>
-        <td className="py-2 px-3 border-b border-slate-200 text-sm text-slate-800 text-center leading-none">
-          <button
-            onClick={() => handleRemove(service.id)}
-            className="text-gray-500 cursor-pointer hover:text-gray-800"
-          >
-            <MdDeleteForever className="h-5 w-5 mx-auto" />
-          </button>
-        </td>
-      </tr>
-    ))
-  )}
-</tbody>
+                        <div className="relative flex flex-col w-full h-[30vh] bg-white shadow-md rounded-lg bg-clip-border">
 
-                                </tbody>
-                                <tfoot>
-                                    <tr className="font-semibold text-gray-900 border-t border-slate-300 bg-slate-50">
-                                    <td className="py-2 px-3 text-center text-base rounded-bl-lg leading-none">Tổng cộng</td>
-                                    <td className="py-2 px-3 text-center text-base leading-none">
-                                        {selectedServices.reduce((sum, s) => sum + s.quantity, 0)}
+                          <div className="flex-1 overflow-auto">
+                            <table className="w-full text-left table-auto min-w-max table-fixed">
+                              <thead>
+                                <tr>
+                                  <th className="py-2 px-3 border-b border-slate-300 bg-slate-50 text-sm font-normal text-slate-500 text-center rounded-tl-lg">
+                                    Tên dịch vụ
+                                  </th>
+                                  <th className="py-2 px-3 border-b border-slate-300 bg-slate-50 text-sm font-normal text-slate-500 text-center">
+                                    Số lượng
+                                  </th>
+                                  <th className="py-2 px-3 border-b border-slate-300 bg-slate-50 text-sm font-normal text-slate-500 text-center">
+                                    Giá
+                                  </th>
+                                  <th className="py-2 px-3 border-b border-slate-300 bg-slate-50 text-sm font-normal text-slate-500 text-center rounded-tr-lg">
+                                    Thao tác
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {selectedServices.length === 0 ? (
+                                  <tr>
+                                    <td colSpan={4} className="py-4 text-center text-sm text-gray-500">
+                                      Chưa có dịch vụ nào
                                     </td>
-                                    <td className="py-2 px-3 text-center text-base leading-none">
-                                        {selectedServices
-                                        .reduce((sum, s) => sum + s.price * s.quantity, 0)
-                                        .toLocaleString()}
-                                        ₫
-                                    </td>
-                                    <td className="py-2 px-3 text-center text-base rounded-br-lg">
+                                  </tr>
+                                ) : (
+                                  selectedServices.map((service) => (
+                                    <tr key={service.id} className="hover:bg-slate-50">
+                                      <td className="py-2 px-3 border-b border-slate-200 text-sm text-slate-800 text-center font-medium whitespace-nowrap leading-none">
+                                        {service.service_name}
+                                      </td>
+                                      <td className="py-2 px-3 border-b border-slate-200 text-sm text-slate-800 text-center">
+                                        <div className="inline-flex items-center justify-center gap-2">
+                                          <button
+                                            onClick={() => handleDecrease(service.id)}
+                                            className={`w-6 h-6 rounded ${
+                                              service.quantity <= 1
+                                                ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                                                : "bg-gray-300 text-black cursor-pointer"
+                                            }`}
+                                            disabled={service.quantity <= 1}
+                                          >
+                                            -
+                                          </button>
+                                          <span className="w-5 text-center leading-none">{service.quantity}</span>
+                                          <button
+                                            onClick={() => handleIncrease(service.id)}
+                                            className="w-6 h-6 bg-gray-200 rounded cursor-pointer"
+                                          >
+                                            +
+                                          </button>
+                                        </div>
+                                      </td>
+                                      <td className="py-2 px-3 border-b border-slate-200 text-sm text-slate-800 text-center leading-none">
+                                        {(service.price * service.quantity).toLocaleString()}₫
+                                      </td>
+                                      <td className="py-2 px-3 border-b border-slate-200 text-sm text-slate-800 text-center leading-none">
                                         <button
-                                        type="button"
-                                        onClick={handleSubmit}
-                                        className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                                          onClick={() => handleRemove(service.id)}
+                                          className="text-gray-500 cursor-pointer hover:text-gray-800"
                                         >
-                                        Đặt dịch vụ
+                                          <MdDeleteForever className="h-5 w-5 mx-auto" />
                                         </button>
-                                    </td>
+                                      </td>
                                     </tr>
-                                </tfoot>
+                                  ))
+                                )}
+                              </tbody>
                             </table>
+                          </div>
+
+          
+                          <div className="sticky bottom-0 bg-slate-50 border-t border-slate-300">
+                            <table className="w-full table-fixed">
+                              <tfoot>
+                                <tr className="font-semibold text-gray-900">
+                                  <td className="py-2 px-3 text-center text-base rounded-bl-lg leading-none">
+                                    Tổng cộng
+                                  </td>
+                                  <td className="py-2 px-3 text-center text-base leading-none">
+                                    {selectedServices.reduce((sum, s) => sum + s.quantity, 0)}
+                                  </td>
+                                  <td className="py-2 px-3 text-center text-base leading-none">
+                                    {selectedServices
+                                      .reduce((sum, s) => sum + s.price * s.quantity, 0)
+                                      .toLocaleString()}
+                                    ₫
+                                  </td>
+                                  <td className="py-2 px-3 text-center text-base rounded-br-lg">
+                                    <button
+                                      type="button"
+                                      onClick={handleSubmit}
+                                      className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                                    >
+                                      Đặt dịch vụ
+                                    </button>
+                                  </td>
+                                </tr>
+                              </tfoot>
+                            </table>
+                          </div>
                         </div>
+
 
                         </div>
                         

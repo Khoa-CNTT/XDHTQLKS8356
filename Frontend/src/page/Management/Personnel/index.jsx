@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-
+import toast from 'react-hot-toast';
+import { addPersonnel } from '../../../service/personnelServices';
 const Personnel = () => {
   const [formData, setFormData] = useState({
-    
-    name: "",
+    fullname: "",
     email: "",
     phone: "",
     password: "",
@@ -17,30 +17,41 @@ const Personnel = () => {
     const { id, value } = e.target;
     setFormData((prev) => ({ ...prev, [id]: value }));
   };
-
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const { fullname, email, phone, password, role } = formData;
+    if (!fullname || !email || !phone || !password || !role) {
+      toast.error("Vui lòng nhập đầy đủ thông tin.");
+      return;
+    }
+    const update = await addPersonnel(formData);
+    console.log(update)
+    if(update.success) {
+      toast.success("Thêm thành công.");
+    }else {
+      toast.error(update.message);
+    }
+  };
   return (
     <div className='h-screen flex items-center w-full justify-center'>
-        <form className="w-1/3 mx-auto p-4 space-y-6 bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-300">
-      {/* Họ */}
+        <form className="w-1/3 mx-auto p-4 space-y-6 bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-300" onSubmit={handleSubmit}>
       <div>
-        <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+        <label htmlFor="fullname" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
           Họ và tên
         </label>
         <input
           type="text"
-          id="name"
+          id="fullname"
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
             focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 
             dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white 
             dark:focus:ring-blue-500 dark:focus:border-blue-500"
           placeholder="Họ và tên"
-          required
-          value={formData.name}
+          
+          value={formData.fullname}
           onChange={handleChange}
         />
       </div>
-
-      {/* Email */}
       <div>
         <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
           Email
@@ -53,13 +64,11 @@ const Personnel = () => {
             dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white 
             dark:focus:ring-blue-500 dark:focus:border-blue-500"
           placeholder="email@example.com"
-          required
+          
           value={formData.email}
           onChange={handleChange}
         />
       </div>
-
-      {/* Số điện thoại */}
       <div>
         <label htmlFor="phone" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
           Số điện thoại
@@ -72,13 +81,11 @@ const Personnel = () => {
             dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white 
             dark:focus:ring-blue-500 dark:focus:border-blue-500"
           placeholder="0123456789"
-          required
+          
           value={formData.phone}
           onChange={handleChange}
         />
       </div>
-
-      {/* Mật khẩu có bật/tắt con mắt */}
       <div className="relative">
         <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
           Mật khẩu
@@ -91,7 +98,7 @@ const Personnel = () => {
             dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white 
             dark:focus:ring-blue-500 dark:focus:border-blue-500"
           placeholder="••••••••"
-          required
+          
           value={formData.password}
           onChange={handleChange}
         />
@@ -110,7 +117,6 @@ const Personnel = () => {
               viewBox="0 0 24 24"
               stroke="currentColor"
             >
-              {/* Eye closed icon */}
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -132,7 +138,6 @@ const Personnel = () => {
               viewBox="0 0 24 24"
               stroke="currentColor"
             >
-              {/* Eye open icon */}
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -161,14 +166,13 @@ const Personnel = () => {
               dark:focus:ring-blue-500 dark:focus:border-blue-500 text-gray-400"
             value={formData.role}
             onChange={handleChange}
-            required
+            
           >
             <option value="" disabled className='text-gray-500'>Chọn vai trò</option>
-            <option value="quanly">Quản lí</option>
-            <option value="nhanvien">Nhân viên</option>
+            <option value="manager">Quản lí</option>
+            <option value="employee">Nhân viên</option>
           </select>
         </div>
-      {/* Nút thêm nhân viên */}
       <button
         type="submit"
         className="w-full text-white bg-blue-600 hover:bg-blue-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center"

@@ -3,6 +3,7 @@ import GeneralTable from "../../../components/GeneralTable";
 import { bookingService } from "../../../service/bookingService";
 import BookingService from "../BookingService";
 import { format } from "date-fns";
+import { toast } from "react-hot-toast";
 const BookingManager = () => {
     const columns = [
         { key: "booking_id", label: "Mã đặt phòng" },
@@ -24,6 +25,7 @@ const BookingManager = () => {
     const [open, setOpen] = useState(false);
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
+    const [showStatusModal, setShowStatusModal] = useState(false);
     const [searchData, setSearchData] = useState('');
     const [data, setData] = useState([]);
     const fetchBooking = async (startDate, endDate) => {
@@ -143,15 +145,102 @@ const BookingManager = () => {
        
     };
     const [selectedRow, setSelectedRow] = useState(null);
-
+    const [status, setStatus] = useState(null); 
+    const handleStatusChange = (e) => {
+        setStatus(e.target.value); // Cập nhật trạng thái được chọn
+      };
     const handleBookingService = (row) => {
         setSelectedRow(row);
         setOpen(true);
     };
     const handleUpdateStatus = (row) => {
-      console.log("row",row)
+        setStatus(row.booking_status);
+        setShowStatusModal(true);
+        setSelectedRow(row);
     };
-
+    const renderStatusModal = () => {
+        return (
+          <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
+            <div className="bg-white rounded-lg p-6 w-2/5 shadow-lg relative">
+              <h3 className="text-xl font-bold mb-4 text-center">Cập nhật trạng thái</h3>
+              <div className="mb-4">
+                <label className="block mb-2">Chọn trạng thái mới:</label>
+                <div className="flex flex-col gap-1">
+                  <label className="inline-flex items-center mb-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="booking_status"
+                      value="booker"
+                      checked={status === "booker"}
+                      onChange={handleStatusChange}
+                      className="form-radio h-5 w-5 text-blue-600  cursor-pointer"
+                    />
+                    <span className="ml-2">Đã đặt</span>
+                  </label>
+                  <label className="inline-flex items-center mb-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="booking_status"
+                      value="booked"
+                      checked={status === "booked"}
+                      onChange={handleStatusChange}
+                      className="form-radio h-5 w-5 text-blue-600 cursor-pointer"
+                    />
+                    <span className="ml-2">Đang sử dụng</span>
+                  </label>
+                  <label className="inline-flex items-center mb-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="booking_status"
+                      value="completed"
+                      checked={status === "completed"}
+                      onChange={handleStatusChange}
+                      className="form-radio h-5 w-5 text-blue-600 cursor-pointer"
+                    />
+                    <span className="ml-2">Đã trả phòng</span>
+                  </label>
+                </div>
+              </div>
+              <div className="flex justify-end space-x-4">
+                <button
+                  onClick={() => setShowStatusModal(false)}
+                  className="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center cursor-pointer"
+                >
+                  Hủy
+                </button>
+                <button
+                  onClick={handleSubmitStatusUpdate}
+                  className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center cursor-pointer"
+                >
+                  Cập nhật
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      };
+      const handleSubmitStatusUpdate = async () => {
+        if (!selectedRow) {
+            toast.error("Chưa có thông tin đặt phòng");
+            return;
+        }
+        const payload = {
+            status: status, 
+        }
+        try {
+            const result = await bookingService.updateStatusBooking(selectedRow.booking_id, payload);
+            if (result.status) {
+                toast.success("Cập nhật trạng thái thành công");
+                setShowStatusModal(false);
+            } else {
+                toast.error("Cập nhật trạng thái không thành công");
+            }
+        } catch (error) {
+            toast.error("Đã xảy ra lỗi khi cập nhật trạng thái");
+            console.error(error);
+        }
+    };
+    
     return (
         <>
             <GeneralTable
@@ -173,6 +262,7 @@ const BookingManager = () => {
                 onClose={() => setOpen(false)}
                 dataRow={selectedRow}
             ></BookingService>}
+            {showStatusModal && renderStatusModal()}
         </>
     );
 };

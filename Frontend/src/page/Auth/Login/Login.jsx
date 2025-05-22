@@ -42,7 +42,7 @@ function Login() {
                     if(role === 'customer') {
                         navigate("/home")
                     }else {
-                        navigate("/admin");
+                        navigate("/admin/hotel");
                     }
                 } else {
                     toast.error(login.message);

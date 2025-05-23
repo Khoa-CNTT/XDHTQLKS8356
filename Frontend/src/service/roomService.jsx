@@ -90,6 +90,18 @@ export const addRoomType = async (data) => {
      }
    }
  };
+ export const addExtentionRoom = async (data) => {
+  try {
+    const response = await apiConfig.post(`/admin/amenitie_room`, data);
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      return error.response.data;
+    } else {
+      throw error;
+    }
+  }
+};
 export const roomService =  {
    getSuggestRoom,
    getEmptyRoombyUser,
@@ -97,6 +109,7 @@ export const roomService =  {
    addRoomType,
    updateRoomType,
    deleteRoomType,
-   getRoomTypeById
+   getRoomTypeById,
+   addExtentionRoom
 }
    

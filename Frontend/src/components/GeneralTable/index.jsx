@@ -280,7 +280,7 @@ const GeneralTable = ({
           )}
         </div>
       </div>
-      <div className='flex-grow overflow-auto min-h-[550px]'>
+      <div className='flex-grow overflow-auto min-h-[600px]'>
         <table className='w-full table-auto'>
           <thead className='sticky top-0 bg-gray-100 z-10'>
             <tr>

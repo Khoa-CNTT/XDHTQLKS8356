@@ -13,6 +13,7 @@ export const APP_ROUTER = {
     SERVICESPAGE: "/services",
     SEARCH: "/home/search",
     ROOMS : "/rooms",
+    INFOR_HOTEL: "/hotel",
     
     // admin, manager
     ADMIN: "/admin",

@@ -1,20 +1,35 @@
-// src/components/PageTransitionWrapper.jsx
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useState, useRef } from "react";
+import { motion } from "framer-motion";
 
-const PageTransitionWrapper = ({ children }) => {
+const PageTransitionWrapper = ({ children,className  }) => {
+  const ref = useRef(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting);
+      },
+      { threshold: 0.1 }
+    );
+
+    if (ref.current) observer.observe(ref.current);
+
+    return () => {
+      if (ref.current) observer.unobserve(ref.current);
+    };
+  }, []);
+
   return (
-    <AnimatePresence>
-      <motion.div
-        key="page-transition"
-        initial={{ opacity: 0, y: -20 }} 
-        animate={{ opacity: 1, y: 0 }} 
-        exit={{ opacity: 0, y: 20 }} 
-        transition={{ duration: 0.4 }}
-        className="h-full w-full"
-      >
-        {children}
-      </motion.div>
-    </AnimatePresence>
+    <motion.div
+      className={`${className}`}
+      ref={ref}
+      initial={{ opacity: 0, y: 50 }}
+      animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+    >
+      {children}
+    </motion.div>
   );
 };
 

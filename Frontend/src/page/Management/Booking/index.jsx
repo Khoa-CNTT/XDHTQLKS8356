@@ -147,7 +147,7 @@ const BookingManager = () => {
     const [selectedRow, setSelectedRow] = useState(null);
     const [status, setStatus] = useState(null); 
     const handleStatusChange = (e) => {
-        setStatus(e.target.value); // Cập nhật trạng thái được chọn
+        setStatus(e.target.value); 
       };
     const handleBookingService = (row) => {
         setSelectedRow(row);

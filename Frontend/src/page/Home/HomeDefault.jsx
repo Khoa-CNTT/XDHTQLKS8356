@@ -2,6 +2,7 @@ import React from "react";
 import { Link, Outlet } from "react-router-dom";
 import { APP_ROUTER } from "../../utils/Constants";
 import { FaUser } from "react-icons/fa";
+import PageTransitionWrapper from "../../components/PageTransition";
 
 const HomeDefault = () => {
     const rooms = [
@@ -35,7 +36,8 @@ const HomeDefault = () => {
   ];
     return (
         <div>
-             <div className='w-full bg-gray-100 py-4 mt-20'>
+          <PageTransitionWrapper>
+          <div className='w-full bg-gray-100 py-4 mt-20'>
         <div className='w-4/5 mx-auto p-4'>
           <div className='grid grid-cols-1 md:grid-cols-3 gap-4 h-1/3'>
             <Link
@@ -81,53 +83,56 @@ const HomeDefault = () => {
             </div>
           </div>
         </div>
-      </div>
-      <div className='w-4/5 mx-auto px-4 py-16'>
-        <div className='flex items-center justify-between mb-6'>
-          <div>
-            <p className='text-blue-500 font-medium'>Đặc biệt</p>
-            <h2 className='text-3xl font-bold'>Được yêu thích</h2>
-            <p className='text-gray-600 mt-2 max-w-xl'>
-              Trải nghiệm căn phòng đầy tiện nghi và thoải mái khi bạn đặt phòng
-              trực tiếp trên trang web chính thức của chúng tôi
-            </p>
           </div>
-          <button className='text-blue-500 font-medium hover:underline cursor-pointer'>
-            Tất cả
-          </button>
-        </div>
-        <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6'>
-          {rooms.map((room) => (
-            <div
-              key={room.id}
-              className='bg-white rounded-3xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300'
-            >
-              <img
-                src={room.image}
-                alt={room.name}
-                className='w-full h-[220px] object-cover'
-              />
-              <div className='p-4'>
-                <p className='text-sm text-gray-500'>Room</p>
-                <div className='flex items-center justify-between'>
-                  <h3 className='font-semibold text-lg'>{room.name}</h3>
-                  <div className='flex items-center gap-1 text-sm text-gray-600'>
-                    <FaUser className='w-4 h-4' />
-                    <span>{room.count}</span>
+          </PageTransitionWrapper>
+          <PageTransitionWrapper>
+          <div className='w-4/5 mx-auto px-4 py-16'>
+            <div className='flex items-center justify-between mb-6'>
+              <div>
+                <p className='text-blue-500 font-medium'>Đặc biệt</p>
+                <h2 className='text-3xl font-bold'>Được yêu thích</h2>
+                <p className='text-gray-600 mt-2 max-w-xl'>
+                  Trải nghiệm căn phòng đầy tiện nghi và thoải mái khi bạn đặt phòng
+                  trực tiếp trên trang web chính thức của chúng tôi
+                </p>
+              </div>
+              <button className='text-blue-500 font-medium hover:underline cursor-pointer'>
+                Tất cả
+              </button>
+            </div>
+            <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6'>
+              {rooms.map((room) => (
+                <div
+                  key={room.id}
+                  className='bg-white rounded-3xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300'
+                >
+                  <img
+                    src={room.image}
+                    alt={room.name}
+                    className='w-full h-[220px] object-cover'
+                  />
+                  <div className='p-4'>
+                    <p className='text-sm text-gray-500'>Room</p>
+                    <div className='flex items-center justify-between'>
+                      <h3 className='font-semibold text-lg'>{room.name}</h3>
+                      <div className='flex items-center gap-1 text-sm text-gray-600'>
+                        <FaUser className='w-4 h-4' />
+                        <span>{room.count}</span>
+                      </div>
+                    </div>
+                    <p className='text-sm text-gray-500 mt-1'>{room.description}</p>
+                    <div className='mt-4 text-xl font-bold flex items-baseline gap-1'>
+                      {room.price}
+                      <span className='text-sm font-normal text-gray-600'>
+                        /Đêm
+                      </span>
+                    </div>
                   </div>
                 </div>
-                <p className='text-sm text-gray-500 mt-1'>{room.description}</p>
-                <div className='mt-4 text-xl font-bold flex items-baseline gap-1'>
-                  {room.price}
-                  <span className='text-sm font-normal text-gray-600'>
-                    /Đêm
-                  </span>
-                </div>
-              </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </div>
+          </div>
+          </PageTransitionWrapper>
         </div>
     );
 };

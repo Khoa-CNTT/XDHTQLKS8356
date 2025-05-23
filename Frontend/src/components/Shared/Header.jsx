@@ -54,63 +54,63 @@ const Header = () => {
         setDropdownVisible(false);
       }, [location.pathname]);
     return (
-        <div >
+        <div className="sticky top-0 z-50 bg-white">
             <div className="flex items-center flex-col bg-gray-100/40">
                 <div className="flex items-center justify-between shadow-md w-full">
                     <Link to={APP_ROUTER.HOME} className="flex gap-2 items-center px-10">
                             <img src="https://ps.w.org/ameliabooking/assets/icon-256x256.gif?rev=2935468" alt="" className="w-16 h-14"/>
                     </Link>
                     <div className="flex items-center justify-center w-full font-bold">
-                        <div className="relative flex flex-wrap gap-3 hover:bg-gray-100 px-10 py-1">
-                            <Link to={APP_ROUTER.HOME} className="text-lg m-6 group relative focus:outline-none">
+                        <div className="relative flex flex-wrap gap-3 hover:bg-gray-100 px-10">
+                            <Link to={APP_ROUTER.HOME} className="text-lg m-5 group relative focus:outline-none">
                                 <span className={`inline-block text-transparent bg-clip-text text-lg transition-all duration-300 ${ isActiveHome
                                     ? "bg-gradient-to-r from-blue-700 via-blue-500 to-blue-300"
                                     : "bg-gradient-to-r from-pink-800 via-pink-600 to-pink-400 group-hover:from-blue-700 group-hover:via-blue-500 group-hover:to-blue-300"}`}>
                                     Trang chủ
                                 </span>
-                                <span className={`absolute left-0 -bottom-1 h-0.5 transition-all duration-300 ${ isActiveHome
+                                <span className={`absolute left-0  transition-all duration-300 ${ isActiveHome
                                     ? "w-full bg-gradient-to-r from-blue-700 via-blue-500 to-blue-300"
                                     : "w-0 group-hover:w-full bg-gradient-to-r from-blue-700 via-blue-500 to-blue-300"
                                 }`}
                                 ></span>
                             </Link>
                         </div>
-                        <div className="relative flex flex-wrap gap-3 hover:bg-gray-100 px-10 py-1">
-                            <Link to={APP_ROUTER.HOME} className="text-lg m-6 group relative focus:outline-none">
+                        <div className="relative flex flex-wrap gap-3 hover:bg-gray-100 px-10">
+                            <Link to={APP_ROUTER.INFOR_HOTEL} className="text-lg m-5 group relative focus:outline-none">
                                 <span className={`inline-block text-transparent bg-clip-text text-lg transition-all duration-300 ${ isActiveInfo
                                     ? "bg-gradient-to-r from-blue-700 via-blue-500 to-blue-300"
                                     : "bg-gradient-to-r from-pink-800 via-pink-600 to-pink-400 group-hover:from-blue-700 group-hover:via-blue-500 group-hover:to-blue-300"}`}>
                                     Thông tin
                                 </span>
-                                <span className={`absolute left-0 -bottom-1 h-0.5 transition-all duration-300 ${ isActiveInfo
+                                <span className={`absolute left-0  transition-all duration-300 ${ isActiveInfo
                                     ? "w-full bg-gradient-to-r from-blue-700 via-blue-500 to-blue-300"
                                     : "w-0 group-hover:w-full bg-gradient-to-r from-blue-700 via-blue-500 to-blue-300"
                                 }`}
                                 ></span>
                             </Link>
                         </div>
-                        <div className="relative flex flex-wrap gap-3 hover:bg-gray-100 px-10 py-1">
-                            <Link to={APP_ROUTER.ROOMS} className="text-lg m-6 group relative focus:outline-none">
+                        <div className="relative flex flex-wrap gap-3 hover:bg-gray-100 px-10">
+                            <Link to={APP_ROUTER.ROOMS} className="text-lg m-5 group relative focus:outline-none">
                                 <span className={`inline-block text-transparent bg-clip-text text-lg transition-all duration-300 ${ isActiveRoom
                                     ? "bg-gradient-to-r from-blue-700 via-blue-500 to-blue-300"
                                     : "bg-gradient-to-r from-pink-800 via-pink-600 to-pink-400 group-hover:from-blue-700 group-hover:via-blue-500 group-hover:to-blue-300"}`}>
                                     Phòng
                                 </span>
-                                <span className={`absolute left-0 -bottom-1 h-0.5 transition-all duration-300 ${ isActiveRoom
+                                <span className={`absolute left-0  transition-all duration-300 ${ isActiveRoom
                                     ? "w-full bg-gradient-to-r from-blue-700 via-blue-500 to-blue-300"
                                     : "w-0 group-hover:w-full bg-gradient-to-r from-blue-700 via-blue-500 to-blue-300"
                                 }`}
                                 ></span>
                             </Link>
                         </div>
-                        <div className="relative flex flex-wrap gap-3 hover:bg-gray-100 px-10 py-1">
-                            <Link to={APP_ROUTER.SERVICESPAGE} className="text-lg m-6 group relative focus:outline-none">
+                        <div className="relative flex flex-wrap gap-3 hover:bg-gray-100 px-10">
+                            <Link to={APP_ROUTER.SERVICESPAGE} className="text-lg m-5 group relative focus:outline-none">
                                 <span className={`inline-block text-transparent bg-clip-text text-lg transition-all duration-300 ${ isActiveServices
                                     ? "bg-gradient-to-r from-blue-700 via-blue-500 to-blue-300"
                                     : "bg-gradient-to-r from-pink-800 via-pink-600 to-pink-400 group-hover:from-blue-700 group-hover:via-blue-500 group-hover:to-blue-300"}`}>
-                                    Dịch vụ & Tiện ích
+                                    Tiện ích
                                 </span>
-                                <span className={`absolute left-0 -bottom-1 h-0.5 transition-all duration-300 ${ isActiveServices
+                                <span className={`absolute left-0  transition-all duration-300 ${ isActiveServices
                                     ? "w-full bg-gradient-to-r from-blue-700 via-blue-500 to-blue-300"
                                     : "w-0 group-hover:w-full bg-gradient-to-r from-blue-700 via-blue-500 to-blue-300"
                                 }`}

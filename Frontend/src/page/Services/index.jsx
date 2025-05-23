@@ -1,63 +1,77 @@
-import React from 'react';
-import SlickImages from '../../components/SlickImages';
-import images from '../../assets/images';
-
+import React, { useEffect, useRef, useState } from 'react';
+import { extensionServices } from '../../service/extensionServices';
+import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import "./index.css";
 const ServicesPage = () => {
-    const imgs = [images.service1, images.service2, images.service3, images.service4];
-    return (
-        <div className='mt-10 mb-30'>
-            <div className=''>
-                <SlickImages cssSlide={"w-full h-[600px]"}  images={imgs} isDotImage={false} />
-            </div>
-            <div className="relative w-full h-[500px] mt-24">
-                <img
-                    src="https://housedesign.vn/wp-content/uploads/2020/03/phong-khach-san-dep-1.jpg"
-                    alt="Luxurious room"
-                    className="w-full h-full object-cover rounded-lg"
-                />
-                <div className="absolute left-1/2 bottom-0 transform -translate-x-1/2 translate-y-1/3">
-                    <div className="bg-white bg-opacity-90 p-8 rounded-xl max-w-4xl text-center shadow-lg">
-                    <h2 className="text-2xl font-semibold text-blue-600 mb-2">Phòng sang trọng</h2>
-                    <p className="text-gray-700 text-md pb-3">
-                    Những phòng ngủ sang trọng thanh lịch trong bộ sưu tập này giới thiệu các thiết kế nội thất tùy chỉnh &
-                ý tưởng trang trí. Xem hình ảnh và tìm thiết kế phòng ngủ sang trọng hoàn hảo của bạn.
-                Những phòng ngủ sang trọng sẽ khiến bạn không bao giờ muốn rời khỏi phòng của mình nữa.
-                    </p>
-                    </div>
-                </div>
-            </div>
-            <div className="relative w-full h-[500px] mt-30">
-                <img
-                    src="https://peridotgrandhotel.com/wp-content/uploads/2022/08/Gym-2-2000.jpg"
-                    alt="Luxurious room"
-                    className="w-full h-full object-cover rounded-lg"
-                />
-                <div className="absolute left-1/2 bottom-0 transform -translate-x-1/2 translate-y-1/3">
-                    <div className="bg-white bg-opacity-90 p-8 rounded-xl max-w-4xl text-center shadow-lg">
-                    <h2 className="text-2xl font-semibold text-blue-600 mb-2">Trung tâm thể hình</h2>
-                    <p className="text-gray-700 text-md pb-3">
-                    Phòng gym hiện đại tại khách sạn được trang bị đầy đủ máy móc cao cấp, không gian thoáng mát và sạch sẽ. Dù đang du lịch hay công tác, bạn vẫn có thể duy trì thói quen luyện tập và nâng cao sức khỏe một cách tiện lợi và thoải mái.
-                    </p>
-                    </div>
-                </div>
-            </div>
-            <div className="relative w-full h-[500px] mt-30">
-                <img
-                    src="https://giadinh.mediacdn.vn/2018/12/31/tgb20171129movenpick-hotelbreakfast-setup-15462474737041977778568.jpg"
-                    alt="Luxurious room"
-                    className="w-full h-full object-cover rounded-lg"
-                />
-                <div className="absolute left-1/2 bottom-0 transform -translate-x-1/2 translate-y-1/3">
-                    <div className="bg-white bg-opacity-90 p-8 rounded-xl max-w-4xl text-center shadow-lg">
-                    <h2 className="text-2xl font-semibold text-blue-600 mb-2">Nhà hàng</h2>
-                    <p className="text-gray-700 text-md pb-3">
-                    Nhà hàng của khách sạn mang đến không gian ấm cúng, thực đơn đa dạng với những món ăn tinh tế được chế biến từ nguyên liệu tươi ngon. Là nơi lý tưởng để bạn thưởng thức ẩm thực trong không gian sang trọng và đẳng cấp.
-                    </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
+  const [data, setData] = useState([]);
+  const [hoverIndex, setHoverIndex] = useState(null);
+  const scrollRef = useRef(null);
+
+  const fetchExtensions = async () => {
+    const result = await extensionServices.getExtension();
+    setData(result);
+  };
+
+  useEffect(() => {
+    fetchExtensions();
+  }, []);
+
+  const scroll = (direction) => {
+    const container = scrollRef.current;
+    const scrollAmount = 300; // px
+    if (container) {
+      container.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth',
+      });
+    }
+  };
+
+  return (
+    <div className="text-gray-700 mt-20 mb-60 relative">
+      <h2 className="text-center text-3xl font-semibold mb-8">Tiện ích khách sạn</h2>
+
+      {/* Scroll buttons */}
+      <button
+        onClick={() => scroll('left')}
+        className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow-lg z-10"
+      >
+        <FaChevronLeft />
+      </button>
+
+      <button
+        onClick={() => scroll('right')}
+        className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow-lg z-10"
+      >
+        <FaChevronRight />
+      </button>
+
+      {/* Scrollable container */}
+      <div
+  ref={scrollRef}
+  className="flex flex-nowrap overflow-x-auto scroll-smooth px-12 no-scrollbar space-x-6"
+>
+
+        {data.map((item, index) => (
+          <div
+            key={item.id}
+            onMouseEnter={() => setHoverIndex(index)}
+            onMouseLeave={() => setHoverIndex(null)}
+            className={`transition-opacity duration-300 cursor-pointer w-60 flex-shrink-0 text-center  border border-gray-200 p-6
+              ${hoverIndex !== null && hoverIndex !== index ? "opacity-30" : "opacity-100"}
+            `}
+          >
+            <img
+              src={JSON.parse(item.image)[0]}
+              alt={item.name}
+              className="rounded-xl w-full h-60 object-cover mb-2"
+            />
+            <p className="text-lg font-medium">{item.name}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 };
 
 export default ServicesPage;

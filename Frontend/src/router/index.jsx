@@ -34,6 +34,7 @@ import ClassifyCustomer from "../page/Management/Customer/ClassifyCustomer";
 import ReportByTotal from "../page/Management/Report/ReportByTotal";
 import ReportByRoomType from "../page/Management/Report/ReportByRoomType";
 import ReportByService from "../page/Management/Report/ReportByService";
+import InformationHotel from "../page/Hotel";
 
 const router = createBrowserRouter([
   {
@@ -85,6 +86,10 @@ const router = createBrowserRouter([
         element: <ServicesPage />,
       },
       {
+        path: APP_ROUTER.INFOR_HOTEL,
+        element: <InformationHotel />,
+      },
+      {
         path: APP_ROUTER.USER,
         element: <PrivateRoutes role='customer' />,
         children: [
@@ -98,6 +103,7 @@ const router = createBrowserRouter([
           },
         ],
       },
+      
     ],
   },
 

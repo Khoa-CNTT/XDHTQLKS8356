@@ -11,9 +11,9 @@ const Extension = () => {
     const columns = [
         { key: "id", label: "Mã tiện ích"},
         { key: "name", label: "Tên tiện ích", isFilterable: true },
-        { key: "price", label: "Giá" },
         { key: "icon", label: "Icon" },
         // { key: "image", label: "Hình ảnh" },
+        { key: "type", label: "Dành cho" },
         {
             key: "edit",
             label: "Chỉnh sửa",
@@ -93,11 +93,12 @@ const Extension = () => {
         //         return;
         //     }
         // }
+
         const payload = {
             name: formData.name,
             icon: formData.icon,
-            price: formData.price,
             image: JSON.stringify(formData.image),
+            type: formData.type,
         }; 
         try {
             if (selectedExtension) {

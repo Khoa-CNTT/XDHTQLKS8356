@@ -6,6 +6,9 @@ import { FaEdit } from "react-icons/fa";
 import { MdDeleteForever } from "react-icons/md";
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import { RiHeartAddFill } from "react-icons/ri";
+import ModalAddExtention from './ModalAddExtention';
+import { RxUpdate } from "react-icons/rx";
 const RoomType = () => {
     const columns = [
         { key: "id", label: "Mã loại phòng"},
@@ -15,6 +18,30 @@ const RoomType = () => {
         { key: "adult_count", label: "Số người" },
         { key: "square_meters", label: "Diện tích" },
         { key: "price_per_night", label: "Giá phòng" },
+        {
+            key: "add",
+            label: "Thêm tiện ích",
+            render: (row) => (
+                <button
+                    onClick={(event) => handleAddExtentionRoom(event, row)}
+                    className="z-10 text-center mx-auto p-2 hover:bg-slate-200 hover:rounded-md cursor-pointer"
+                >
+                    <RiHeartAddFill  className="h-6 w-6" />
+                </button>
+            ),
+        },
+        {
+            key: "add",
+            label: "Cập nhật tiện ích",
+            render: (row) => (
+                <button
+                    onClick={(event) => handleUpdateExtentionRoom(event, row)}
+                    className="z-10 text-center mx-auto p-2 hover:bg-slate-200 hover:rounded-md cursor-pointer"
+                >
+                    <RiHeartAddFill  className="h-6 w-6" />
+                </button>
+            ),
+        },
         {
             key: "edit",
             label: "Chỉnh sửa",
@@ -42,9 +69,13 @@ const RoomType = () => {
     ];
     const navigate = useNavigate();
     const [resetFormTrigger, setResetFormTrigger] = useState(false);
+    const [resetFormTriggerExtention, setResetFormTriggerExtention] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
+    const [modalExtention, setModalExtention] = useState(false);
     const [data, setData] = useState([]);
     const [selectedRoom, setSelectedRoom] = useState("");
+    const [idRoomType, setIdRoomType] = useState("")
+    const [selectedExtention, setSelectedExtention] = useState("");
     const fetchRooms = async () => {
         const result = await roomService.getRoomType();
         setData(result);
@@ -85,6 +116,36 @@ const RoomType = () => {
         console.log(row)
         setSelectedRoom(row)
         setModalVisible(true);
+    };
+    const handleAddExtentionRoom = (event, row) => {
+        event.stopPropagation();
+        setIdRoomType(row.id)
+        setModalExtention(true)
+    };
+    const handleUpdateExtentionRoom = (event, row) => {
+        event.stopPropagation();
+        setSelectedExtention(row)
+        setModalExtention(true)
+    };
+    const handleSubmitExtention = async (data) => {
+        const payload = {
+            data: data.map(id => ({
+              room_id: idRoomType,
+              amenitie_id: id,
+            }))
+          };
+          try {
+            const result = await roomService.addExtentionRoom(payload);
+            if(result.status === true){
+                toast.success(result.message);
+                setModalExtention(false);
+            }else{
+                toast.error(result.message);
+            }
+        } catch (error) {
+            console.log(error)
+            navigate("/error")
+        }
     };
     const handleSubmit = async (formData) => {
         for (let key in formData) {
@@ -166,6 +227,26 @@ const RoomType = () => {
                             handleSubmit={handleSubmit}
                             functionButton={selectedRoom ? "Cập nhật" : "Thêm mới"}
                         ></ModalRoomType>
+                    </div>
+                </div>
+            )}
+            {modalExtention && (
+                <div
+                    onClick={()=>{setModalExtention(false)}}
+                    className="fixed inset-0 bg-gray-800/50 flex justify-center items-center z-50"
+                >
+                    <div
+                        className="bg-white rounded-lg w-[30%] h-[50%] relative"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <ModalAddExtention
+                            handleClose={()=>{setModalExtention(false)}}
+                            resetTrigger={resetFormTriggerExtention} 
+                            lable={selectedExtention ? "Cập nhật tiện ích cho loại phòng" : "Thêm tiện ích cho loại phòng"}
+                            data={selectedExtention}
+                            handleSubmit={handleSubmitExtention}
+                            functionButton={selectedExtention ? "Cập nhật" : "Thêm mới"}
+                        ></ModalAddExtention>
                     </div>
                 </div>
             )}

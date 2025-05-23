@@ -5,12 +5,14 @@ import { GiEmptyHourglass } from "react-icons/gi";
 import { RiListUnordered } from "react-icons/ri";
 import { bookingService } from "../../service/bookingService";
 import ModalEvaluate from "../../components/ModalEvaluate";
+import { APP_ROUTER } from "../../utils/Constants";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
 const AllBooking = () => {
     const [orders, setOrders] = useState([]);
     const fetchData = async () => {
         const result = await bookingService.getBookingCustomer();
 
-        console.log("booking",result)
         setOrders(result);
     };
     useEffect(() => {
@@ -32,7 +34,6 @@ const AllBooking = () => {
    
     const fetchOrdersByStatus = (status) => {
         const filteredOrders = filterOrdersByStatus(status);
-        console.log("dữ liệu",filteredOrders)
         setDataOrders(filteredOrders);
     };
     
@@ -51,8 +52,32 @@ const AllBooking = () => {
             fetchOrdersByStatus("booker");
         }
     }, [orders]);
-   
-   
+    const navigate = useNavigate()
+    const handleCancelOrder = async (id, checkin) => {
+        const today = new Date();
+        const checkinDate = new Date(checkin);
+        const diffTime = checkinDate - today;
+        const diffDays = diffTime / (1000 * 60 * 60 * 24);
+
+        if (diffDays < 7) {
+            toast.error("Hủy đơn không thành công!\nKhách hàng chỉ có thể hủy đơn trước ngày nhận phòng 7 ngày.");
+            return;
+        }
+        const payload = {
+            status: "cancelled", 
+        }
+        console.log("update",id, payload)
+        try {
+            const result = await bookingService.updateStatusBooking(id, payload);
+            if (result.status === 201) {
+                toast.success("Cập nhật trạng thái thành công");
+            } else {
+                toast.error("Cập nhật trạng thái không thành công");
+            }
+        } catch (error) {
+            navigate('/error')
+        }
+    };
     return (
         <div className="">
             <div className="flex flex-row items-center justify-center">
@@ -111,6 +136,14 @@ const AllBooking = () => {
                                     <div className="flex gap-10 items-center justify-between">
                                         <div className="flex gap-2 items-center mb-2">
                                             <div className="font-medium">
+                                                Mã đặt phòng:
+                                            </div>
+                                            <div className="">
+                                                {order?.booking_id}
+                                            </div>
+                                        </div>
+                                        <div className="flex gap-2 items-center mb-2">
+                                            <div className="font-medium">
                                                 Ngày nhận phòng:
                                             </div>
                                             <div className="">
@@ -135,7 +168,7 @@ const AllBooking = () => {
                                         </div>
                                         {currentStatus === "booker" && (
                                             <button
-                                                onClick={() => handleCancelOrder(order.id)}
+                                                onClick={() => handleCancelOrder(order.booking_id, order.checkin)}
                                                 className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center cursor-pointer"
                                             >
                                                 Hủy đơn
@@ -150,13 +183,13 @@ const AllBooking = () => {
                                             </button>
                                         )}
                                         {showRateModal && (
-  <ModalEvaluate
-  visible={showRateModal}
-    onClose={() => setShowRateModal(false)}
-    onSubmit={()=>{}}
-    dataOrder={selectedOrder}
-  />
-)}
+                                            <ModalEvaluate
+                                            visible={showRateModal}
+                                                onClose={() => setShowRateModal(false)}
+                                                onSubmit={()=>{}}
+                                                dataOrder={selectedOrder}
+                                            />
+                                            )}
                                     </div>
                                     <div className="">
                                         <h3 className="font-bold text-lg mb-3">Chi tiết đặt phòng:</h3>
@@ -201,10 +234,10 @@ const AllBooking = () => {
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                {order.services && order.services.length > 0 ? (
+                                                {order?.services && order?.services?.length > 0 && order?.services?.service_name != null ? (
                                                     order.services.map((service, serviceIndex) => (
                                                     <tr key={`service-${serviceIndex}`} className="hover:bg-slate-50 bg-white transition">
-                                                        <td className="p-4 border-b border-slate-200">{service.service_name ?? "Không có tên dịch vụ"}</td>
+                                                        <td className="p-4 border-b border-slate-200">{service.service_name ?? "-"}</td>
                                                         <td className="p-4 border-b border-slate-200 text-center">{service.quantity ?? "-"}</td>
                                                         <td className="p-4 border-b border-slate-200 text-right">{service.price != null ? service.price.toLocaleString() + " VND" : "-"}</td>
                                                         <td className="p-4 border-b border-slate-200 text-right">{service.total_price != null ? service.total_price.toLocaleString() + " VND" : "-"}</td>
@@ -212,7 +245,7 @@ const AllBooking = () => {
                                                     ))
                                                 ) : (
                                                     <tr>
-                                                    <td colSpan={4} className="p-4 text-center text-gray-500">Chưa có dịch vụ nào</td>
+                                                    <td colSpan={4} className="p-4 text-center text-gray-500">Bạn chưa đặt dịch vụ nào</td>
                                                     </tr>
                                                 )}
                                                 </tbody>
@@ -225,8 +258,6 @@ const AllBooking = () => {
                                                 </span>
                                             </div>
                                         </>
-<div className="mt-4 flex justify-end gap-4">
-      </div>
                                         </div>
 
                                         </div>

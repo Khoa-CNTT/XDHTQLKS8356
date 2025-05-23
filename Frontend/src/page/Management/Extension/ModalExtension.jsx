@@ -23,9 +23,9 @@ const ModalExtension = ({
   const [imageUrl, setImageUrl] = useState([]);
   const [formData, setFormData] = useState({
     name: "",
-    price: "",
     icon: "",
     image: [],
+    type: "hotel",
   });
   useEffect(() => {
     const parseImage = (img) => {
@@ -39,9 +39,9 @@ const ModalExtension = ({
     if (data) {
       setFormData({
         name: data.name || "",
-        price: data.price || 0,
         image: parseImage(data.image),
         icon: data.icon || "",
+        type: data.type || ""
       });
       if (data.image) {
         setImageUrl(() => {
@@ -56,8 +56,8 @@ const ModalExtension = ({
       setFormData({
         name: "",
         icon: "",
-        price: "",
         image: [],
+        type: ""
       });
       setImageUrl([]);
     }
@@ -148,18 +148,33 @@ const ModalExtension = ({
             />
           </div>
           <div className='mb-3 flex items-center'>
-            <label className='text-sm font-medium text-gray-700 text-nowrap w-56'>
-              Giá
+            <label className='text-sm font-medium text-gray-700 text-nowrap w-40'>
+              Loại tiện ích
             </label>
-            <input
-              type='number'
-              name='price'
-              placeholder='0'
-              min={0}
-              className='text-left w-full rounded-t-lg p-2 text-sm text-gray-900 dark:bg-gray-700 border-0 border-b-[2px] border-gray-400 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 focus:border-b-2 peer'
-              value={formData.price}
-              onChange={handleChange}
-            />
+            <div className="flex gap-6">
+              <label className="flex items-center space-x-2">
+                <input
+                  type="radio"
+                  name="type"
+                  value="hotel"
+                  checked={formData.type === "hotel"}
+                  onChange={handleChange}
+                  className="form-radio"
+                />
+                <span>Khách sạn</span>
+              </label>
+              <label className="flex items-center space-x-2">
+                <input
+                  type="radio"
+                  name="type"
+                  value="room"
+                  checked={formData.type === "room"}
+                  onChange={handleChange}
+                  className="form-radio"
+                />
+                <span>Loại phòng</span>
+              </label>
+            </div>
           </div>
           <div className='mt-5 mb-3 pb-2 shadow-md rounded-md'>
             <div className='w-full '>

@@ -1,7 +1,6 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const { sequelize } = require("../config/mysql");
 const { Pricing } = require('./pricing');
-const { Amenitie } = require('./amenitie');
 const { Room_Details } = require('./room_details');
 
 const Room = sequelize.define("Room",
@@ -31,8 +30,5 @@ Room_Details.belongsTo(Room);
 Room.hasMany(Room_Details);
 
 
-//Amenitie
-Amenitie.belongsTo(Room);
-Room.hasMany(Amenitie);
 
 module.exports = { Room };

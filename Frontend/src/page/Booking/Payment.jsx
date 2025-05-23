@@ -142,12 +142,6 @@ const Payment = () => {
         >
           Làm mới
         </button>
-        <button
-          onClick={() => navigate(-1)}
-          className='text-white bg-gray-800 hover:bg-gray-900 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 cursor-pointer'
-        >
-          Quay lại
-        </button>
       </div>
     </div>
   );

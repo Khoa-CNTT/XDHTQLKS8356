@@ -72,19 +72,7 @@ export const getBookingDetail  = async(id) => {
       return {}
    }
 }
-export const evaluateBooking = async (data) => {
-   try {
-     const response = await apiConfig.post(`/customer/ratting`, data);
-     console.log(response)
-     return response.data;
-   } catch (error) {
-     if (error.response) {
-       return error.response.data;
-     } else {
-       throw error;
-     }
-   }
- };
+
  export const updateStatusBooking = async (id,data) => {
    console.log(id, data)
    try {
@@ -107,6 +95,5 @@ export const bookingService = {
    getBookingAdmin,
    creatBookingService,
    getBookingCustomer,
-   evaluateBooking,
    updateStatusBooking
 }

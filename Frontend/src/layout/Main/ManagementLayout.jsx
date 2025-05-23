@@ -117,7 +117,7 @@ const ManagementLayout = () => {
   {
     key: '9',
     icon: <CommentOutlined />,
-    label: <Link to={APP_ROUTER.HOME}>Tư vấn khách hàng</Link>,
+    label: <Link to={APP_ROUTER.CHAT}>Tư vấn khách hàng</Link>,
   },
   {
     key: '12',

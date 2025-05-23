@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { GiEmptyHourglass } from "react-icons/gi";
 
@@ -9,9 +8,9 @@ import { APP_ROUTER } from "../../utils/Constants";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 const AllBooking = () => {
-    const [orders, setOrders] = useState([]);
-    const fetchData = async () => {
-        const result = await bookingService.getBookingCustomer();
+  const [orders, setOrders] = useState([]);
+  const fetchData = async () => {
+    const result = await bookingService.getBookingCustomer();
 
         setOrders(result);
     };

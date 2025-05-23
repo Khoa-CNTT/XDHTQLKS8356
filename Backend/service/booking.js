@@ -214,6 +214,7 @@ const getAllBookingForCustomer = async (id) => {
                         JSONB_AGG(
                             DISTINCT JSONB_BUILD_OBJECT(
                                     'room_type', r.room_type,
+                                    'id_room_type', r.id,
                                     'room_number', rd.room_number,
                                     'price', bd.price
                                 )
@@ -280,7 +281,27 @@ const deleteBooking = async (id) => {
 //Cập nhật đơn đặt phòng
 const updateBooking = async (id, data) => {
     try {
-        const booking = await Product.findByPk(id);
+        if(data.status == "cancelled"){
+            const sql = `DELETE FROM inventory
+                        USING room_details, booking_details, booking
+                        WHERE inventory.room_detail_id = room_details.id
+                        AND room_details.id = booking_details.room_detail_id
+                        AND booking_details.booking_id = booking.id
+                        AND booking.id = ${id};`
+            await sequelize.query(sql, { type: Sequelize.QueryTypes.DELETE });
+            await Booking_Details.destroy({
+                where : {
+                    booking_id : id
+                }
+            })
+            await Booking.destroy({
+                where : {
+                    id : id
+                }
+            })
+            return;
+        }
+        const booking = await Booking.findByPk(id);
         booking.update(data);
     } catch (error) {
         console.log(error);
@@ -289,8 +310,5 @@ const updateBooking = async (id, data) => {
 }
 
 
-const bookingServices  = async (id, data) => {
-    await Booking_Services.bulkCreate(data);
-}
 
-module.exports = {createBooking, getBookingById, getAllBookingForAdmin, getAllBookingForCustomer, deleteBooking, updateBooking, bookingServices}
+module.exports = {createBooking, getBookingById, getAllBookingForAdmin, getAllBookingForCustomer, deleteBooking, updateBooking}

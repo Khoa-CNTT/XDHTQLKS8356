@@ -4,6 +4,8 @@ import toast from "react-hot-toast";
 import { BsImageFill } from "react-icons/bs";
 import { IoIosRemoveCircle } from "react-icons/io";
 import { bookingService } from "../../service/bookingService";
+import { updateImage } from "../../service/updateImage";
+import { ratingService } from "../../service/ratingServices";
 const ratingDescriptions = [
   "Tệ",
   "Không hài lòng",
@@ -35,28 +37,13 @@ const ModalEvaluate = ({ visible, onClose, onSubmit, initialOrderDetailId, initi
   const handleDescriptionChange = (e) => {
     setFormData((prev) => ({ ...prev, description: e.target.value }));
   };
-
   const handleBeforeUpload = async (event) => {
-    const file = event.target.files[0];
-    const formData = new FormData();
-    formData.append("images", file);
-    setIsLoading(true);
-    try {
-        const response = await fetch("http://localhost:8080/upload", {
-            method: "POST",
-            body: formData,
-        });
-        const data = await response.json();
-        if (data)
-            setFormData((prev) => ({
-                ...prev,
-                image: [...prev.image, data[0]],
-            }));
-    } catch (error) {
-        console.error("Tải ảnh không thành công", error);
-    }
-    setIsLoading(false);
-};
+    const image = await updateImage(event, setIsLoading);
+    if (image) {
+      setFormData((prev) => ({ ...prev, image: [...prev.image, image] }));
+    } else toast.error("Lỗi tải ảnh");
+  };
+
 const handleRemoveImage = (indexToRemove) => {
     setFormData((prev) => ({
         ...prev,
@@ -64,7 +51,7 @@ const handleRemoveImage = (indexToRemove) => {
     }));
 };
 const createPayloadForSubmit = () => {
-    const { rating, image, selectedRoomTypes } = formData;
+    const { rating, image, selectedRoomTypes, description } = formData;
     if (!dataOrder) return [];
     const start = dataOrder.checkin;
     const end = dataOrder.checkout;
@@ -77,6 +64,7 @@ const createPayloadForSubmit = () => {
       end: end,
       RoomId: roomId,
       BookingId: bookingId,
+      description: description
     }));
   
     return payload;
@@ -91,7 +79,8 @@ const createPayloadForSubmit = () => {
       return;
     }
     const payload = createPayloadForSubmit();
-    const result = await bookingService.evaluateBooking(payload);
+    console.log("payload", payload)
+    const result = await ratingService.createRating(payload);
     if(result.status) {
         toast.success("Đánh giá thành công")
         onClose();

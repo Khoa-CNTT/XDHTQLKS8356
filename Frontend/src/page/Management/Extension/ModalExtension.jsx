@@ -23,7 +23,6 @@ const ModalExtension = ({
   const [imageUrl, setImageUrl] = useState([]);
   const [formData, setFormData] = useState({
     name: "",
-    price: "",
     icon: "",
     image: [],
   });
@@ -39,7 +38,6 @@ const ModalExtension = ({
     if (data) {
       setFormData({
         name: data.name || "",
-        price: data.price || 0,
         image: parseImage(data.image),
         icon: data.icon || "",
       });
@@ -56,7 +54,6 @@ const ModalExtension = ({
       setFormData({
         name: "",
         icon: "",
-        price: "",
         image: [],
       });
       setImageUrl([]);
@@ -144,20 +141,6 @@ const ModalExtension = ({
               placeholder='Nhập tên tiện ích'
               className='rounded-t-lg p-2 w-full text-sm text-gray-900 dark:bg-gray-700 border-0 border-b-[2px] border-gray-400 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 focus:border-b-2 peer'
               value={formData.name}
-              onChange={handleChange}
-            />
-          </div>
-          <div className='mb-3 flex items-center'>
-            <label className='text-sm font-medium text-gray-700 text-nowrap w-56'>
-              Giá
-            </label>
-            <input
-              type='number'
-              name='price'
-              placeholder='0'
-              min={0}
-              className='text-left w-full rounded-t-lg p-2 text-sm text-gray-900 dark:bg-gray-700 border-0 border-b-[2px] border-gray-400 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 focus:border-b-2 peer'
-              value={formData.price}
               onChange={handleChange}
             />
           </div>

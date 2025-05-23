@@ -10,7 +10,6 @@ const BookingManager = () => {
         { key: "fullname", label: "Tên khách hàng" },
         { key: "booking_status", label: "Trạng thái", isFilterable: true},
         { key: "created_at", label: "Thời gian đặt" },
-        { key: "booking_status", label: "Trạng thái" },
         { key: "total_price", label: "Tổng tiền" },
         {
             key: "booking_services",
@@ -232,6 +231,7 @@ const BookingManager = () => {
             if (result.status) {
                 toast.success("Cập nhật trạng thái thành công");
                 setShowStatusModal(false);
+                fetchBooking(startDate, endDate);
             } else {
                 toast.error("Cập nhật trạng thái không thành công");
             }

@@ -214,6 +214,7 @@ const getAllBookingForCustomer = async (id) => {
                         JSONB_AGG(
                             DISTINCT JSONB_BUILD_OBJECT(
                                     'room_type', r.room_type,
+                                    'id_room_type', r.id,
                                     'room_number', rd.room_number,
                                     'price', bd.price
                                 )

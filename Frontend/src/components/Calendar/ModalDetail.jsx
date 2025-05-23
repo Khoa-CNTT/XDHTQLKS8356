@@ -14,8 +14,8 @@ const ModalDetail = (props) => {
       title: "Đã đặt trước",
       color: "#f5942766",
     },
-    cancelled: {
-      title: "Đã huỷ",
+    temporary: {
+      title: "Đã đặt tạm",
       color: "#1a99ee66",
     },
     completed: {

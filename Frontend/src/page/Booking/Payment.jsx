@@ -5,9 +5,10 @@ import axios from "axios";
 import { TfiAlarmClock } from "react-icons/tfi";
 import { useLocation } from "react-router-dom";
 import { formatDate } from "../../utils/FormatDate";
+import { bookingService } from "../../service/bookingService";
 const Payment = () => {
   const location = useLocation();
-  const order  = location.state?.order
+  const order = location.state?.order;
 
   console.log(order);
   const navigate = useNavigate();
@@ -25,30 +26,39 @@ const Payment = () => {
     setQrData(
       `https://img.vietqr.io/image/${QR.BANK_ID}-${QR.ACCOUNT_NO}-${
         QR.TEMPLATE
-      }.png?amount=${order.total_price}&addInfo=${encodeURIComponent(
+        // }.png?amount=${order.total_price}&addInfo=${encodeURIComponent(
+      }.png?amount=${2000}&addInfo=${encodeURIComponent(
         newTransactionId
       )}&accountName=${encodeURIComponent(QR.ACCOUNT_NAME)}`
     );
-    setTimer(300);
+    setTimer(3000);
   };
-
   // Hàm kiểm tra thanh toán
   const checkPaymentStatus = useCallback(
     async (signal) => {
       try {
         const response = await axios.get(QR.CHECK, { signal });
         const transactions = response.data.data;
+        console.log("transactions", transactions);
         const isPaid = transactions.some((transaction) => {
-          // console.log("check", transaction, transaction.MoTa.includes(transactionId))
+          console.log(
+            "check",
+            transaction,
+            transaction?.Mota?.includes(transactionId)
+          );
           return (
-            transaction.MoTa.includes(transactionId) &&
-            transaction.GiaTri === order.total_price
+            transaction.Mota.includes(transactionId) &&
+            // transaction.GiaTri === order.total_price
+            transaction.GiaTri == 2000
           );
         });
         if (isPaid) {
           setPaymentStatus(true);
           setTimer(0);
-          navigate(APP_ROUTER.HOME);
+          const book = bookingService.updateStatusBooking(order.id, {
+            status: "booker",
+          });
+          if (book.status) navigate(APP_ROUTER.HOME);
         }
       } catch (error) {
         console.error("Lỗi khi kiểm tra thanh toán:", error);
@@ -81,12 +91,15 @@ const Payment = () => {
     return () => {
       clearInterval(interval);
       controller.abort();
+      (async () => {
+      await bookingService.updateStatusBooking(order.id, { status: 'cancelled' });
+    })();
     };
   }, [paymentStatus, isQrExpired, transactionId]);
 
   useEffect(() => {
     if (order) generateQrCode();
-    else navigate(APP_ROUTER.HOME)
+    else navigate(APP_ROUTER.HOME);
   }, []);
 
   // console.log("payment:  ", transactionId);

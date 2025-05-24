@@ -1,10 +1,10 @@
 const {Booking} = require("../model/booking");
 const {Booking_Details} = require("../model/booking_details");
-const {Hotel} = require("../model/hotel");
 const {User} = require("../model/user");
-const {Booking_Services} = require("../model/booking_services");
 const {Sequelize, Op} = require("sequelize");
 const { sequelize } = require("../config/mysql");
+const sendMail = require("../config/sendMail");
+
 
 const find_room = async (id, count, start, end) => {
     const sql = `SELECT 
@@ -62,9 +62,18 @@ const createBooking = async (id, data) => {
         }
 
         await Booking_Details.bulkCreate(booking_detail);
+        
+        if(data.type == "guest"){
+            const detail_booking = await getBookingById(booking.id);
 
-        return booking.id 
 
+            sendMail({
+                email : data.user_info.email,
+                subject : "Thông tin đơn đặt hàng của bạn",
+                message : JSON.stringify(detail_booking)
+            })
+        }
+        //return booking.id 
     } catch (error) {
         console.log(error);
         return "error";

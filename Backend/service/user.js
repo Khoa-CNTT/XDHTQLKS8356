@@ -7,7 +7,6 @@ const {kmeans} = require('ml-kmeans');
 const activeToken = require("../middleware/active_token");
 const sendMail = require("../config/sendMail");
 const { Conversation } = require("../model/conversation");
-const e = require("express");
 const { History_Chat } = require("../model/historychat");
 
 

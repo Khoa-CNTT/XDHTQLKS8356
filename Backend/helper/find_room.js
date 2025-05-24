@@ -1,18 +1,20 @@
-const find_room = (list_room, index, customer, value, result) => {
-    if(customer <= 0){
-        result.push([...value]);
-        return;
-    }
-
-    const selectedRoom = new Set(value.map(list_room => list_room.room_detail_id));
-
-    for(let i = index; i < list_room.length; i++) {
-        if(!selectedRoom.has(list_room[i].room_detail_id)){
-            value.push(list_room[i]);
-            find_room(list_room, i, customer - list_room[i].adult_count, value, result);
-            value.pop();
+const getCombinations = (arr) => {
+    const result = [];
+    const backtrack = (start, path) => {
+        if (path.length) result.push([...path]);
+        for (let i = start; i < arr.length; i++) {
+            path.push(arr[i]);
+            backtrack(i + 1, path);
+            path.pop();
         }
-    }
-}
+    };
+    backtrack(0, []);
+    return result;
+};
+const find_room = (data, target) =>
+    getCombinations(data).filter(combo => {
+        const total = combo.reduce((sum, room) => sum + room.adult_count, 0);
 
-module.exports = {find_room};
+        return total == target || total == Number(target) + 1;
+    });
+module.exports = { find_room };

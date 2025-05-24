@@ -38,17 +38,17 @@ const suggestRooms = async (data) => {
                 WHERE
                     i.room_detail_id IS NULL AND r.adult_count <= ${data.people}
                 GROUP BY 
-                    rd.id, r.id, r.room_type;`;
+                    rd.id, r.id, r.room_type
+                ORDER BY
+                    r.adult_count ASC;`;
 
     const room = await sequelize.query(sql, {
         type: Sequelize.QueryTypes.SELECT,
     });
+    
+    console.log("a", find_room(room, data.people));
 
-
-    let result = [];
-    find_room(room, 0, 3, [], result);
-     
-    return convertData(result);
+    return convertData(find_room(room, data.people));
 };
 
 

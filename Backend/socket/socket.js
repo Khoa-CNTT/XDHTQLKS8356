@@ -23,14 +23,6 @@ const user_onl = new Map();
 
 io.on('connection', (socket) => {
 	console.log('User connected:', socket.id);
-	
-
-	//Login lưu socket id và user_idid
-	// socket.on('login', (token) => {
-	// 	const users = jwt.verify(token, process.env.JWT);
-	// 	const id = users.user.id;
-	// 	user_onl.set(id, socket.id);
-	// })
 
 
 	const users = socket.handshake.query.userId;
@@ -54,8 +46,6 @@ io.on('connection', (socket) => {
 			attributes : ["conversation_list"]
 		})
 		const list_id = JSON.parse(conversation_list.conversation_list)
-		console.log("list_id", typeof list_id, JSON.parse(conversation_list.conversation_list));
-
 
 		//Phát tin nhắn đến tất cả user online trong conversation
 		list_id.forEach((uid) => {
@@ -72,6 +62,7 @@ io.on('connection', (socket) => {
 				});
 			}
 		});
+
 	});
 
 

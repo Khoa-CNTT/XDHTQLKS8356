@@ -7,6 +7,8 @@ const {kmeans} = require('ml-kmeans');
 const activeToken = require("../middleware/active_token");
 const sendMail = require("../config/sendMail");
 const { Conversation } = require("../model/conversation");
+const e = require("express");
+const { History_Chat } = require("../model/historychat");
 
 
 const getUser  = async (id) => {
@@ -69,6 +71,7 @@ const getAllUserGroup  = async () => {
 }
 
 const findUser  = async (data) => {
+
     const sql = `SELECT 
                     u.id,
                     u.fullname,
@@ -77,7 +80,7 @@ const findUser  = async (data) => {
                     FROM 
                     "user" u
                 WHERE
-                    u.fullname ILIKE '%${data}%' and u.role = "customer"`;
+                    u.fullname ILIKE '%${data}%' and u.role = 'customer'`;
 
     const user = await sequelize.query(sql, { type: Sequelize.QueryTypes.SELECT });
     return user;
@@ -120,20 +123,35 @@ const registerUser = async (data) => {
     }
 }
 
+const getAllEmployee = async () => {
+    let employee = await User.findAll({
+        where : {
+            role : "employee"
+        },
+        attributes : ["id"]
+    })
+    employee = employee.map(user => user.dataValues.id);
+    return JSON.stringify(employee);
+
+}
+
 const activeUser = async(data) => {
     try {
         const newUser = jwt.verify(data.token, process.env.JWT);
         if(newUser.code != data.code){
             return -1;
         } 
-        const user = await User.create(newUser.user)
-        //await Conversation.create({})
+        const user = await User.create(newUser.user);
+
+        const employee = await getAllEmployee();
+
+        await Conversation.create({conversation_list : employee, UserId : user.id});
+
+        await History_Chat.create({message : "Xin chào, tôi có thể giúp gì cho bạn", sender : "bot", UserId : user.id})
     } catch (error) {
         console.log(error);
         return "error";
     }
-
-
 }
 
 
@@ -142,26 +160,27 @@ const loginUser  = async (data) => {
     try {
         let user = await User.findOne({
             where : {
-                email : data.email
+                email : data.email,
+                role : {
+                    [Op.ne] : "guest"
+                }
             }
         })
         
 
-        // if(!users){
-        //     return -1;
-        // }
-        // else{
-        //     const check = await bcryptjs.compare(data.password, users.password);
-        //     if(!check){
-        //         return -2;
-        //     }
-        //     else{
-        //         return user;
-        //     }
+        if(!user){
+            return -1;
+        }
+        else{
+            const check = await bcryptjs.compare(data.password, user.password);
+            if(!check){
+                return -2;
+            }
+            else{
+                return user;
+            }
 
-        // }
-
-        return user;
+        }
     } catch (error) {
         console.log(error);
         return "error";
@@ -209,4 +228,20 @@ const addEmployee  = async (data) => {
     }
 }
 
-module.exports = {getUser, getAllUserGroup, findUser, getAllUser, registerUser, activeUser, loginUser, putUser, addEmployee, activeUser}
+
+const getConversation  = async (id) => {
+    try {
+        const user = await Conversation.findOne({
+            where : {
+                user_id : id
+            },
+            attributes : ["id"]
+        });
+    
+        return user.id;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+module.exports = {getUser, getAllUserGroup, findUser, getAllUser, registerUser, activeUser, loginUser, putUser, addEmployee, activeUser, getConversation}

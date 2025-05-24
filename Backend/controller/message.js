@@ -18,6 +18,7 @@ const getMessages = async (req, res) => {
     }
 }
 
+
 const getAllMessages = async (req, res) => {
 
     const mess = await Message.getAllMessages();

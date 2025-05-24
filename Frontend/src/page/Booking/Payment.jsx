@@ -6,6 +6,7 @@ import { TfiAlarmClock } from "react-icons/tfi";
 import { useLocation } from "react-router-dom";
 import { formatDate } from "../../utils/FormatDate";
 import { bookingService } from "../../service/bookingService";
+import toast from "react-hot-toast";
 const Payment = () => {
   const location = useLocation();
   const order = location.state?.order;
@@ -53,6 +54,7 @@ const Payment = () => {
           );
         });
         if (isPaid) {
+          toast.success("Đặt phòng thành công")
           setPaymentStatus(true);
           setTimer(0);
           navigate(APP_ROUTER.HOME);

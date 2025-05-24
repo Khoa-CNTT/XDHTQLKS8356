@@ -154,4 +154,14 @@ const putUser = async (req, res) => {
     }
 }
 
-module.exports = {activeUser, registerUser, loginUser, getUser,  getAllUser, findUser, getAllUserGroup, addEmployee, logout, putUser}
+const getConversation = async (req, res) => {
+    const user = await User.getConversation(req.user.id);
+    res.status(200).json({
+        success: true,
+        message: "Mã hội thoại",
+        user
+    });
+}
+
+
+module.exports = {activeUser, registerUser, loginUser, getUser,  getAllUser, findUser, getAllUserGroup, addEmployee, logout, putUser, getConversation}

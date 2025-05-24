@@ -3,10 +3,11 @@ const {authentication} = require("../middleware/authentication");
 
 const {createBooking, getBookingById, getAllBookingForCustomer} = require("../controller/booking");
 const { getMessages, getAllMessages, putMessage } = require("../controller/message");
-const {loginUser, logout, getUser, putUser, registerUser, activeUser} = require("../controller/user");
+const {loginUser, logout, getUser, putUser, registerUser, activeUser, getConversation} = require("../controller/user");
 const { getRoomEmpty } = require("../controller/room");
 const { bookingServices } = require("../controller/services");
 const { createRatting, getRatting } = require("../controller/ratting");
+const { bot, getchatbot } = require("../chat_ai/chatbot");
 
 
 
@@ -35,6 +36,11 @@ customerRouter.post("/logout", logout);
 customerRouter.get("/search", getAllBookingForCustomer);
 
 
+//chatbot
+customerRouter.post("/chatbot", authentication, bot);
+customerRouter.get("/chatbot", authentication, getchatbot);
+
+
 //room
 customerRouter.get("/room_empty", getRoomEmpty);
 
@@ -42,6 +48,7 @@ customerRouter.get("/room_empty", getRoomEmpty);
 customerRouter.get("/chat/:id", getMessages);
 customerRouter.get("/all_chat", getAllMessages);
 customerRouter.put("/chat/:id", putMessage);
+customerRouter.get("/chat_room", authentication, getConversation);
 
 
 module.exports = customerRouter;

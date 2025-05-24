@@ -47,7 +47,7 @@ const getAmenitie = async (data) => {
         else{
             amenitie = await Amenitie.findAll({
                 where :{
-                    type : "hotel"
+                    type : data.type
                 }
             })
         }

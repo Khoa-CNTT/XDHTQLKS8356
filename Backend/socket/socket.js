@@ -23,14 +23,6 @@ const user_onl = new Map();
 
 io.on('connection', (socket) => {
 	console.log('User connected:', socket.id);
-	
-
-	//Login lưu socket id và user_idid
-	// socket.on('login', (token) => {
-	// 	const users = jwt.verify(token, process.env.JWT);
-	// 	const id = users.user.id;
-	// 	user_onl.set(id, socket.id);
-	// })
 
 
 	const users = socket.handshake.query.userId;
@@ -39,36 +31,42 @@ io.on('connection', (socket) => {
 
 	socket.on('send_message', async ({token, message_content, image, conversationId}) => {
 
-		// const users = jwt.verify(token, process.env.JWT);
-		// const userId = users.user.id;
+		const users = jwt.verify(token, process.env.JWT);
+		const userId = users.user.id;
 
 		//Lưu tin nhắn vào DB
 		const message = await Messenger.create({conversationId, userId, message_content, image});
 		
 
 		//Lấy tất cả user trong conversation
-		const list_id = await Conversation.findOne({
+		let list_id = await Conversation.findOne({
 			where : {
 				id : conversationId
 			},
 			attributes : ["conversation_list"]
 		})
 
-		console.log(list_id);
+		list_id = JSON.parse(conversation_list.conversation_list);
+		
+		console.log("list_id", typeof list_id, JSON.parse(conversation_list.conversation_list));
 
 
 		//Phát tin nhắn đến tất cả user online trong conversation
-		list_id.forEach(({ userId: uid }) => {
-			const socketId = user_onl.get(uid.toString());
+		list_id.forEach((uid) => {
+			const socketId = user_onl.get(uid);
+			console.log()
 			if (socketId) {
+				console.log(true,socketId)
 				io.to(socketId).emit('receive_message', {
 					conversationId,
-					userId,
-					content,
-					createdAt: message.createdAt,
+					user_id:userId,
+					message_content,
+					message_time: message.messageTime,
+					//thêm trường image
 				});
 			}
 		});
+
 	});
 
 

@@ -1,14 +1,15 @@
 import apiConfig from "./axiosConfig"
 
 export const getExtension = async(type, roomId) => {
-   try {
-      const response = await apiConfig.get(`/admin/amenitie?type=${type}${roomId ? `&room_id=${roomId}` : ''}`)
-      return response.data.amenitie
-   } catch (error) {
-      console.log("Error getExtension: " + error)
-      return {}
-   }
+  try {
+     const response = await apiConfig.get(`/admin/amenitie${type ? `?type=${type}` : ''}${roomId ? `&room_id=${roomId}` : ''}`)
+     return response.data.amenitie
+  } catch (error) {
+     console.log("Error getExtension: " + error)
+     return {}
+  }
 }
+
 export const addExtension = async (data) => {
    try {
        const response = await apiConfig.post(`/admin/amenitie`, data);

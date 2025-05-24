@@ -8,10 +8,10 @@ import { isAuthenticated } from "../../utils/AuthCheck";
 import { authService } from "../../service/authService";
 
 const InformationBooking = (props) => {
-  const location = useLocation()
-  const navigate = useNavigate()
-  const searchParams = new URLSearchParams(location.search)
-  const dataRoom = JSON.parse(searchParams.get("rooms"))
+  const location = useLocation();
+  const navigate = useNavigate();
+  const searchParams = new URLSearchParams(location.search);
+  const dataRoom = JSON.parse(searchParams.get("rooms"));
   const [infoCustomer, setInfoCustomer] = useState({
     fullname: null,
     email: null,
@@ -51,13 +51,15 @@ const InformationBooking = (props) => {
     try {
       const data = {
         type: type,
-        user_info: {
-          fullname: infoCustomer.fullname,
-          email: infoCustomer.email,
-          phone: infoCustomer.phone,
-          status: "temp",
-          role: type,
-        },
+       ...(type !== "customer" && {
+          user_info: {
+            fullname: infoCustomer.fullname,
+            email: infoCustomer.email,
+            phone: infoCustomer.phone,
+            status: "temp",
+            role: type,
+          },
+        }),
         booking: {
           checkin: dataRoom.booking.checkin,
           checkout: dataRoom.booking.checkout,

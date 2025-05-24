@@ -77,7 +77,6 @@ export const getBookingDetail  = async(id) => {
    console.log(id, data)
    try {
      const response = await apiConfig.put(`/admin/booking/${id}`, data);
-     console.log("2",response)
      return response.data;
    } catch (error) {
      if (error.response) {

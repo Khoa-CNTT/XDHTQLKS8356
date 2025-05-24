@@ -144,7 +144,7 @@ const InformationHotel = () => {
           </div>
         </PageTransitionWrapper>
       </div>
-      <div className="h-screen">
+      {/* <div className="h-screen">
         <PageTransitionWrapper className="h-full">
           <div className="max-w-3xl mx-auto p-4">
             <h2 className="text-2xl font-semibold mb-6 text-gray-800">
@@ -174,7 +174,7 @@ const InformationHotel = () => {
             ))}
           </div>
         </PageTransitionWrapper>
-      </div>
+      </div> */}
     </div>
   );
 };

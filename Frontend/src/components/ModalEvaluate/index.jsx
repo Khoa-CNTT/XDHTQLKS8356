@@ -14,12 +14,13 @@ const ratingDescriptions = [
   "Tuyệt vời",
 ];
 
-const ModalEvaluate = ({ visible, onClose, onSubmit, initialOrderDetailId, initialRating = null, dataOrder }) => {
+const ModalEvaluate = ({ visible, onClose, initialOrderDetailId, initialRating = null, dataOrder }) => {
+    const {order, roomTypeId} = dataOrder
+    console.log(order, roomTypeId)
   const [formData, setFormData] = useState({
     rating: initialRating,
     description: "", 
     image: [],
-    selectedRoomTypes: [],
   });
   const [hover, setHover] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -51,22 +52,21 @@ const handleRemoveImage = (indexToRemove) => {
     }));
 };
 const createPayloadForSubmit = () => {
-    const { rating, image, selectedRoomTypes, description } = formData;
-    if (!dataOrder) return [];
-    const start = dataOrder.checkin;
-    const end = dataOrder.checkout;
-    const bookingId = dataOrder.booking_id;
+    const { rating, image, description } = formData;
+    if (!order) return [];
+    const start = order.checkin;
+    const end = order.checkout;
+    const bookingId = order.booking_id;
     const imageUrl = JSON.stringify(image) || []
-    const payload = selectedRoomTypes.map(roomId => ({
+    const payload =[{
       rate: rating,
       image: imageUrl,
       start: start,
       end: end,
-      RoomId: roomId,
+      RoomId: roomTypeId,
       BookingId: bookingId,
       description: description
-    }));
-  
+    }];
     return payload;
   };
   const handleSubmit = async () => {
@@ -89,7 +89,6 @@ const createPayloadForSubmit = () => {
           description: "",
           comment: "",
           image: [],
-          selectedRoomTypes: [],
         });
     }else{
         toast.error("Đánh giá không thành công")
@@ -101,66 +100,63 @@ const createPayloadForSubmit = () => {
 
   return (
     <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-30">
-      <div className="bg-white rounded-lg p-6 w-2/5 shadow-lg relative max-h-[80vh] overflow-y-auto">
-        <h2 className="text-xl font-bold mb-4 text-center">ĐÁNH GIÁ PHÒNG</h2>
-
-       <div className="mb-4">
-        <div className="font-semibold mb-2">Chọn loại phòng muốn đánh giá:</div>
-        {dataOrder?.details?.map((detail) => (
-            <label key={detail.id_room_type} className="inline-flex items-center mr-4 mb-2 cursor-pointer">
-            <input
-                type="checkbox"
-                value={detail.id_room_type}
-                checked={formData.selectedRoomTypes.includes(detail.id_room_type)}
-                onChange={(e) => {
-                const value = detail.id_room_type;
-                setFormData((prev) => {
-                    let updatedRoomTypes;
-                    if (e.target.checked) {
-                    updatedRoomTypes = [...prev.selectedRoomTypes, value];
-                    } else {
-                    updatedRoomTypes = prev.selectedRoomTypes.filter(id => id !== value);
-                    }
-                    return { ...prev, selectedRoomTypes: updatedRoomTypes };
-                });
-                }}
-                className="form-checkbox h-5 w-5 text-blue-600"
-            />
-            <span className="ml-2">{detail.room_type} - {detail.room_number}</span>
-            </label>
-        ))}
-        </div>
-        <div className="flex items-center mb-3">
-            <div className="flex space-x-1">
-                {[...Array(5)].map((_, index) => {
-                const starValue = index + 1;
-                return (
-                    <label
-                    key={index}
-                    onMouseEnter={() => setHover(starValue)}
-                    onMouseLeave={() => setHover(null)}
-                    onClick={() => handleRatingChange(starValue)}
-                    className="cursor-pointer"
-                    >
-                    <FaStar
-                        size={30}
-                        color={
-                        starValue <= (hover || formData.rating)
-                            ? "#ffc107"
-                            : "#e4e5e9"
-                        }
+    
+      <div className="bg-white rounded-lg w-2/5 shadow-lg relative">
+        
+        <div className="flex items-center justify-between p-5 bg-gray-200 rounded-t-lg">
+            <div className="text-2xl font-bold text-center">Đánh giá phòng</div>
+            <button
+                onClick={onClose}
+                className="text-gray-500 hover:text-gray-700 focus:outline-none cursor-pointer"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-6 h-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="1.5"
+                    stroke="currentColor"
+                >
+                    <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M6 18L18 6M6 6l12 12"
                     />
-                    </label>
-                );
-                })}
-            </div>
-            <span className="ml-4 min-w-[90px] font-medium text-gray-700">
-                {hover !== null
-                ? ratingDescriptions[hover - 1]
-                : formData.rating
-                ? ratingDescriptions[formData.rating - 1]
-                : "Chọn mức độ đánh giá"}
-            </span>
+                </svg>
+            </button>
+        </div>
+       <div className="p-6  max-h-[60vh] overflow-y-auto">
+            <div className="flex items-center mb-3">
+                <div className="flex space-x-1">
+                    {[...Array(5)].map((_, index) => {
+                    const starValue = index + 1;
+                    return (
+                        <label
+                        key={index}
+                        onMouseEnter={() => setHover(starValue)}
+                        onMouseLeave={() => setHover(null)}
+                        onClick={() => handleRatingChange(starValue)}
+                        className="cursor-pointer"
+                        >
+                        <FaStar
+                            size={30}
+                            color={
+                            starValue <= (hover || formData.rating)
+                                ? "#ffc107"
+                                : "#e4e5e9"
+                            }
+                        />
+                        </label>
+                    );
+                    })}
+                </div>
+                <span className="ml-4 min-w-[90px] font-medium text-gray-700">
+                    {hover !== null
+                    ? ratingDescriptions[hover - 1]
+                    : formData.rating
+                    ? ratingDescriptions[formData.rating - 1]
+                    : "Chọn mức độ đánh giá"}
+                </span>
             </div>
             <textarea
             rows="4"
@@ -169,7 +165,6 @@ const createPayloadForSubmit = () => {
             value={formData.description}
             onChange={handleDescriptionChange}
             />
-
             <div className="mt-5 shadow-md mb-8 pb-4">
                 <div className="rounded-md w-full">
                     <h3 className="font-medium text-gray-700 mb-4 bg-gray-100 p-3">
@@ -278,8 +273,10 @@ const createPayloadForSubmit = () => {
                     </div>
                 </div>
             </div>
+        </div>
+        
 
-            <div className="flex justify-end space-x-4">
+            <div className="flex justify-end space-x-4 px-6 pb-6">
             <button
                 type="button"
                 onClick={onClose}

@@ -6,8 +6,7 @@ import PageTransitionWrapper from "../components/PageTransition";
 
 const PrivateRoutes = ({ role, children }) => {
   const token = isAuthenticated();
-  const isRole = hasRole(role);
-
+  const isRole = role.some(r => hasRole(r));
   if (!token) return <Navigate to={APP_ROUTER.LOGIN} />;
   if (!isRole) return <Navigate to={APP_ROUTER.HOME} />;
 

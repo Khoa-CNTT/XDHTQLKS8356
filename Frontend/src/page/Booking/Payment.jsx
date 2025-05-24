@@ -91,15 +91,33 @@ const Payment = () => {
     return () => {
       clearInterval(interval);
       controller.abort();
-      (async () => {
-      await bookingService.updateStatusBooking(order.id, { status: 'cancelled' });
-    })();
     };
   }, [paymentStatus, isQrExpired, transactionId]);
 
   useEffect(() => {
     if (order) generateQrCode();
     else navigate(APP_ROUTER.HOME);
+
+    const handleUnload = async (event) => {
+      if (!paymentStatus || timer === 0) {
+         const url = `http://localhost:8080/api/admin/booking/${id}`;
+        const data = JSON.stringify({ status: 'cancelled' });
+        navigator.sendBeacon(url, data);
+      }
+    };
+  const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        handleUnload(); // user chuyển tab, back, đóng trình duyệt
+      }
+    };
+
+    window.addEventListener('beforeunload', handleUnload);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleUnload);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, []);
 
   // console.log("payment:  ", transactionId);

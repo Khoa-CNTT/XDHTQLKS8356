@@ -51,7 +51,7 @@ const InformationBooking = (props) => {
     try {
       const data = {
         type: type,
-        ...(type !== "customer" && {
+        // ...(type !== "customer" && {
           user_info: {
             fullname: infoCustomer.fullname,
             email: infoCustomer.email,
@@ -59,7 +59,7 @@ const InformationBooking = (props) => {
             status: "temp",
             role: type,
           },
-        }),
+        // }),
         booking: {
           checkin: dataRoom.booking.checkin,
           checkout: dataRoom.booking.checkout,

@@ -51,7 +51,7 @@ const Chat = () => {
       try {
         if (!activeChatUser || !activeChatUser.user_id) return;
         // const data = await messageService.getMessages(activeChatUser.user_id);
-          const data = await messageService.getMessages(1);
+        const data = await messageService.getMessages(1);
         setMessages(data.mess.reverse());
       } catch (error) {
         console.error(error);
@@ -69,7 +69,8 @@ const Chat = () => {
     const fetchSearchUser = async () => {
       try {
         const data = await authService.findUser(search);
-        if (data.success) setMessages(data.user);
+        if (data.success) setUsers(data.user);
+
         console.log("data search: ", data.user);
       } catch (error) {
         console.error(error);
@@ -101,22 +102,34 @@ const Chat = () => {
 
   // Lắng nghe tin nhắn mới từ Socket.io
   useEffect(() => {
-    const handleNewMessage = ({conversationId, user_id, message_content, message_time}) => {
-      console.log("messageReceive: ", conversationId, user_id, message_content, message_time);
+    const handleNewMessage = ({
+      conversationId,
+      user_id,
+      message_content,
+      message_time,
+    }) => {
+      console.log(
+        "messageReceive: ",
+        conversationId,
+        user_id,
+        message_content,
+        message_time
+      );
       console.log("active: ", activeChatUserRef.current?.user_id);
       // if (
       //   activeChatUserRef.current?.user_id === message.receiver_id ||
       //   activeChatUserRef.current?.user_id === message.sender_id
       // ) {
-        setMessages((prev) => [...prev, 
-          {
+      setMessages((prev) => [
+        ...prev,
+        {
           fullname: "",
           image: "",
           user_id: user_id,
           message_content: message_content,
           message_time: message_time,
-        }
-        ]);
+        },
+      ]);
       // } else {
       //   setListUsers((prev) => {
       //     const newList = prev.map((user) =>
@@ -145,59 +158,6 @@ const Chat = () => {
   }, []);
   return (
     <div className='h-full [&>div]:shadow [&>div]:rounded-xl [&>div]:bg-white'>
-      {/* <div className='basis-1/3'> */}
-      {/* Search user */}
-      {/* <div className='relative'>
-          <div className='flex justify gap-2 w-[90%] mx-auto my-4 p-1 border border-gray-200 rounded-lg has-focus:ring-2 has-focus:ring-blue-400'>
-            <Icon
-              icon='iconamoon:search-light'
-              width={20}
-              height={20}
-              className='basis-1/12 text-neutral-400'
-            />
-            <input
-              className='basis-11/12 sm:text-sm focus:border-no'
-              type='text'
-              role='combobox'
-              placeholder='Tìm kiếm khách hàng...'
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
-
-          {search && (
-            <div className='absolute z-10 w-full bg-white rounded-xl shadow-xl mt-1'>
-              <div className='max-h-60 overflow-y-auto p-2 space-y-2'>
-                {loading ? (
-                  <div className='text-center text-gray-400 text-sm'>
-                    Loading...
-                  </div>
-                ) : users.length > 0 ? (
-                  users.map((user, index) => (
-                    <div
-                      key={user.id}
-                      className='flex items-center gap-x-3 p-2 hover:bg-gray-100 rounded-lg cursor-pointer'
-                    >
-                      <img
-                        className='shrink-0 size-5 rounded-full'
-                        src={user.avatar}
-                        alt={user.name}
-                      />
-                      <span className='text-sm text-gray-800'>{user.name}</span>
-                    </div>
-                  ))
-                ) : (
-                  <div className='text-center text-gray-400 text-sm'>
-                    Không tìm thấy.
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-        </div> */}
-      {/* </div> */}
-
-      {/* <div className='basis-2/3'> */}
       <MainContainer
         responsive
         style={{
@@ -207,7 +167,50 @@ const Chat = () => {
         }}
       >
         <Sidebar position='left'>
-          <Search placeholder='Search...' />
+          <div className='relative'>
+            <Search
+              value={search}
+              onClearClick={() => setSearch("")}
+              onChange={(e) => setSearch(e)}
+              placeholder='Search...'
+            />
+            {search && (
+              <div className='absolute z-10 w-full bg-white rounded-xl shadow-xl mt-1'>
+                <div className='max-h-60 overflow-y-auto p-2 space-y-2'>
+                  {loading ? (
+                    <div className='text-center text-gray-400 text-sm'>
+                      Loading...
+                    </div>
+                  ) : users.length > 0 ? (
+                    users.map((user, index) => (
+                      <div
+                        key={user.id}
+                        onClick={()=> {
+                          const u = listUsers?.find(i=>i.user_id===user.id)
+                          setActiveChatUser(u)
+                        }}
+                        className='flex items-center gap-x-3 p-2 hover:bg-gray-100 rounded-lg cursor-pointer'
+                      >
+                        <img
+                          className='shrink-0 size-5 rounded-full'
+                          src={user.image}
+                          alt={user.fullname}
+                        />
+                        <span className='text-sm text-gray-800'>
+                          {user.fullname}
+                        </span>
+                      </div>
+                    ))
+                  ) : (
+                    <div className='text-center text-gray-400 text-sm'>
+                      Không tìm thấy.
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+
           <ConversationList>
             {listUsers.map((user, i) => (
               <Conversation

@@ -86,7 +86,7 @@ const AllBooking = () => {
                 <a
                     onClick={() => handleStatusClick("booker")}
                     className={`group text-black transition-all duration-300 ease-in-out focus:text-pink-500 ${
-                        currentStatus === "pending" && "text-pink-500"
+                        currentStatus === "booker" && "text-pink-500"
                     }`}
                     href="#"
                 >

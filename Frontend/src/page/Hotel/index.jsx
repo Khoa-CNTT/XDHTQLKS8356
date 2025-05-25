@@ -86,7 +86,7 @@ const InformationHotel = () => {
               <h3 className="text-sm text-gray-700 mb-4">REGULATION</h3>
               <div className='flex items-center gap-2 text-gray-600 mb-1'>
               <CiLogin />
-              <div>Check-in: 14:00</div>
+              <div>Check-in: 12:00</div>
               </div>
               <div className='flex items-center gap-2 text-gray-600'>
               <IoIosLogOut />

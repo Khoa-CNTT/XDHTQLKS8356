@@ -181,9 +181,9 @@ function Login() {
                         <Link to="/auth/register" className="cursor-pointer text-sm font-medium text-blue-700 hover:text-black">
                             Đăng ký tài khoản mới
                         </Link>
-                        {/* <div className="cursor-pointer text-sm font-medium text-blue-700 hover:text-black">
+                        <div className="cursor-pointer text-sm font-medium text-blue-700 hover:text-black">
                             Quên mật khẩu
-                        </div> */}
+                        </div>
                     </div>
                 </form>
             </div>

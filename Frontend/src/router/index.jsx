@@ -35,6 +35,7 @@ import ReportByTotal from "../page/Management/Report/ReportByTotal";
 import ReportByRoomType from "../page/Management/Report/ReportByRoomType";
 import ReportByService from "../page/Management/Report/ReportByService";
 import InformationHotel from "../page/Hotel";
+import BookingSuccess from "../page/Booking/BookingSuccess";
 
 const router = createBrowserRouter([
   {
@@ -66,6 +67,10 @@ const router = createBrowserRouter([
           {
             path: APP_ROUTER.PAYMENT,
             element: <Payment />,
+          },
+          {
+            path: APP_ROUTER.BOOKING_SUCCESS,
+            element: <BookingSuccess />,
           },
         ],
       },

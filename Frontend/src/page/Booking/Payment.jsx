@@ -55,13 +55,16 @@ const Payment = () => {
         });
         if (isPaid) {
           toast.success("Đặt phòng thành công")
+          
           setPaymentStatus(true);
           setTimer(0);
-          navigate(APP_ROUTER.HOME);
+       
           const book = bookingService.updateStatusBooking(order.id, {
             status: "booker",
           });
-          if (book.status) navigate(APP_ROUTER.HOME);}
+          navigate("/booking/success")
+          // if (book.status) navigate(APP_ROUTER.HOME);
+        }
       } catch (error) {
         console.error("Lỗi khi kiểm tra thanh toán:", error);
       }

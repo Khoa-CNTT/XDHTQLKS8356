@@ -4,7 +4,7 @@ import { APP_ROUTER } from "../../utils/Constants";
 import { FaUser } from "react-icons/fa";
 import PageTransitionWrapper from "../../components/PageTransition";
 import { roomService } from "../../service/roomService";
-const MAX_DESC_LENGTH = 100;
+// const MAX_DESC_LENGTH = 100;
 const HomeDefault = () => {
   
     const [data, setData] = useState([]);
@@ -17,25 +17,25 @@ const HomeDefault = () => {
         fetchRooms();
     }, []);
     const navigate=useNavigate()
-    const renderDescription = (room) => {
-      const desc = room.description || "";
-      const isLong = desc.length > MAX_DESC_LENGTH;
-      const shortDesc = isLong ? desc.slice(0, MAX_DESC_LENGTH) + "..." : desc;
+    // const renderDescription = (room) => {
+    //   const desc = room.description || "";
+    //   const isLong = desc.length > MAX_DESC_LENGTH;
+    //   const shortDesc = isLong ? desc.slice(0, MAX_DESC_LENGTH) + "..." : desc;
   
-      return (
-        <p className="text-sm text-gray-500 mt-1">
-          {shortDesc}{" "}
-          {isLong && (
-            <Link
-              to={APP_ROUTER.ROOM_DETAIL.replace(":id", room.id)} // điều chỉnh URL chi tiết phòng theo route bạn có
-              className="text-blue-600 hover:underline"
-            >
-              Xem chi tiết
-            </Link>
-          )}
-        </p>
-      );
-    };
+    //   return (
+    //     <p className="text-sm text-gray-500 mt-1">
+    //       {shortDesc}{" "}
+    //       {isLong && (
+    //         <Link
+    //           to={APP_ROUTER.ROOM_DETAIL.replace(":id", room.id)} // điều chỉnh URL chi tiết phòng theo route bạn có
+    //           className="text-blue-600 hover:underline"
+    //         >
+    //           Xem chi tiết
+    //         </Link>
+    //       )}
+    //     </p>
+    //   );
+    // };
     return (
         <div>
           <PageTransitionWrapper>
@@ -87,7 +87,7 @@ const HomeDefault = () => {
         </div>
           </div>
           </PageTransitionWrapper>
-          <PageTransitionWrapper>
+          {/* <PageTransitionWrapper>
           <div className='w-4/5 mx-auto px-4 py-16'>
             <div className='flex items-center justify-between mb-6'>
               <div>
@@ -133,7 +133,7 @@ const HomeDefault = () => {
               ))}
             </div>
           </div>
-          </PageTransitionWrapper>
+          </PageTransitionWrapper> */}
         </div>
     );
 };

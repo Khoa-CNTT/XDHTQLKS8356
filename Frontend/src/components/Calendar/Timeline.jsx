@@ -92,7 +92,7 @@ const Timeline = () => {
       if (schedule?.length > 0) {
         console.log(true)
           setBookingSchedule(schedule.map(i => ({
-              resource: i.room_detail_id,
+              resource: i.room_id,
               start: i.checkin,
               end: i.checkout,
               text: i.booking_detail_id,

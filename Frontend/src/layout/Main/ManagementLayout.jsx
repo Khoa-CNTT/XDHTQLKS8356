@@ -7,7 +7,7 @@ import {
     UserOutlined,
     ShoppingCartOutlined,
     LogoutOutlined,
-    HomeOutlined,
+    SafetyOutlined,
     ProductOutlined,
     SisternodeOutlined,
     DollarOutlined,
@@ -18,7 +18,8 @@ import {
     ThunderboltOutlined,
     SunOutlined,
     TeamOutlined,
-    UsergroupAddOutlined
+    UsergroupAddOutlined,
+    FundProjectionScreenOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu, theme } from "antd";
 import Logo from "../../components/Logo";
@@ -51,17 +52,17 @@ const ManagementLayout = () => {
     const userRole = Cookies.get("role"); 
     console.log(userRole)
     const items = [
-      userRole === 'admin' && {
+      userRole !== 'admin' && {
         key: '2',
         icon: <FundViewOutlined />,
         label: <Link to={APP_ROUTER.HOTEL}>Thông tin khách sạn</Link>,
       },
-      {
+      userRole !== 'admin' && {
         key: '3',
         icon: <HddOutlined />,
         label: <Link to={APP_ROUTER.ROOMTYPE}>Loại phòng</Link>,
       },
-      {
+      userRole !== 'admin' && {
         key: '4',
         icon: <LayoutOutlined />,
         label: "Phòng",
@@ -83,22 +84,22 @@ const ManagementLayout = () => {
           },
         ],
       },
-      {
+      userRole !== 'admin' && {
         key: '5',
         icon: <SunOutlined />,
         label: <Link to={APP_ROUTER.EXTENTION}>Tiện ích</Link>,
       },
-      {
+      userRole !== 'admin' && {
         key: '6',
         icon: <ShoppingCartOutlined />,
         label: <Link to={APP_ROUTER.BOOKING_MANAGER}>Đơn đặt phòng</Link>,
       },
-      {
+      userRole !== 'admin' && {
         key: '7',
         icon: <ThunderboltOutlined />,
         label: <Link to={APP_ROUTER.SERVICE}>Dịch vụ</Link>,
       },
-      {
+      userRole !== 'admin' && {
         key: '8',
         icon: <UserOutlined />,
         label: "Khách hàng",
@@ -139,17 +140,17 @@ const ManagementLayout = () => {
         children: [
           {
             key: '90',
-            icon: <UserOutlined />,
+            icon: <FundProjectionScreenOutlined />,
             label: <Link to={APP_ROUTER.REPORTTOTAL}>Tổng doanh thu</Link>,
           },
           {
             key: '91',
-            icon: <SisternodeOutlined />,
+            icon: <ProductOutlined />,
             label: <Link to={APP_ROUTER.REPORTROOMTYPE}>Loại phòng</Link>,
           },
           {
             key: '92',
-            icon: <SisternodeOutlined />,
+            icon: <SafetyOutlined />,
             label: <Link to={APP_ROUTER.REPORTSERVICE}>Dịch vụ</Link>,
           },
         ],

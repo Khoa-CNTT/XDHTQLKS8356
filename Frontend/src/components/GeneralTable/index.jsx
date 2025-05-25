@@ -168,8 +168,9 @@ const GeneralTable = ({
     setValue((prevValue) => ({ ...prevValue, expandedRow: [] }));
   };
   const handleSearchChange = (event) => {
-    setValue((prevValue) => ({ ...prevValue, search: event.target.value }));
-    onSearchChange(value.search);
+    const newSearch = event.target.value;
+    setValue((prevValue) => ({ ...prevValue, search: newSearch }));
+    onSearchChange(newSearch);  // dùng giá trị mới trực tiếp
   };
   const formatDate = (value) => {
     if (!value) return "";
@@ -501,8 +502,12 @@ const GeneralTable = ({
                                   return "Lỗi ảnh";
                                 }
                               })()
-                            ) : isDateField ? (
-                              formatDate(value)
+                            ) : isDateField ?(
+                              (() => {
+                                const date = new Date(value);
+                                if (isNaN(date.getTime())) return "Ngày không hợp lệ";
+                                return format(date, "HH:mm, dd/MM/yyyy");
+                              })()
                             ) : (
                               value ?? ""
                             )}

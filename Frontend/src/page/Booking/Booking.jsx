@@ -61,7 +61,11 @@ const Booking = () => {
   }
 
   const location = useLocation();
-  const step = location.pathname.includes('payment') ? 2 : location.pathname.includes('information') ? 1 : 1;
+  const step = location.pathname.includes('payment') ? 2 
+            : location.pathname.includes('information') ? 1
+            : location.pathname.includes('success') ? 3
+            : 1;
+
 
   return (
     <div className='w-9/12 mb-10 mt-4 mx-auto'>

@@ -86,6 +86,29 @@ export const getBookingDetail  = async(id) => {
      }
    }
  };
+ export const payment = async (data) => {
+   try {
+     const response = await apiConfig.post(`/admin/booking/payment`, data);
+     return response.data;
+   } catch (error) {
+     if (error.response) {
+       return error.response.data;
+     } else {
+       throw error;
+     }
+   }
+}
+ export const getBookingDetailArray  = async(id) => {
+   // if(!id) return
+   try {
+      const response = await apiConfig.get(`/customer/booking/${id}`)
+      console.log("dữ liệu", response.data.booking)
+      return response.data.booking || []
+   } catch (error) {
+      console.log("Error getSchedule: " + error)
+      return {}
+   }
+}
 export const bookingService = {
    
    getSchedule,
@@ -94,5 +117,7 @@ export const bookingService = {
    getBookingAdmin,
    creatBookingService,
    getBookingCustomer,
-   updateStatusBooking
+   updateStatusBooking,
+   payment,
+   getBookingDetailArray
 }

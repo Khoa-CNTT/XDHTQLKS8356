@@ -18,13 +18,12 @@ const ModalPrice = ({ handleClose, lable, handleSubmit, data, resetTrigger, func
         const result = await roomService.getRoomType();
         setFormData(prev => ({...prev, roomType: result}));
     };
-    console.log("2",data)
     useEffect(() => {
         if (data) {
             setFormData({
                 priceName: data.name || "",
                 price: data?.price || "",
-                formattedPrice: data?.price ? new Intl.NumberFormat().format(data.price): "",
+              
                 startDate: data?.start_date || "",
                 endDate: data?.end_date || "",
                 roomType: data.details?.map(detail => detail.room_type) || [],
@@ -156,10 +155,10 @@ const ModalPrice = ({ handleClose, lable, handleSubmit, data, resetTrigger, func
                     </div>
                     <input
                         type="number"
-                        name="formattedPrice"
+                        name="price"
                         min={1}
                         placeholder="Giá (VNĐ)..."
-                        value={formData.formattedPrice}
+                        value={formData.price}
                         disabled={isUpdateMode}
                         onChange={handlePriceChange}
                         className="disabled:cursor-not-allowed disabled:opacity-60 mb-3 w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"

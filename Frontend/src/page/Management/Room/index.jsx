@@ -82,12 +82,12 @@ const Room = () => {
         setModalVisible(true);
     };
     const handleSubmit = async (formData) => {
-        for (let key in formData) {
-            if (formData[key] === "") {
-                toast.error("Vui lòng nhập đầy đủ thông tin.");
-                return;
-            }
-        }
+        // for (let key in formData) {
+        //     if (formData[key] === "") {
+        //         toast.error("Vui lòng nhập đầy đủ thông tin.");
+        //         return;
+        //     }
+        // }
        console.log("2",formData)
         const payload = {
             room_number: formData.roomNumber,

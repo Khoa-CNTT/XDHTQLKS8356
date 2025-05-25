@@ -6,6 +6,7 @@ export const APP_ROUTER = {
     BOOKING: "/booking",
     PAYMENT: "/booking/payment",
     INFOR_BOOKING: "/booking/information",
+    BOOKING_SUCCESS: "/booking/success",
     AUTH: "auth",
     LOGIN: "/auth/login",
     REGISTER: "/auth/register",

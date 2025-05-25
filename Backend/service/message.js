@@ -1,6 +1,7 @@
 const {Messenger} = require("../model/messenger");
 const { Sequelize} = require("sequelize");
 const { sequelize } = require("../config/mysql");
+const { Conversation } = require("../model/conversation");
 
 
 
@@ -27,6 +28,8 @@ const getMessages  = async(id) => {
 
     return mess;
 }
+
+
 
 
 const getAllMessages  = async() => {

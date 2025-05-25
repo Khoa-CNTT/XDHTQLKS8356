@@ -1,10 +1,10 @@
 const {Booking} = require("../model/booking");
 const {Booking_Details} = require("../model/booking_details");
-const {Hotel} = require("../model/hotel");
 const {User} = require("../model/user");
-const {Booking_Services} = require("../model/booking_services");
 const {Sequelize, Op} = require("sequelize");
 const { sequelize } = require("../config/mysql");
+const sendMail = require("../config/sendMail");
+
 
 const find_room = async (id, count, start, end) => {
     const sql = `SELECT 
@@ -62,6 +62,17 @@ const createBooking = async (id, data) => {
         }
 
         await Booking_Details.bulkCreate(booking_detail);
+        
+        if(data.type == "guest"){
+            const detail_booking = await getBookingById(booking.id);
+
+
+            sendMail({
+                email : data.user_info.email,
+                subject : "Thông tin đơn đặt hàng của bạn",
+                message : JSON.stringify(detail_booking)
+            })
+        }
         return booking
     } catch (error) {
         console.log(error);
@@ -280,7 +291,27 @@ const deleteBooking = async (id) => {
 //Cập nhật đơn đặt phòng
 const updateBooking = async (id, data) => {
     try {
-        const booking = await Product.findByPk(id);
+        if(data.status == "cancelled"){
+            const sql = `DELETE FROM inventory
+                        USING room_details, booking_details, booking
+                        WHERE inventory.room_detail_id = room_details.id
+                        AND room_details.id = booking_details.room_detail_id
+                        AND booking_details.booking_id = booking.id
+                        AND booking.id = ${id};`
+            await sequelize.query(sql, { type: Sequelize.QueryTypes.DELETE });
+            await Booking_Details.destroy({
+                where : {
+                    booking_id : id
+                }
+            })
+            await Booking.destroy({
+                where : {
+                    id : id
+                }
+            })
+            return;
+        }
+        const booking = await Booking.findByPk(id);
         booking.update(data);
     } catch (error) {
         console.log(error);
@@ -289,8 +320,5 @@ const updateBooking = async (id, data) => {
 }
 
 
-const bookingServices  = async (id, data) => {
-    await Booking_Services.bulkCreate(data);
-}
 
-module.exports = {createBooking, getBookingById, getAllBookingForAdmin, getAllBookingForCustomer, deleteBooking, updateBooking, bookingServices}
+module.exports = {createBooking, getBookingById, getAllBookingForAdmin, getAllBookingForCustomer, deleteBooking, updateBooking}

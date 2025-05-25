@@ -13,5 +13,4 @@ const Amenitie = sequelize.define("Amenitie",
     }
 );
 
-
 module.exports = { Amenitie };

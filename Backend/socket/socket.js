@@ -23,14 +23,6 @@ const user_onl = new Map();
 
 io.on('connection', (socket) => {
 	console.log('User connected:', socket.id);
-	
-
-	//Login lưu socket id và user_idid
-	// socket.on('login', (token) => {
-	// 	const users = jwt.verify(token, process.env.JWT);
-	// 	const id = users.user.id;
-	// 	user_onl.set(id, socket.id);
-	// })
 
 
 	const users = socket.handshake.query.userId;
@@ -41,19 +33,21 @@ io.on('connection', (socket) => {
 
 		const users = jwt.verify(token, process.env.JWT);
 		const userId = users.user.id;
-		console.log("cons", conversationId, userId)
+
 		//Lưu tin nhắn vào DB
 		const message = await Messenger.create({ConversationId: conversationId, UserId: userId,messageContent: message_content, image});
 		
 
 		//Lấy tất cả user trong conversation
-		const conversation_list = await Conversation.findOne({
+		let list_id = await Conversation.findOne({
 			where : {
 				id : conversationId
 			},
 			attributes : ["conversation_list"]
 		})
-		const list_id = JSON.parse(conversation_list.conversation_list)
+
+		list_id = JSON.parse(conversation_list.conversation_list);
+		
 		console.log("list_id", typeof list_id, JSON.parse(conversation_list.conversation_list));
 
 
@@ -72,6 +66,7 @@ io.on('connection', (socket) => {
 				});
 			}
 		});
+
 	});
 
 

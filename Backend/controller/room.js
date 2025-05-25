@@ -23,23 +23,7 @@ const createRoom = async (req, res) => {
 }
 
 
-//Gợi ý đặt phòng
-const getSuggestRoom = async (req, res) => {
 
-    const room = await Room.getSuggestRoom(req.params.id, req.query);
-
-    if (room == "error") {
-        res.status(505).json("Lỗi hệ thống");
-    }
-    else {
-        res.status(201).json({
-            status: true,
-            message: "Danh sách loại phòng ",
-            room
-        })
-    }
-
-}
 
 
 
@@ -145,4 +129,4 @@ const deleteRoom = async (req, res) => {
 
 }
 
-module.exports = {deleteRoom, updateRoom, createRoom, getSuggestRoom, getRoom, getRoomById, getRoomEmpty, getStatusRoom}
+module.exports = {deleteRoom, updateRoom, createRoom, getRoom, getRoomById, getRoomEmpty, getStatusRoom}

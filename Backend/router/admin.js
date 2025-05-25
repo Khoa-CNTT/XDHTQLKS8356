@@ -1,7 +1,7 @@
 const adminRouter = require("express").Router();
 
 
-const {getAmenitie, createAmenitie, deleteAmenitie, updateAmenitie} = require("../controller/amenitie");
+const {getAmenitie, createAmenitie, deleteAmenitie, updateAmenitie, createAmenitieRoom} = require("../controller/amenitie");
 const { getAllBookingForAdmin, updateBooking } = require("../controller/booking");
 const { updateHotel, getHotel } = require("../controller/hotel");
 const { createPayment } = require("../controller/payment");
@@ -17,6 +17,7 @@ const { findUser, addEmployee, getAllUser, getAllUserGroup } = require("../contr
 
 //amenitie
 adminRouter.post("/amenitie", createAmenitie);
+adminRouter.post("/amenitie_room", createAmenitieRoom);
 adminRouter.delete("/amenitie/:id", deleteAmenitie);
 adminRouter.put("/amenitie/:id", updateAmenitie);
 adminRouter.get("/amenitie", getAmenitie);
@@ -59,7 +60,6 @@ adminRouter.get("/services", getAllServices);
 
 //user
 adminRouter.get("/search_user", findUser);
-//adminRouter.post("/user", findUser);
 adminRouter.get("/all_user", getAllUser);
 adminRouter.post("/add_user", addEmployee);
 adminRouter.get("/group_user", getAllUserGroup);

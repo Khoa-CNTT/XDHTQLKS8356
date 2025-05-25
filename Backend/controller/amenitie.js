@@ -23,9 +23,21 @@ const createAmenitie = async (req, res) => {
 }
 
 
+const createAmenitieRoom = async (req, res) => {
+
+    await Amenitie.createAmenitieRoom(req.body);
+
+    res.status(201).json({
+        status: true,
+        message: "Thêm tiện ích sạn thành công"
+    })
+
+}
+
+
 const getAmenitie = async (req, res) => {
 
-    const amenitie = await Amenitie.getAmenitie();
+    const amenitie = await Amenitie.getAmenitie(req.query);
 
     if (amenitie == "error") {
         res.status(505).json("Lỗi hệ thống");
@@ -75,4 +87,4 @@ const deleteAmenitie = async (req, res) => {
 
 }
 
-module.exports = { createAmenitie, getAmenitie, updateAmenitie, deleteAmenitie}
+module.exports = { createAmenitie, getAmenitie, updateAmenitie, deleteAmenitie, createAmenitieRoom}

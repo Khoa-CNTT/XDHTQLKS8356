@@ -29,13 +29,13 @@ io.on('connection', (socket) => {
     const userId = jwt.verify(users, process.env.JWT).user.id;
     if(userId != "undefined") user_onl[userId] = socket.id;
 
-	socket.on('send_message', async ({token, message_content, image, conversationId}) => {
+	socket.on('send_message', async ({token, message_content, conversationId}) => {
 
 		const users = jwt.verify(token, process.env.JWT);
 		const userId = users.user.id;
 
 		//Lưu tin nhắn vào DB
-		const message = await Messenger.create({conversationId, userId, message_content, image});
+		const message = await Messenger.create({ConversationId : conversationId, UserId : userId, messageContent : message_content});
 		
 
 		//Lấy tất cả user trong conversation
@@ -62,7 +62,8 @@ io.on('connection', (socket) => {
 					user_id:userId,
 					message_content,
 					message_time: message.messageTime,
-					//thêm trường image
+					fullname : users.fullname,
+					image : users.image
 				});
 			}
 		});

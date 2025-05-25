@@ -13,8 +13,6 @@ const convertData = (data) => {
                     room_id: room.room_id,
                     room_type: room.room_type,
                     adult_count: room.adult_count,
-                    description: room.description,
-                    image: room.image,
                     total_price: parseInt(room.total_price, 10),
                     count: 1,
                 };

@@ -8,14 +8,13 @@ const { Booking } = require('./booking');
 const Ratting = sequelize.define("Ratting",
     {
         rate: DataTypes.INTEGER,
-        image: DataTypes.TEXT,
+        image: DataTypes.STRING,
         create_at: {
             type: DataTypes.DATEONLY,
             defaultValue: Sequelize.fn("NOW")
         },
         start : DataTypes.DATEONLY,
-        end : DataTypes.DATEONLY,
-        description : DataTypes.STRING
+        end : DataTypes.DATEONLY
     },
     {
         tableName: "ratting"

@@ -5,7 +5,7 @@ const Amenitie = sequelize.define("Amenitie",
     {
         name: DataTypes.STRING,
         icon : DataTypes.STRING,
-        image : DataTypes.TEXT,
+        image : DataTypes.STRING,
         type : DataTypes.STRING
     },
     {

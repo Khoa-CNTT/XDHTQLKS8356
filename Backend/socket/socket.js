@@ -27,7 +27,7 @@ io.on('connection', (socket) => {
 
 	const users = socket.handshake.query.userId;
     const userId = jwt.verify(users, process.env.JWT).user.id;
-    if(userId != "undefined") user_onl.set(userId, socket.id);
+    if(userId != "undefined") user_onl[userId] = socket.id;
 
 	socket.on('send_message', async ({token, message_content, image, conversationId}) => {
 
@@ -35,7 +35,7 @@ io.on('connection', (socket) => {
 		const userId = users.user.id;
 
 		//Lưu tin nhắn vào DB
-		const message = await Messenger.create({ConversationId: conversationId, UserId: userId,messageContent: message_content, image});
+		const message = await Messenger.create({conversationId, userId, message_content, image});
 		
 
 		//Lấy tất cả user trong conversation
@@ -73,7 +73,6 @@ io.on('connection', (socket) => {
 	socket.on('disconnect', () => {
 		for (let [userId, socketId] of user_onl) {
 			if (socketId === socket.id) {
-				console.log("disconnect ", socket.id)
 				user_onl.delete(userId);
 				break;
 			}

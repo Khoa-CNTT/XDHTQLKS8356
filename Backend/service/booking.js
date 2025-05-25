@@ -1,10 +1,10 @@
 const {Booking} = require("../model/booking");
 const {Booking_Details} = require("../model/booking_details");
-const {Hotel} = require("../model/hotel");
 const {User} = require("../model/user");
-const {Booking_Services} = require("../model/booking_services");
 const {Sequelize, Op} = require("sequelize");
 const { sequelize } = require("../config/mysql");
+const sendMail = require("../config/sendMail");
+
 
 const find_room = async (id, count, start, end) => {
     const sql = `SELECT 
@@ -73,7 +73,7 @@ const createBooking = async (id, data) => {
                 message : JSON.stringify(detail_booking)
             })
         }
-        return booking
+        //return booking.id 
     } catch (error) {
         console.log(error);
         return "error";
@@ -87,8 +87,6 @@ const getBookingById = async (id) => {
         const sql = `SELECT 
                         b.id AS booking_id,
                         b."status" AS booking_status,
-                        b.fullname,
-                        b.phone,
                         b.created_at,
                         b.checkin,
                         b.checkout,
@@ -97,7 +95,6 @@ const getBookingById = async (id) => {
                         COALESCE(SUM(p.amount), 0) AS amount,
                         JSONB_AGG(
                             DISTINCT JSONB_BUILD_OBJECT(
-                                    'booking_detail_id', bd.id,
                                     'room_type', r.room_type,
                                     'room_number', rd.room_number,
                                     'price', bd.price
@@ -161,7 +158,6 @@ const getAllBookingForAdmin = async (data) => {
                         COALESCE(SUM(p.amount), 0) AS amount,
                         JSONB_AGG(
                             DISTINCT JSONB_BUILD_OBJECT(
-                                    'id', rd.id,
                                     'room_type', r.room_type,
                                     'room_number', rd.room_number,
                                     'price', bd.price
@@ -225,7 +221,6 @@ const getAllBookingForCustomer = async (id) => {
                         JSONB_AGG(
                             DISTINCT JSONB_BUILD_OBJECT(
                                     'room_type', r.room_type,
-                                    'id_room_type', r.id,
                                     'room_number', rd.room_number,
                                     'price', bd.price
                                 )

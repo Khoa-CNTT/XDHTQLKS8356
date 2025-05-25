@@ -17,9 +17,7 @@ const suggestRooms = async (data) => {
                 SELECT 
                     r.id AS room_id,
                     rd.id AS room_detail_id,
-                    r.room_type, 
-                    r.image AS image,
-                    r.description,
+                    r.room_type AS room_type, 
                     r.adult_count,
                     SUM(
                         COALESCE(
@@ -40,19 +38,17 @@ const suggestRooms = async (data) => {
                 WHERE
                     i.room_detail_id IS NULL AND r.adult_count <= ${data.people}
                 GROUP BY 
-                    rd.id, r.id, r.room_type, r.image
+                    rd.id, r.id, r.room_type
                 ORDER BY
                     r.adult_count ASC;`;
 
     const room = await sequelize.query(sql, {
         type: Sequelize.QueryTypes.SELECT,
     });
+    
+    console.log("a", find_room(room, data.people));
 
-
-    let result = [];
-    find_room(room, 0, 3, [], result);
-     
-    return convertData(result);
+    return convertData(find_room(room, data.people));
 };
 
 
@@ -68,7 +64,6 @@ const getStatusRoom = async (data) => {
         const sql = `SELECT
                         b.id AS booking_id,
                         rd.room_number,
-                        rd.id AS room_detail_id,
                         r.id AS room_id,
                         u.fullname,
                         bd.id AS booking_detail_id,
@@ -123,7 +118,6 @@ const getRoomEmpty = async (data) => {
                         JSONB_AGG(
                             DISTINCT JSONB_BUILD_OBJECT(
                                 'room_id', r.id,
-                                'image', r.image,
                                 'count',
                                     (
                                         SELECT

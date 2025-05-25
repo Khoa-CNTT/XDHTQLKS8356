@@ -85,7 +85,7 @@ const deletePricing = async (id) => {
 }
 
 
-//notenote
+//note
 const updatePricing = async (id, data) => {
     try {
         const price = await Pricing.findByPk(id);

@@ -34,8 +34,8 @@ const InforamtionRoom = (props) => {
                     <div> {formatDate(dataRoomDetail.checkout)}</div>
                 </div>
                 <div className='flex gap-2'>
-                    <div className='block text-sm font-medium text-gray-900 dark:text-white'>Số ngày ở:</div> 
-                    <div>{dataRoomDetail.total_nights} đêm</div>
+                    <div className='block text-sm font-medium text-gray-900 dark:text-white'>Thời gian ở:</div> 
+                    <div>{dataRoomDetail.total_nights} ngày</div>
                 </div>
                 <div className='flex gap-2'>
                     <div className='block text-sm font-medium text-gray-900 dark:text-white'>Số lượng người:</div>
@@ -52,7 +52,7 @@ const InforamtionRoom = (props) => {
           <thead className="bg-gray-200">
             <tr>
               <th className="px-4 py-2">Loại phòng</th>
-              <th className="px-4 py-2">Giá mỗi đêm</th>
+              <th className="px-4 py-2">Giá mỗi phòng</th>
               <th className="px-4 py-2 text-center">Số lượng</th>
               {/* <th className="px-4 py-2 text-center">Số ngày</th> */}
               <th className="px-4 py-2">Thành tiền (VND)</th>
@@ -72,15 +72,6 @@ const InforamtionRoom = (props) => {
         </table>
       </div>
       <div className="max-w-sm ms-auto border border-gray-300 p-4 rounded-lg">
-        <div className="flex justify-between mb-1">
-          <span>Tổng tiền phòng (VND)</span>
-          <span>{formatCurrency(dataRoomDetail.total_amount)}</span>
-        </div>
-        {/* <div className="flex justify-between mb-1">
-          <span>Giảm giá (VND)</span>
-          <span>{formatCurrency(dataRoomDetail.total_discount)}</span>
-        </div> */}
-        <hr className="my-2 text-gray-300" />
         <div className="flex justify-between font-semibold text-lg text-black">
           <span>Tổng cộng (VND)</span>
           <span>{formatCurrency(dataRoomDetail.total_amount)}</span>

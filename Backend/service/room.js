@@ -18,6 +18,7 @@ const suggestRooms = async (data) => {
                     r.id AS room_id,
                     rd.id AS room_detail_id,
                     r.room_type AS room_type, 
+                    r.image,
                     r.adult_count,
                     SUM(
                         COALESCE(
@@ -55,6 +56,7 @@ const suggestRooms = async (data) => {
 //Trạng thái của phòng trong khách sạn
 const getStatusRoom = async (data) => {
     try {
+
         // let select = "";
 
         // if (data.status) {
@@ -64,7 +66,7 @@ const getStatusRoom = async (data) => {
         const sql = `SELECT
                         b.id AS booking_id,
                         rd.room_number,
-                        r.id AS room_id,
+                        rd.id AS room_id,
                         u.fullname,
                         bd.id AS booking_detail_id,
                         CASE 
@@ -131,6 +133,7 @@ const getRoomEmpty = async (data) => {
                                             AND i.room_detail_id IS NULL
                                     ),
                                 'room_type', r.room_type,
+                                'image', r.image,
                                 'adult_count', r.adult_count,
                                 'total_price', (
                                     SELECT SUM(
@@ -166,102 +169,101 @@ const getRoomEmpty = async (data) => {
 };
 
 const createRoom = async (data) => {
-    try {
-        const check = await Room.findOne({
-            where: {
-                room_type: data.room_type,
-            },
-        });
+    try {
+        const check = await Room.findOne({
+            where: {
+                room_type: data.room_type,
+            },
+        });
 
-        if (check) {
-            return -1;
-        }
+        if (check) {
+            return -1;
+        }
 
-        await Room.create(data);
-    } catch (error) {
-        console.log(error);
-        return "error";
-    }
+        await Room.create(data);
+    } catch (error) {
+        console.log(error);
+        return "error";
+    }
 };
 
 const getRoom = async (id) => {
-    try {
-        const sql = `SELECT 
-                        r.id,
-                        r.square_meters,
-                        r.room_type AS room_type,
-                        r.adult_count,
-                        r.price_per_night,
-                        r.image,
-                        COUNT(rd.id) AS room_count
-                    FROM 
-                        Room r
-                    LEFT JOIN 
-                        room_details rd ON rd."room_id" = r.id
-                    GROUP BY
-                        r.id`;
+    try {
+        const sql = `SELECT 
+                        r.id,
+                        r.square_meters,
+                        r.room_type AS room_type,
+                        r.adult_count,
+                        r.price_per_night,
+                        r.image,
+                        COUNT(rd.id) AS room_count
+                    FROM 
+                        Room r
+                    LEFT JOIN 
+                        room_details rd ON rd."room_id" = r.id
+                    GROUP BY
+                        r.id`;
 
-        const room = await sequelize.query(sql, {
-            type: Sequelize.QueryTypes.SELECT,
-        });
+        const room = await sequelize.query(sql, {
+            type: Sequelize.QueryTypes.SELECT,
+        });
 
-        return room;
-    } catch (error) {
-        console.log(error);
-        return "error";
-    }
+        return room;
+    } catch (error) {
+        console.log(error);
+        return "error";
+    }
 };
-
 
 
 const getRoomById = async (id) => {
-    try {
-        const room = await Room.findByPk(id);
-        return room;
-    } catch (error) {
-        console.log(error);
-        return "error";
-    }
+    try {
+        const room = await Room.findByPk(id);
+        return room;
+    } catch (error) {
+        console.log(error);
+        return "error";
+    }
 };
 
 const deleteRoom = async (id) => {
-    try {
-        const check = await Room_Details.findOne({
-            where : {
-                room_id : id
-            }
-        })
-        if(check){
-            return -1;
-        }
-        await Room.destroy({
-            where: {
-                id: id,
-            }
-        });
-    } catch (error) {
-        console.log(error);
-        return "error";
-    }
+    try {
+        const check = await Room_Details.findOne({
+            where : {
+                room_id : id
+            }
+        })
+        if(check){
+            return -1;
+        }
+        await Room.destroy({
+            where: {
+                id: id,
+            }
+        });
+    } catch (error) {
+        console.log(error);
+        return "error";
+    }
 };
 
 const updateRoom = async (id, data) => {
-    try {
-        const check = await Room.findOne({
-            where : {
-               id : { [Op.ne]  : id},
-               room_type : data.room_type 
-            }
-        })
-        if(check){
-            return -1;
-        }
-        const room = await Room.findByPk(id);
-        room.update(data);
-    } catch (error) {
-        console.log(error);
-        return "error";
-    }
+    try {
+        const check = await Room.findOne({
+            where : {
+               id : { [Op.ne]  : id},
+               room_type : data.room_type 
+            }
+        })
+        if(check){
+            return -1;
+        }
+        const room = await Room.findByPk(id);
+        room.update(data);
+    } catch (error) {
+        console.log(error);
+        return "error";
+    }
 };
 
 module.exports = {

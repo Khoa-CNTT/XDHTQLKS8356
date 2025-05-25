@@ -27,7 +27,7 @@ const Payment = () => {
     setQrData(
       `https://img.vietqr.io/image/${QR.BANK_ID}-${QR.ACCOUNT_NO}-${
         QR.TEMPLATE
-      // }.png?amount=${order.total_price}&addInfo=${encodeURIComponent(
+        // }.png?amount=${order.total_price}&addInfo=${encodeURIComponent(
       }.png?amount=${2000}&addInfo=${encodeURIComponent(
         newTransactionId
       )}&accountName=${encodeURIComponent(QR.ACCOUNT_NAME)}`
@@ -41,6 +41,12 @@ const Payment = () => {
         const response = await axios.get(QR.CHECK, { signal });
         const transactions = response.data.data;
         console.log("transactions", transactions);
+        console.log({
+            amount: order.total_price,
+            type: "booking",
+            payment_gateway: "online",
+            BookingId: order.id,
+          })
         const isPaid = transactions.some((transaction) => {
           console.log(
             "check",
@@ -52,18 +58,23 @@ const Payment = () => {
             // transaction.GiaTri === order.total_price
             transaction.GiaTri === 2000
           );
+          
         });
         if (isPaid) {
-          toast.success("Đặt phòng thành công")
+          toast.success("Đặt phòng thành công");
+          const payment = await bookingService.payment({
+            amount: order.total_price,
+            type: "booking",
+            payment_gateway: "online",
+            BookingId: order.id,
+          });
+          const book = await bookingService.updateStatusBooking(order.id, {
+            status: "booker",
+          });
           
           setPaymentStatus(true);
           setTimer(0);
-       
-          const book = bookingService.updateStatusBooking(order.id, {
-            status: "booker",
-          });
-          navigate("/booking/success")
-          // if (book.status) navigate(APP_ROUTER.HOME);
+          // if (book.status&&payment.status) navigate(APP_ROUTER.HOME);
         }
       } catch (error) {
         console.error("Lỗi khi kiểm tra thanh toán:", error);

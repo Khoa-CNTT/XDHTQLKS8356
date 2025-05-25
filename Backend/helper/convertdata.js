@@ -12,6 +12,7 @@ const convertData = (data) => {
                 roomCount[key] = {
                     room_id: room.room_id,
                     room_type: room.room_type,
+                    image: room.image,
                     adult_count: room.adult_count,
                     total_price: parseInt(room.total_price, 10),
                     count: 1,

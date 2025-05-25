@@ -93,9 +93,9 @@ const Timeline = () => {
         console.log(true)
           setBookingSchedule(schedule.map(i => ({
               resource: i.room_id,
-              start: i.checkin,
-              end: i.checkout,
-              text: i.booking_detail_id,
+              start: new Date(i.checkin + "T12:00:00"),
+              end: new Date(i.checkout + "T12:00:00") ,
+              text: i.booking_id,
               color: status[i.status].color,
               booking_id: i.booking_id,
               booking_detail_id: i.booking_detail_id

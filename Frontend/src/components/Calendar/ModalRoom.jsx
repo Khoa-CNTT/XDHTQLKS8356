@@ -156,7 +156,7 @@ const ModalRoom = (props) => {
               <th className=' p-2'>Tổng cộng</th>
             </tr>
           </thead>
-          {suggestedRooms.length > 0 ? (
+          {suggestedRooms?.length > 0 ? (
             <tbody>
               {suggestedRooms.map((rooms, i) => {
                 const totalAmount = rooms.reduce((sum, room) => {
@@ -218,7 +218,7 @@ const ModalRoom = (props) => {
               <th className=' p-2'></th>
             </tr>
           </thead>
-          {emptyRoom.length > 0 ? (
+          {emptyRoom?.length > 0 ? (
             <tbody>
               {emptyRoom.map((room, index) => (
                 <tr key={index} className=''>

@@ -43,7 +43,7 @@ const HomeDefault = () => {
         <div className='w-4/5 mx-auto p-4'>
           <div className='grid grid-cols-1 md:grid-cols-3 gap-4 h-1/3'>
             <Link
-              to={APP_ROUTER.HOME}
+              to={APP_ROUTER.ROOMS}
               className='md:col-span-2 rounded-3xl overflow-hidden relative'
             >
               <img
@@ -57,7 +57,7 @@ const HomeDefault = () => {
             </Link>
             <div className='flex flex-col gap-4'>
               <Link
-                to={APP_ROUTER.HOME}
+                to={APP_ROUTER.SERVICESPAGE}
                 className='h-1/2 rounded-3xl overflow-hidden relative'
               >
                 <img
@@ -70,7 +70,7 @@ const HomeDefault = () => {
                 </div>
               </Link>
               <Link
-                to={APP_ROUTER.HOME}
+                to={APP_ROUTER.SERVICESPAGE}
                 className='h-1/2 rounded-3xl overflow-hidden relative'
               >
                 <img

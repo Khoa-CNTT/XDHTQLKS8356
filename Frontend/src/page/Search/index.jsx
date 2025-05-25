@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FaUser } from "react-icons/fa";
 import { FaStar } from "react-icons/fa6";
 import { RiServiceFill } from "react-icons/ri";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { roomService } from "../../service/roomService";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import toast from "react-hot-toast";
@@ -157,7 +157,8 @@ const SearchRoom = () => {
                 <div className='font-semibold my-6'>Đề xuất {i + 1}</div>
                 <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 '>
                   {suggest.map((room, index) => (
-                    <div
+                    <Link 
+                    to={APP_ROUTER.ROOM_DETAIL.replace(":id", room.room_id)}
                       key={index}
                       className='bg-white p-4 shadow-sm rounded-lg'
                     >
@@ -181,7 +182,7 @@ const SearchRoom = () => {
                               style: "currency",
                               currency: "VND",
                             })}{" "}
-                            VNĐ/đêm
+                            VNĐ/phòng
                           </div>
                           <div className='font-semibold flex items-center'>
                             {room.adult_count <= 2
@@ -215,7 +216,7 @@ const SearchRoom = () => {
                         </span>
                       </div> */}
                       </div>
-                    </div>
+                    </Link>
                   ))}
                   <div className='col-span-1 sm:col-span-2 lg:col-span-3 flex justify-end gap-8 items-center rounded-lg'>
                     <div className='text-lg font-bold text-black flex gap-2'>
@@ -227,7 +228,6 @@ const SearchRoom = () => {
                             0
                           )
                           .toLocaleString("vi-VN")}{" "}
-                        /đêm
                       </span>
                     </div>
                     <div className='flex justify-center items-center gap-4'>

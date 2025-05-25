@@ -144,6 +144,10 @@ const activeUser = async(data) => {
 
         const employee = await getAllEmployee();
 
+
+        //Thêm user_idid
+        employee.push(user.id);
+
         await Conversation.create({conversation_list : employee, UserId : user.id});
 
         await History_Chat.create({message : "Xin chào, tôi có thể giúp gì cho bạn", sender : "bot", UserId : user.id})

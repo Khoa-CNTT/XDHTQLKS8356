@@ -107,19 +107,6 @@ const RoomPage = () => {
                   </div>
                 </div>
 
-                <div className='mt-1 flex items-center gap-1'>
-                  <Icon icon="material-symbols:star-rounded" width="24" height="24"  sclassName='text-yellow-500' />
-                  <span className='text-black font-semibold'>
-                        {room.rating||"4.5"}
-                      </span>
-                  <span className='text-sm text-black font-semibold ml-2'>
-                        {room.reviews||"56"} reviews
-                      </span>
-                  <span className='text-sm text-black font-semibold ml-2 flex items-center gap-1'>
-                        <Icon icon="hugeicons:service" width="24" height="24" lassName='text-green-500' />
-                        {room.facilities||50}+ tiện ích
-                      </span>
-                </div>
               </div>
             </Link>
           ))}

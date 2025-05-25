@@ -110,13 +110,6 @@ const RoomDetail = () => {
                   )}
                 </div>
 }
-                <iframe
-                  src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30670.739956011443!2d108.12927067279816!3d16.073661115257337!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x314218d68dff9545%3A0x714561e9f3a7292c!2zVHLGsOG7nW5nIMSQ4bqhaSBo4buNYyBCw6FjaCBLaG9hIC0gxJDhuqFpIGjhu41jIMSQw6AgTuG6tW5n!5e0!3m2!1svi!2s!4v1745419770359!5m2!1svi!2s'
-                  className='w-[600px] h-[450px] border-0'
-                  allowFullScreen=''
-                  loading='lazy'
-                  referrerPolicy='no-referrer-when-downgrade'
-                ></iframe>
               </div>
               <div className='basis-1/3 sticky top-24 shadow rounded-2xl border border-neutral-100 p-5 text-neutral-500 h-fit'>
 
@@ -125,7 +118,7 @@ const RoomDetail = () => {
                     style: "currency",
                     currency: "VND",
                   })}
-                  /ĐÊM
+                  /phòng
                 </div>
                 <div className='flex flex-col gap-4 my-6'>
                   <p>

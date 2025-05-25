@@ -2,37 +2,27 @@ const {Sequelize, Op} = require("sequelize");
 const { sequelize } = require("../config/mysql");
 
 
-// chưa sửa
 
 
 //Doanh thu theo thời gian
-const getReportTime = async (id, data) => {
+const getReportTime = async (data) => {
     try {
         const sql = `WITH BookingRevenue AS (
                         SELECT
                             p.amount,
-                            DATE(p.payment_date) AS payment_date
+                            DATE(p.created_at) AS payment_date
                         FROM 
-                            payments p
-                        JOIN 
-                            booking b ON b.id = p."BookingId"
-                        JOIN 
-                            booking_detail bd ON b.id = bd."BookingId"
-                        JOIN 
-                            roomdetails rd ON rd.id = bd."RoomDetailId"
-                        JOIN 
-                            room r ON rd."RoomId" = r.id
+                            payment p
                         WHERE
-                            r."HotelId" = ${id}
-                            AND p.payment_date BETWEEN ${data.start} AND ${data.end}
+                            p.created_at BETWEEN  ${data.start} AND ${data.end}
                         GROUP BY
                             p.id
                         ORDER BY 
-                            p.payment_date
-                    )
+                            p.created_at
+                        )
                     SELECT
                         payment_date,
-                        SUM(amount) AS total_revenue
+                        COALESCE(SUM(amount), 0) AS total_revenue
                     FROM
                         BookingRevenue
                     GROUP BY
@@ -52,7 +42,7 @@ const getReportTime = async (id, data) => {
 
 
 //Doanh thu theo dịch vụ
-const getReportService = async (id, data) => {
+const getReportService = async (data) => {
     try {
         const sql = `SELECT
                         s.service_name,
@@ -60,17 +50,11 @@ const getReportService = async (id, data) => {
                     FROM 
                         services s
                     LEFT JOIN 
-                        booking_services bs ON bs."ServiceId" = s.id
+                        booking_services bs ON bs.service_id = s.id
                     LEFT JOIN 
-                        booking_detail bd ON bd.id = bs."BookingDetailId"
+                        booking b ON bs.booking_id = b.id
                     LEFT JOIN 
-                        booking b ON bd."BookingId" = b.id
-                    LEFT JOIN 
-                        payments p ON p."BookingId" = b.id AND p.payment_date BETWEEN ${data.start} AND ${data.end} AND p.status = 'service'
-                    JOIN 
-                        hotel h ON h.id = s."HotelId"
-                    WHERE
-                        h.id = ${id}
+                        payment p ON p.booking_id = b.id AND p.created_at BETWEEN ${data.start} AND ${data.end} AND p.type = 'service'
                     GROUP BY
                         s.service_name;`
 
@@ -85,27 +69,25 @@ const getReportService = async (id, data) => {
 
 
 //Doanh thu theo phòng
-const getReportRoom = async (id, data) => {
+const getReportRoom = async (data) => {
     try {
         const sql = `SELECT
-                        r.name AS room_name,
+                        r.room_type AS room_type,
                         COALESCE(SUM(bd.price), 0) AS total_revenue
                     FROM 
                         room r
                     LEFT JOIN 
-                        roomdetails rd ON rd."RoomId" = r.id
+                        room_details rd ON rd.room_id = r.id
                     LEFT JOIN 
-                        booking_detail bd ON rd.id = bd."RoomDetailId"
+                        booking_details bd ON rd.id = bd.room_detail_id
                     LEFT JOIN 
-                        booking b ON b.id = bd."BookingId"
+                        booking b ON b.id = bd.booking_id
                     LEFT JOIN 
-                        payments p ON p."BookingId" = b.id 
-                                AND p.payment_date BETWEEN ${data.start} AND ${data.end}
-                                AND p."status" = 'hotel'
-                    WHERE
-                        r."HotelId" = ${id}
+                        payment p ON p.booking_id = b.id 
+                        AND p.created_at BETWEEN  ${data.start} AND ${data.end}
+                        AND p.type = 'hotel'
                     GROUP BY
-                        r.name;`
+                        r.room_type;`
 
         const report = await sequelize.query(sql, { type: Sequelize.QueryTypes.SELECT });
         

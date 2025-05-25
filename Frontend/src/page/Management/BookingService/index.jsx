@@ -9,6 +9,7 @@ import { format } from "date-fns";
 const BookingService = ({ onClose, isOpen, dataRow, fetchBooking }) => {
     console.log(dataRow)
     const [selectedServices, setSelectedServices] = useState([]);
+      const [paymentType, setPaymentType] = useState('cod')
     const handleSelectService = (service) => {
         const existing = selectedServices.find(item => item.id === service.id);
         if (existing) {
@@ -46,6 +47,12 @@ const BookingService = ({ onClose, isOpen, dataRow, fetchBooking }) => {
       
         try {
           await bookingService.creatBookingService(payload);
+          const payment = await bookingService.payment({
+            amount: payload.reduce((sum, item) => sum + item.total_price, 0),
+            type: "serive",
+            payment_gateway: paymentType==='qr'?'online':'cod',
+            BookingId: dataRow.booking_id,
+          });
           onClose();
           toast.success('Đặt dịch vụ thành công', { duration: 2000 });
           fetchBooking();
@@ -247,6 +254,28 @@ const BookingService = ({ onClose, isOpen, dataRow, fetchBooking }) => {
                             </table>
                           </div>
 
+
+  <div className='w-full flex justify-end gap-10 my-4'>
+              <label className='flex items-center gap-2'>
+                <input
+                  type='radio'
+                  value='cod'
+                  checked={paymentType === "cod"}
+                  onChange={(e) => setPaymentType(e.target.value)}
+                />
+                Thanh toán tiền mặt
+              </label>
+
+              <label className='flex items-center gap-2'>
+                <input
+                  type='radio'
+                  value='qr'
+                  checked={paymentType === "wallet"}
+                  onChange={(e) => setPaymentType(e.target.value)}
+                />
+                Chuyển khoản 
+              </label>
+            </div>
           
                           <div className="sticky bottom-0 bg-slate-50 border-t border-slate-300">
                             <table className="w-full table-fixed">

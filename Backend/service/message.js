@@ -35,6 +35,7 @@ const getAllMessages  = async() => {
     const sql = `SELECT
                     u.fullname,
                     u.image,
+                    c.id AS conversation_id,
                     m.message_content,
                     m.status_user,
                     m.status_emp,

@@ -17,4 +17,6 @@ const find_room = (data, target) =>
 
         return total == target || total == Number(target) + 1;
     });
+
+
 module.exports = { find_room };

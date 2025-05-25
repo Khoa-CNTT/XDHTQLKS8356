@@ -19,6 +19,11 @@ export const getEmptyRoombyUser = async (checkin, checkout, people) =>{
       const response = await apiConfig.get(`/customer/room_empty?start='${checkin}'&end='${checkout}'&people=${people}`)
       // console.log("empty",response.data.room[0].room_empty)
       const empty=response.data.room.room[0].room_empty.map(i=> ({...i, available: i.count, count: 0}))
+      
+      console.log({
+        room_empty: empty,
+        room_suggest: response.data.room.suggest
+      })
       return {
         room_empty: empty,
         room_suggest: response.data.room.suggest

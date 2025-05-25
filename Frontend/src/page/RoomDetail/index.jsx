@@ -118,7 +118,8 @@ const RoomDetail = () => {
                   referrerPolicy='no-referrer-when-downgrade'
                 ></iframe>
               </div>
-              <div className='basis-1/3 shadow rounded-2xl border-1 border-neutral-100 p-5 text-neutral-500 h-fit'>
+              <div className='basis-1/3 sticky top-24 shadow rounded-2xl border border-neutral-100 p-5 text-neutral-500 h-fit'>
+
                 <div className='w-full pb-5 border-b border-b-neutral-300 text-neutral-600 font-bold text-2xl'>
                   {room.price_per_night?.toLocaleString("vi-VN", {
                     style: "currency",

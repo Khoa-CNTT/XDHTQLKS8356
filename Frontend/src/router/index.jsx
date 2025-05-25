@@ -143,10 +143,7 @@ const router = createBrowserRouter([
         path: APP_ROUTER.EXTENTION,
         element: <Extension />,
       },
-      {
-        path: APP_ROUTER.HOTEL,
-        element: <Hotel />,
-      },
+     
       {
         path: APP_ROUTER.ROOMDETAIL,
         element: <Timeline />,
@@ -169,6 +166,10 @@ const router = createBrowserRouter([
       </PrivateRoutes>
     ),
     children: [
+      {
+        path: APP_ROUTER.HOTEL,
+        element: <Hotel />,
+      },
       {
         path: APP_ROUTER.PERSONNEL,
         element: <Personnel />,

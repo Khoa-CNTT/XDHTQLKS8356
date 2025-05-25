@@ -4,8 +4,6 @@ export const isAuthenticated = () => !!Cookies.get("token");
 
 export const hasRole = (role) => {
   const userRole = Cookies.get("role"); 
-  console.log("role", role)
-  console.log("userrole", userRole)
   return userRole === role;
 };
 

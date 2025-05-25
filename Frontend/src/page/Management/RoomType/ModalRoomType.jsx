@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Button from "../../../components/Button";
 import { BsImageFill } from "react-icons/bs";
 import { IoIosRemoveCircle } from "react-icons/io";
+import { toast } from "react-hot-toast";
 const ModalRoomType = ({
     handleClose,
     lable,
@@ -17,7 +18,7 @@ const ModalRoomType = ({
         pricePerNight: "",
         adultCount: "",
         image: [],
-        // description: "",
+        description: "",
     });
     useEffect(() => {
         if (data) {
@@ -26,6 +27,7 @@ const ModalRoomType = ({
                 squareMeters: data.square_meters || "",
                 pricePerNight: data.price_per_night || "",
                 adultCount: data.adult_count || "",
+                description: data.description || "",
                 image: data.image ? JSON.parse(data.image) : [],
             });
         } else {
@@ -34,18 +36,39 @@ const ModalRoomType = ({
                 squareMeters: "",
                 pricePerNight: "",
                 adultCount: "",
+                description: "",
                 image: [],
             });
         }
     }, [data, resetTrigger]);
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({
-            ...formData,
+        const { name, value, type } = e.target;
+        if (type === "number") {
+          if (value === "") {
+            setFormData(prev => ({
+              ...prev,
+              [name]: "",
+            }));
+            return;
+          }
+          const numberValue = Number(value);
+          if (numberValue < 0) {
+            toast.error("Giá trị nhỏ nhất là 1.")
+            return; 
+          }
+          setFormData(prev => ({
+            ...prev,
+            [name]: numberValue,
+          }));
+        } else {
+          setFormData(prev => ({
+            ...prev,
             [name]: value,
-        });
-    };
+          }));
+        }
+      };
+      
     const handleBeforeUpload = async (event) => {
         const file = event.target.files[0];
         const formData = new FormData();
@@ -128,10 +151,26 @@ const ModalRoomType = ({
                             type="number"
                             name="pricePerNight"
                             placeholder="0"
-                            min={0}
+                            min={1}
                             className="text-left w-full rounded-t-lg p-2 text-sm text-gray-900 dark:bg-gray-700 border-0 border-b-[2px] border-gray-400 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 focus:border-b-2 peer"
                             value={formData.pricePerNight}
                             onChange={handleChange}
+                        />
+                    </div>
+                    <div className="mb-4 flex items-start">
+                        <label className="text-sm font-medium text-gray-700 text-nowrap w-56">
+                            Mô tả
+                        </label>
+                        <textarea
+                        type="text"
+                        name="description"
+                        id="description"
+                        placeholder="Mô tả..."
+                        cols="30"
+                        rows="5"
+                        value={formData.description}
+                        onChange={handleChange}
+                        className="resize-y rounded-t-lg p-2 text-sm text-gray-900 w-full dark:bg-gray-700 border-0 border-b-[2px] border-gray-400 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 focus:border-b-2 peer overflow-y-auto h-32"
                         />
                     </div>
                     <div className="mt-5 mb-3 pb-2 shadow-md rounded-md">
@@ -165,7 +204,7 @@ const ModalRoomType = ({
                                     type="number"
                                     id="squareMeters"
                                     name="squareMeters"
-                                    min={0}
+                                    min={1}
                                     className=" text-center rounded-t-lg p-1 w-20 text-sm text-gray-900 dark:bg-gray-700 border-0 border-b-[2px] border-gray-400 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 focus:border-b-2 peer"
                                     value={formData.squareMeters}
                                     onChange={handleChange}

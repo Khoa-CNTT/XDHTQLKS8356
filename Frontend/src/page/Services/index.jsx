@@ -52,7 +52,7 @@ const ServicesPage = () => {
   className="flex flex-nowrap overflow-x-auto scroll-smooth px-12 no-scrollbar space-x-6"
 >
 
-        {data.map((item, index) => (
+        {data?.map((item, index) => (
           <div
             key={item.id}
             onMouseEnter={() => setHoverIndex(index)}

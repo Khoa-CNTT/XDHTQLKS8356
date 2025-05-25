@@ -17,7 +17,6 @@ const ModalRoom = ({ handleClose, lable, handleSubmit, data, resetTrigger, funct
     });
     const fetchRoomType = async () => {
         const result = await roomService.getRoomType();
-        console.log("ok",result)
         setFormData(prev => ({...prev, roomType: result}));
     };
 

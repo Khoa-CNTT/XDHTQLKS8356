@@ -48,117 +48,120 @@ const ManagementLayout = () => {
         navigate("/home");
         window.location.reload();
     };
-
+    const userRole = Cookies.get("role"); 
+    console.log(userRole)
     const items = [
-  {
-    key: '2',
-    icon: <FundViewOutlined />,
-    label: <Link to={APP_ROUTER.HOTEL}>Thông tin khách sạn</Link>,
-  },
-  {
-    key: '3',
-    icon: <HddOutlined />,
-    label: <Link to={APP_ROUTER.ROOMTYPE}>Loại phòng</Link>,
-  },
-  {
-    key: '4',
-    icon: <LayoutOutlined />,
-    label: "Phòng",
-    children: [
-      {
-        key: '41',
-        icon: <ProductOutlined />,
-        label: <Link to={APP_ROUTER.ROOM}>Tất cả phòng</Link>,
+      userRole === 'admin' && {
+        key: '2',
+        icon: <FundViewOutlined />,
+        label: <Link to={APP_ROUTER.HOTEL}>Thông tin khách sạn</Link>,
       },
       {
-        key: '42',
-        icon: <ProductOutlined />,
-        label: <Link to={APP_ROUTER.ROOMDETAIL}>Trạng thái phòng</Link>,
+        key: '3',
+        icon: <HddOutlined />,
+        label: <Link to={APP_ROUTER.ROOMTYPE}>Loại phòng</Link>,
       },
       {
-        key: '43',
-        icon: <DollarOutlined />,
-        label: <Link to={APP_ROUTER.PRICE}>Giá phòng</Link>,
+        key: '4',
+        icon: <LayoutOutlined />,
+        label: "Phòng",
+        children: [
+          {
+            key: '41',
+            icon: <ProductOutlined />,
+            label: <Link to={APP_ROUTER.ROOM}>Tất cả phòng</Link>,
+          },
+          {
+            key: '42',
+            icon: <ProductOutlined />,
+            label: <Link to={APP_ROUTER.ROOMDETAIL}>Trạng thái phòng</Link>,
+          },
+          {
+            key: '43',
+            icon: <DollarOutlined />,
+            label: <Link to={APP_ROUTER.PRICE}>Giá phòng</Link>,
+          },
+        ],
       },
-    ],
-  },
-  {
-    key: '5',
-    icon: <SunOutlined />,
-    label: <Link to={APP_ROUTER.EXTENTION}>Tiện ích</Link>,
-  },
-  {
-    key: '6',
-    icon: <ShoppingCartOutlined />,
-    label: <Link to={APP_ROUTER.BOOKING_MANAGER}>Đơn đặt phòng</Link>,
-  },
-  {
-    key: '7',
-    icon: <ThunderboltOutlined />,
-    label: <Link to={APP_ROUTER.SERVICE}>Dịch vụ</Link>,
-  },
-  {
-    key: '8',
-    icon: <UserOutlined />,
-    label: "Khách hàng",
-    children: [
       {
-        key: '81',
+        key: '5',
+        icon: <SunOutlined />,
+        label: <Link to={APP_ROUTER.EXTENTION}>Tiện ích</Link>,
+      },
+      {
+        key: '6',
+        icon: <ShoppingCartOutlined />,
+        label: <Link to={APP_ROUTER.BOOKING_MANAGER}>Đơn đặt phòng</Link>,
+      },
+      {
+        key: '7',
+        icon: <ThunderboltOutlined />,
+        label: <Link to={APP_ROUTER.SERVICE}>Dịch vụ</Link>,
+      },
+      {
+        key: '8',
         icon: <UserOutlined />,
-        label: <Link to={APP_ROUTER.CUSTOMER}>Thông tin khách hàng</Link>,
+        label: "Khách hàng",
+        children: [
+          {
+            key: '81',
+            icon: <UserOutlined />,
+            label: <Link to={APP_ROUTER.CUSTOMER}>Thông tin khách hàng</Link>,
+          },
+          {
+            key: '82',
+            icon: <SisternodeOutlined />,
+            label: <Link to={APP_ROUTER.CLASSIFY}>Phân loại khách hàng</Link>,
+          },
+        ],
       },
+      userRole !== 'admin' && {
+        key: '9',
+        icon: <CommentOutlined />,
+        label: <Link to={APP_ROUTER.CHAT}>Tư vấn khách hàng</Link>,
+      },
+      userRole !== 'employee' && {
+        key: '12',
+        icon: <TeamOutlined />,
+        label: "Nhân viên",
+        children: [
+          {
+            key: '83',
+            icon: <UsergroupAddOutlined />,
+            label: <Link to={APP_ROUTER.PERSONNEL}>Thêm nhân viên</Link>,
+          },
+        ],
+      },
+      userRole !== 'employee' && {
+        key: '10',
+        icon: <BarChartOutlined />,
+        label: "Báo cáo thống kê",
+        children: [
+          {
+            key: '90',
+            icon: <UserOutlined />,
+            label: <Link to={APP_ROUTER.REPORTTOTAL}>Tổng doanh thu</Link>,
+          },
+          {
+            key: '91',
+            icon: <SisternodeOutlined />,
+            label: <Link to={APP_ROUTER.REPORTROOMTYPE}>Loại phòng</Link>,
+          },
+          {
+            key: '92',
+            icon: <SisternodeOutlined />,
+            label: <Link to={APP_ROUTER.REPORTSERVICE}>Dịch vụ</Link>,
+          },
+        ],
+      },
+    
       {
-        key: '82',
-        icon: <SisternodeOutlined />,
-        label: <Link to={APP_ROUTER.CLASSIFY}>Phân loại khách hàng</Link>,
+        key: '11',
+        icon: <LogoutOutlined />,
+        label: <div onClick={handleLogout}>Đăng xuất</div>,
       },
-    ],
-  },
-  {
-    key: '9',
-    icon: <CommentOutlined />,
-    label: <Link to={APP_ROUTER.CHAT}>Tư vấn khách hàng</Link>,
-  },
-  {
-    key: '12',
-    icon: <TeamOutlined />,
-    label: "Nhân viên",
-    children: [
-      {
-        key: '83',
-        icon: <UsergroupAddOutlined />,
-        label: <Link to={APP_ROUTER.PERSONNEL}>Thêm nhân viên</Link>,
-      },
-    ],
-  },
-  {
-    key: '10',
-    icon: <BarChartOutlined />,
-    label: "Báo cáo thống kê",
-    children: [
-      {
-        key: '90',
-        icon: <UserOutlined />,
-        label: <Link to={APP_ROUTER.REPORTTOTAL}>Tổng doanh thu</Link>,
-      },
-      {
-        key: '91',
-        icon: <SisternodeOutlined />,
-        label: <Link to={APP_ROUTER.REPORTROOMTYPE}>Loại phòng</Link>,
-      },
-      {
-        key: '92',
-        icon: <SisternodeOutlined />,
-        label: <Link to={APP_ROUTER.REPORTSERVICE}>Dịch vụ</Link>,
-      },
-    ],
-  },
-  {
-    key: '11',
-    icon: <LogoutOutlined />,
-    label: <div onClick={handleLogout}>Đăng xuất</div>,
-  },
-];
+    ].filter(Boolean);
+    
 
     return (
         <div className="mx-auto w-full" style={{ maxWidth: "100vw" }}>

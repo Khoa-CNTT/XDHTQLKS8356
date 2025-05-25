@@ -49,6 +49,7 @@ const ModalPrice = ({ handleClose, lable, handleSubmit, data, resetTrigger, func
         let newValue = e.target.value;
         newValue = newValue.replace(/[^\d]/g, "");
         let formattedValue = newValue;
+     
         if (newValue) {
             formattedValue = Number(newValue).toLocaleString("de-DE");
         }
@@ -61,12 +62,32 @@ const ModalPrice = ({ handleClose, lable, handleSubmit, data, resetTrigger, func
 
     const today = new Date().toISOString().split("T")[0];
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prevState) => ({
-            ...prevState,
+        const { name, value, type } = e.target;
+        if (type === "number") {
+          if (value === "") {
+            setFormData(prev => ({
+              ...prev,
+              [name]: "",
+            }));
+            return;
+          }
+          const numberValue = Number(value);
+          if (numberValue < 0) {
+            toast.error("Giá trị nhỏ nhất là 1.")
+            return; 
+          }
+          setFormData(prev => ({
+            ...prev,
+            [name]: numberValue,
+          }));
+        } else {
+          setFormData(prev => ({
+            ...prev,
             [name]: value,
-        }));
-    };
+          }));
+        }
+      };
+      
 
     const handleStartDateChange = (e) => {
         handleChange(e);
@@ -134,8 +155,9 @@ const ModalPrice = ({ handleClose, lable, handleSubmit, data, resetTrigger, func
                         </select>
                     </div>
                     <input
-                        type="text"
+                        type="number"
                         name="formattedPrice"
+                        min={1}
                         placeholder="Giá (VNĐ)..."
                         value={formData.formattedPrice}
                         disabled={isUpdateMode}

@@ -18,7 +18,7 @@ const Hotel = () => {
         name: result.name || "",
         description: result.description || "",
         address: result.address || "",
-        // phone: "",
+        phone: result.phone,
         image: parseImage(result.image),
       });
     else setData({});
@@ -27,21 +27,27 @@ const Hotel = () => {
     fetchHotel();
   }, []);
   const handleSubmit = async (formData) => {
-    if(formData.image.length<2) return
+    if (formData.image.length < 2) {
+      toast.error("Vui lòng chọn ít nhất 2 ảnh.");
+      return;
+    }
     for (let key in formData) {
       if (formData[key] === "") {
         toast.error("Vui lòng nhập đầy đủ thông tin.");
         return;
       }
     }
+    const phoneRegex = /(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})\b/;
+    if (!phoneRegex.test(formData.phone)) {
+      toast.error("Số điện thoại không hợp lệ! Vui lòng nhập đúng định dạng.");
+      return;
+    }
     const data = {
       ...formData,
       image: JSON.stringify(formData.image)
     }
-    console.log("data:",data)
     try {
       const result = await hotelService.updateHotel(data);
-      console.log(result.status);
       if (result.status == true) {
         toast.success(result.message);
         setResetFormTrigger(true);
@@ -51,11 +57,9 @@ const Hotel = () => {
         toast.error(result.message);
       }
     } catch (error) {
-      console.log("lỗi", error);
       navigate("/error");
     }
   };
-console.log(data)
   const parseImage = (img) => {
     try {
       const parsed = JSON.parse(img);
@@ -97,7 +101,7 @@ console.log(data)
                 </div>
                 <div className='flex gap-4 mt-5 text-lg items-center'>
                   <FaPhoneFlip className='text-black' />
-                  <div>0398245132</div>
+                  <div>{data.phone}</div>
                 </div>
                 <div className='flex gap-4 mt-2 text-lg items-center'>
                   <FaLocationDot className='text-black text-2xl' />

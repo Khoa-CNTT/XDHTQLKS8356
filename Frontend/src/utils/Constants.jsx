@@ -49,10 +49,6 @@ export const QR = {
     ACCOUNT_NO : '0398246147',
     TEMPLATE : 'compact',
     ACCOUNT_NAME :'NGUYEN PHUC',
-<<<<<<< Updated upstream
     CHECK: 'https://script.google.com/macros/s/AKfycbykwFOcBklBUOwZ_k3JgqlAGxRMWGBD_6Ool9VN4A7qMeewyV5btCSHC8lmGHA5fuXV/exec'
-=======
-    CHECK: 'https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLjKAf2ARqHTmAKupsnGEgfKNZ1zh0PU7_40HcY-ZQ_CHuy7Nmz1Ffw-rBxJT7STvHHj2QSnjaKaLoHgm92IyOEoZ5JIRaBGt-zpJIHmy7nPAU1pTH_ZM8ChmoiFlyL3tklM9OBXQHr5koGb9xh4azyH730lcZZ8opcaxJ9Y2UbbOTR_kNj95weDw7S0ILlVwuB0O_-4LLC8ooISXIQcGnIS6hzUgQL1DP7BJqVQsQtrY3D9OYLfuZ4bqrtPgl8jBdFWK5uouPU9ok3vP-AKkaRf8USgV7UjdOck1ztog36PBTyVo2s&lib=MA49F7oIMgAcG6_5PLsAy5UxzvpP3hh6O'
->>>>>>> Stashed changes
 
 };

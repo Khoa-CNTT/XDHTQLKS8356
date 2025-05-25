@@ -39,11 +39,14 @@ function Login() {
                     toast.success('Đăng nhập thành công', { duration: 2000 });
                     const role = Cookies.get('role')
                     setFormData({...formData,loading: false});
-                    if(role === 'customer') {
-                        navigate("/home")
-                    }else {
+                    if (role === 'customer') {
+                        navigate("/home");
+                      } else if (role === 'employee') {
+                        navigate("/admin/roomtype");
+                      } else {
                         navigate("/admin/hotel");
-                    }
+                      }
+                      
                 } else {
                     toast.error(login.message);
                     setFormData({...formData,loading: false});

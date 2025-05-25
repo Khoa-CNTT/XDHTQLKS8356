@@ -150,7 +150,7 @@ const ChatCustomer = () => {
           </ConversationHeader>
 
           <MessageList>
-            {messages?.map((message, i) => (
+            {Array.isArray(messages) && messages?.map((message, i) => (
               <Message
                 key={i}
                 model={{

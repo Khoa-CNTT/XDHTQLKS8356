@@ -287,11 +287,7 @@ const SearchRoom = () => {
                                 className='ml-1'
                               />
                               <span className='ml-4'>
-<<<<<<< Updated upstream
-                                (Còn {room.available || 0} phòng trống)
-=======
                                 (Còn {room.available|| 0} phòng trống)
->>>>>>> Stashed changes
                               </span>
                             </div>
                           </td>

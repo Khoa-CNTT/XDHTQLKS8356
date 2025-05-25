@@ -19,14 +19,14 @@ const getUser  = async (id) => {
     return users;
 }
 
-const getAllUser  = async () => {
+const getAllUser  = async (type) => {
     const users = await User.findAll({
         where : {
-            role : "customer"
+            role : type
         }
     })
     return users;
-    
+
 }
 
 const getAllUserGroup  = async () => {

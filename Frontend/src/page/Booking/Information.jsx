@@ -8,10 +8,10 @@ import { isAuthenticated } from "../../utils/AuthCheck";
 import { authService } from "../../service/authService";
 
 const InformationBooking = (props) => {
-  const location = useLocation()
-  const navigate = useNavigate()
-  const searchParams = new URLSearchParams(location.search)
-  const dataRoom = JSON.parse(searchParams.get("rooms"))
+  const location = useLocation();
+  const navigate = useNavigate();
+  const searchParams = new URLSearchParams(location.search);
+  const dataRoom = JSON.parse(searchParams.get("rooms"));
   const [infoCustomer, setInfoCustomer] = useState({
     fullname: null,
     email: null,
@@ -26,12 +26,12 @@ const InformationBooking = (props) => {
         setInfoCustomer({
           fullname: data.user.fullname,
           email: data.user.email,
-          phone: data.user.phone
+          phone: data.user.phone,
         });
       }
     };
-    if(checkAuth) fetchUser()
-  },[]);
+    if (checkAuth) fetchUser();
+  }, []);
 
   const handleInfoChange = (e) => {
     const { name, value } = e.target;
@@ -51,13 +51,15 @@ const InformationBooking = (props) => {
     try {
       const data = {
         type: type,
-        user_info: {
-          fullname: infoCustomer.fullname,
-          email: infoCustomer.email,
-          phone: infoCustomer.phone,
-          status: "temp",
-          role: type,
-        },
+       ...(type !== "customer" && {
+          user_info: {
+            fullname: infoCustomer.fullname,
+            email: infoCustomer.email,
+            phone: infoCustomer.phone,
+            status: "temp",
+            role: type,
+          },
+        }),
         booking: {
           checkin: dataRoom.booking.checkin,
           checkout: dataRoom.booking.checkout,
@@ -79,12 +81,12 @@ const InformationBooking = (props) => {
       };
       const order = await bookingService.creatBookingRoom(data);
       console.log("đặt phòng", data);
-      if(order.status)
-      navigate(APP_ROUTER.PAYMENT, {
-        state: {
-          order: order.booking,
-        },
-      });
+      if (order.status)
+        navigate(APP_ROUTER.PAYMENT, {
+          state: {
+            order: order.booking,
+          },
+        });
     } catch (error) {
       console.log(error);
     }

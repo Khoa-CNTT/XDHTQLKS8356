@@ -7,6 +7,7 @@ const {kmeans} = require('ml-kmeans');
 const activeToken = require("../middleware/active_token");
 const sendMail = require("../config/sendMail");
 const { Conversation } = require("../model/conversation");
+const e = require("express");
 const { History_Chat } = require("../model/historychat");
 
 
@@ -19,14 +20,14 @@ const getUser  = async (id) => {
     return users;
 }
 
-const getAllUser  = async (type) => {
+const getAllUser  = async () => {
     const users = await User.findAll({
         where : {
-            role : type
+            role : "customer"
         }
     })
     return users;
-
+    
 }
 
 const getAllUserGroup  = async () => {

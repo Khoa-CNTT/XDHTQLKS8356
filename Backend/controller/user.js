@@ -62,7 +62,7 @@ const getUser = async (req, res) => {
 
 
 const getAllUser = async (req, res) => {
-    const user = await User.getAllUser(req.query.type);
+    const user = await User.getAllUser();
     res.status(200).json({
         success: true,
         message: "Danh sách người dùng",

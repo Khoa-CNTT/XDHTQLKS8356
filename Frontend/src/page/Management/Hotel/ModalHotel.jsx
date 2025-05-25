@@ -11,17 +11,16 @@ const ModalHotel = ({ handleClose, handleSubmit, data, resetTrigger }) => {
     name: "",
     description: "",
     address: "",
-    // phone: "",
+    phone: "",
     image: [],
   });
-  console.log("data", data)
   useEffect(() => {
     if (data) {
       setFormData({
         name: data.name || "",
         description: data.description || "",
         address: data.address || "",
-        // phone: data.phone || "",
+        phone: data.phone || "",
         image: data.image || [],
       });
     } else {
@@ -29,7 +28,7 @@ const ModalHotel = ({ handleClose, handleSubmit, data, resetTrigger }) => {
         name: "",
         description: "",
         address: "",
-        // phone: "",
+        phone: "",
         image: [],
       });
     }
@@ -64,8 +63,6 @@ const ModalHotel = ({ handleClose, handleSubmit, data, resetTrigger }) => {
       [fieldName]: newValue,
     }));
   };
-
-  console.log("for", JSON.stringify(formData.image))
   return (
     <div className='rounded-lg h-full overflow-hidden relative'>
       <div className='flex items-center justify-between p-4 bg-gray-200'>
@@ -114,20 +111,20 @@ const ModalHotel = ({ handleClose, handleSubmit, data, resetTrigger }) => {
               onChange={handleChange}
             />
           </div>
-          {/* <div className="mb-3 flex items-center">
+          <div className="mb-3 flex items-center">
                         <label className="text-sm font-medium text-gray-700 text-nowrap w-56">
                             Số điện thoại
                         </label>
                         <input
                             type="number"
-                            name="pricePerNight"
-                            placeholder="0"
+                            name="phone"
+                            placeholder="0123456789"
                             min={0}
                             className="text-left w-full rounded-t-lg p-2 text-sm text-gray-900 dark:bg-gray-700 border-0 border-b-[2px] border-gray-400 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 focus:border-b-2 peer"
                             value={formData.phone}
                             onChange={handleChange}
                         />
-                    </div> */}
+                    </div>
 
           <div className='mb-3 flex items-center'>
             <label className='text-sm font-medium text-gray-700 text-nowrap w-56'>

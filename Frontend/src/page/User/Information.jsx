@@ -61,27 +61,39 @@ const Information = () => {
 
     const handleSubmit = async () => {
         const { fullname, phone, image } = formData;
-        const payload = { fullname, phone, image };
-        console.log("pay",payload)
-        try {
-            
-            const update = await userServices.updateUser(payload);
-            if(update.success === true){
-                toast.success("Cập nhật thông tin người dùng thành công")
-                fetchUsers()
-            }
-           console.log("trạng thái", update)
-        } catch (error) {
-            console.error('Lỗi khi cập nhật người dùng:', error);
-            alert('Cập nhật thất bại!');
+        if (!fullname.trim()) {
+          toast.error("Vui lòng nhập dầy đủ họ và tên.");
+          return;
         }
-    };
+        if (!phone.trim()) {
+          toast.error("Vui lòng nhập số điện thoại.");
+          return;
+        }
+        const phoneRegex = /(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})\b/;
+        if (!phoneRegex.test(phone)) {
+          toast.error("Số điện thoại không hợp lệ! Vui lòng nhập đúng định dạng.");
+          return;
+        }
+      
+        const payload = { fullname, phone, image };
+        try {
+          const update = await userServices.updateUser(payload);
+          if(update.success === true){
+            toast.success("Cập nhật thông tin người dùng thành công");
+            fetchUsers();
+          }
+        } catch (error) {
+          console.error('Lỗi khi cập nhật người dùng:', error);
+          alert('Cập nhật thất bại!');
+        }
+      };
+      
 
     return (
         <div className='mt-20'>
             <div className='flex justify-center gap-10'>
                 <div>
-                    <div className="mt-5 flex">
+                    <div className="mt-10 flex">
                         <div className="flex min-w-[150px] items-center text-md text-[#121f43]">Email</div>
                         <div className="w-full max-w-[400px]">
                             <p className="text-sm font-medium text-[#121f43] px-3 py-2 rounded-lg bg-gray-100">
@@ -116,7 +128,7 @@ const Information = () => {
                             />
                         </label>
                     </div>
-                    <div className="mt-5 flex items-center">
+                    {/* <div className="mt-5 flex items-center">
                         <div className="flex min-w-[150px] items-center text-md">Nhập mật khẩu cũ</div>
                         <div className="w-full max-w-[400px] relative">
                             <input
@@ -155,7 +167,7 @@ const Information = () => {
                                 {showPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
                             </span>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
 
                 <div>
@@ -170,10 +182,25 @@ const Information = () => {
                     </div>
                     <div className="flex items-center justify-center mt-3">
                         {isLoading ? (
-                            <div role="status" className="flex items-center justify-center">
-                                <svg className="h-8 w-8 animate-spin fill-blue-600 text-gray-200" viewBox="0 0 100 101">
-                                    <path d="M100 50.6C100 78.2 77.6 100.6 50 100.6S0 78.2 0 50.6 22.4 0.6 50 0.6s50 22.4 50 50z" fill="currentColor" />
-                                    <path d="M93.97 39.04c2.43-.64 3.9-3.13 3.04-5.49C95.29 28.82 92.87 24.37 89.82 20.35c-3.97-5.23-8.93-9.63-14.6-12.94C69.54 4.1 63.28 1.94 56.77 1.05c-5-.68-10.07-.6-15.04.23-2.47.41-3.91 2.91-3.27 5.34.63 2.45 3.11 3.89 5.59 3.52 3.8-.56 7.66-.58 11.49-.06 5.32.73 10.45 2.5 15.08 5.22 4.63 2.67 8.7 6.26 11.96 10.53 2.34 3.07 4.22 6.44 5.6 10.03.9 2.34 3.36 3.79 5.79 3.13z" fill="currentFill" />
+                            <div
+                                role="status"
+                                className="flex items-center justify-center"
+                            >
+                                <svg
+                                    aria-hidden="true"
+                                    className="h-8 w-8 animate-spin fill-blue-600 text-gray-200 dark:text-gray-600"
+                                    viewBox="0 0 100 101"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                        fill="currentColor"
+                                    />
+                                    <path
+                                        d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                        fill="currentFill"
+                                    />
                                 </svg>
                             </div>
                         ) : (

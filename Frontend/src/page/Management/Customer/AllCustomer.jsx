@@ -14,7 +14,7 @@ const AllCustomer = () => {
     ];
     const [data, setData] = useState([]);
     const fetchCustomer = async () => {
-        const result = await userServices.getAllUser()
+        const result = await userServices.getAllUser('customer')
         setData(result);
     };
 

@@ -91,7 +91,7 @@ const router = createBrowserRouter([
       },
       {
         path: APP_ROUTER.USER,
-        element: <PrivateRoutes role='customer' />,
+        element: <PrivateRoutes role={['customer']} />,
         children: [
           {
             path: APP_ROUTER.INFORMATION,
@@ -110,7 +110,7 @@ const router = createBrowserRouter([
   {
     path: APP_ROUTER.ADMIN,
     element: (
-      <PrivateRoutes role='admin'>
+      <PrivateRoutes role={['admin', 'employee']}>
         <ManagementLayout />
       </PrivateRoutes>
     ),
@@ -143,14 +143,7 @@ const router = createBrowserRouter([
         path: APP_ROUTER.EXTENTION,
         element: <Extension />,
       },
-      {
-        path: APP_ROUTER.HOTEL,
-        element: <Hotel />,
-      },
-      {
-        path: APP_ROUTER.PERSONNEL,
-        element: <Personnel />,
-      },
+     
       {
         path: APP_ROUTER.ROOMDETAIL,
         element: <Timeline />,
@@ -163,6 +156,25 @@ const router = createBrowserRouter([
         path: APP_ROUTER.CLASSIFY,
         element: <ClassifyCustomer />,
       },
+    ],
+  },
+  {
+    path: APP_ROUTER.ADMIN,
+    element: (
+      <PrivateRoutes role={['admin']}>
+        <ManagementLayout />
+      </PrivateRoutes>
+    ),
+    children: [
+      {
+        path: APP_ROUTER.HOTEL,
+        element: <Hotel />,
+      },
+      {
+        path: APP_ROUTER.PERSONNEL,
+        element: <Personnel />,
+      },
+    
       {
         path: APP_ROUTER.REPORT,
         children: [

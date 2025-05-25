@@ -1,10 +1,10 @@
 const {Booking} = require("../model/booking");
 const {Booking_Details} = require("../model/booking_details");
+const {Hotel} = require("../model/hotel");
 const {User} = require("../model/user");
+const {Booking_Services} = require("../model/booking_services");
 const {Sequelize, Op} = require("sequelize");
 const { sequelize } = require("../config/mysql");
-const sendMail = require("../config/sendMail");
-
 
 const find_room = async (id, count, start, end) => {
     const sql = `SELECT 
@@ -225,6 +225,7 @@ const getAllBookingForCustomer = async (id) => {
                         JSONB_AGG(
                             DISTINCT JSONB_BUILD_OBJECT(
                                     'room_type', r.room_type,
+                                    'id_room_type', r.id,
                                     'room_number', rd.room_number,
                                     'price', bd.price
                                 )

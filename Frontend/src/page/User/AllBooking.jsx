@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { GiEmptyHourglass } from "react-icons/gi";
 
@@ -9,9 +8,9 @@ import { APP_ROUTER } from "../../utils/Constants";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 const AllBooking = () => {
-    const [orders, setOrders] = useState([]);
-    const fetchData = async () => {
-        const result = await bookingService.getBookingCustomer();
+  const [orders, setOrders] = useState([]);
+  const fetchData = async () => {
+    const result = await bookingService.getBookingCustomer();
 
         setOrders(result);
     };
@@ -23,10 +22,7 @@ const AllBooking = () => {
     const [showRateModal, setShowRateModal] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState(null);
     
-    const handleOpenRateModal = (order) => {
-      setSelectedOrder(order);
-      setShowRateModal(true);
-    };
+   
     const filterOrdersByStatus = (status) => {
         return orders.filter(order => order.booking_status.trim() === status);
     };
@@ -69,10 +65,11 @@ const AllBooking = () => {
         console.log("update",id, payload)
         try {
             const result = await bookingService.updateStatusBooking(id, payload);
-            if (result.status === 201) {
-                toast.success("Cập nhật trạng thái thành công");
+            console.log(result)
+            if (result.status) {
+                toast.success("Hủy đơn đặt phòng thành công.");
             } else {
-                toast.error("Cập nhật trạng thái không thành công");
+                toast.error("Hủy đơn đặt phòng không thành công.");
             }
         } catch (error) {
             navigate('/error')
@@ -174,22 +171,8 @@ const AllBooking = () => {
                                                 Hủy đơn
                                             </button>
                                         )}
-                                            {currentStatus === "completed" && (
-                                            <button
-                                                onClick={() => {setShowRateModal(true); setSelectedOrder(order);}}
-                                                className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center cursor-pointer"
-                                            >
-                                                Đánh giá
-                                            </button>
-                                        )}
-                                        {showRateModal && (
-                                            <ModalEvaluate
-                                            visible={showRateModal}
-                                                onClose={() => setShowRateModal(false)}
-                                                onSubmit={()=>{}}
-                                                dataOrder={selectedOrder}
-                                            />
-                                            )}
+                                            
+                                       
                                     </div>
                                     <div className="">
                                         <h3 className="font-bold text-lg mb-3">Chi tiết đặt phòng:</h3>
@@ -203,6 +186,9 @@ const AllBooking = () => {
                                                     <th className="p-4 border-b border-slate-300 font-normal text-center">Số Lượng</th>
                                                     <th className="p-4 border-b border-slate-300 font-normal text-right">Giá</th>
                                                     <th className="p-4 border-b border-slate-300 font-normal text-right">Tổng Giá</th>
+                                                    {currentStatus === "completed" && (
+                                                        <th className="p-4 border-b border-slate-300 font-normal text-right">Thao tác</th>
+                                        )}
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -212,6 +198,14 @@ const AllBooking = () => {
                                                     <td className="p-4 border-b font-semibold border-slate-200 text-center">1</td>
                                                     <td className="p-4 border-b font-semibold border-slate-200 text-right">{detail.price.toLocaleString()} VND</td>
                                                     <td className="p-4 border-b font-semibold border-slate-200 text-right">{detail.price.toLocaleString()} VND</td>
+                                                    {currentStatus === "completed" && (
+                                            <td className="p-4 border-b font-semibold border-slate-200 text-right"><button
+                                                onClick={() => {setShowRateModal(true); setSelectedOrder({ order: order, roomTypeId: detail.id_room_type });}}
+                                                className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center cursor-pointer"
+                                            >
+                                                Đánh giá
+                                            </button></td>
+                                        )}
                                                     </tr>
                                                 ))}
                                                 </tbody>
@@ -275,7 +269,14 @@ const AllBooking = () => {
                       
                     </div>
                 )}
-                 
+                {showRateModal && (
+                    <ModalEvaluate
+                    visible={showRateModal}
+                        onClose={() => setShowRateModal(false)}
+                        onSubmit={()=>{}}
+                        dataOrder={selectedOrder}
+                    />
+                    )}
             </div>
         </div>
     );

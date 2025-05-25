@@ -47,10 +47,12 @@ const suggestRooms = async (data) => {
     const room = await sequelize.query(sql, {
         type: Sequelize.QueryTypes.SELECT,
     });
-    
-    console.log("a", find_room(room, data.people));
 
-    return convertData(find_room(room, data.people));
+
+    let result = [];
+    find_room(room, 0, 3, [], result);
+     
+    return convertData(result);
 };
 
 

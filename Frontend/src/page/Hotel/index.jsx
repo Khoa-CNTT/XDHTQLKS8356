@@ -20,51 +20,7 @@ const InformationHotel = () => {
   useEffect(() => {
     fetchHotel();
   }, []);
-  const faqs = [
-    {
-      question: "Loại hình lưu trú chính thức là gì?",
-      answer: "Đây là khách sạn tiêu chuẩn quốc tế tại Đà Nẵng.",
-    },
-    {
-      question: "Thời hạn nhận phòng và trả phòng là bao lâu?",
-      answer: "Có thể nhận phòng từ 14:00 ngày đến. Trả phòng phải được thực hiện trước 12:00 ngày đi.",
-    },
-    {
-      question: "Thông tin liên lạc là gì?",
-      answer: `Bạn có thể liên hệ với nơi nghỉ này bằng cách gọi tới số ${data?.phone} hoặc gửi email tới mvdn.info@melia.com.`,
-    },
-    {
-      question: "Địa chỉ của nơi lưu trú?",
-      answer:
-        `Tọa lại tại ${data?.address}, 550000 Việt Nam`,
-    },
-    {
-      question: "Tôi có được sử dụng Wi-Fi miễn phí không?",
-      answer:
-        "Có, khách lưu trú tại khách sạn có thể sử dụng Wi-Fi miễn phí trong toàn bộ khuôn viên.",
-    },
-    {
-      question: "Tôi có thể hủy đơn đặt phòng của mình không?",
-      answer:
-        `Bạn có thể hủy đơn đặt phòng của mình trước ngày nhận phòng 7 ngày.`,
-    },
-    {
-      question: "Có dịch vụ độc quyền nào không?",
-      answer:
-        `Với ${data?.name} bạn sẽ luôn được đảm bảo mức giá tốt nhất. Vì vậy, nếu bạn tìm thấy một ưu đãi có cùng điều kiện với mức giá thấp hơn (ngày, loại phòng, v.v.) ở nơi khác, chúng tôi sẽ khớp với ưu đãi đó và cung cấp cho bạn mức giá tốt nhất. Bạn chỉ cần liên hệ với Dịch vụ khách hàng và chúng tôi sẽ vui lòng sắp xếp cho bạn.`,
-    },
-    {
-      question: `Chi phí lưu trú tại ${data?.name} là bao nhiêu?`,
-      answer:
-        `Giá tại ${data?.name} có thể thay đổi tùy thuộc vào loại hình lưu trú. Ngày đã chọn, loại phòng hoặc các điều kiện khác sẽ quyết định mức giá cuối cùng. Chọn ngày phù hợp nhất với bạn và chúng tôi sẽ hiển thị cho bạn mức giá và giá có sẵn cho khách sạn này.`,
-    },
-  ];
   const [openIndex, setOpenIndex] = useState(null);
-
-  const toggleFAQ = (index) => {
-    setOpenIndex(openIndex === index ? null : index);
-  };
-
   return (
     <div>
       <div className="h-screen">
@@ -144,7 +100,7 @@ const InformationHotel = () => {
           </div>
         </PageTransitionWrapper>
       </div>
-      <div className="h-screen">
+      {/* <div className="h-screen">
         <PageTransitionWrapper className="h-full">
           <div className="max-w-3xl mx-auto p-4">
             <h2 className="text-2xl font-semibold mb-6 text-gray-800">
@@ -174,7 +130,7 @@ const InformationHotel = () => {
             ))}
           </div>
         </PageTransitionWrapper>
-      </div>
+      </div> */}
     </div>
   );
 };

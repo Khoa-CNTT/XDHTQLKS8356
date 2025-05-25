@@ -10,10 +10,10 @@ import { extensionServices } from '../../../service/extensionServices';
 const Extension = () => {
     const columns = [
         { key: "id", label: "Mã tiện ích"},
-        { key: "name", label: "Tên tiện ích", isFilterable: true },
+        { key: "name", label: "Tên tiện ích"},
         { key: "icon", label: "Icon" },
         // { key: "image", label: "Hình ảnh" },
-        { key: "type", label: "Dành cho" },
+        { key: "type", label: "Dành cho", isFilterable: true  },
         {
             key: "edit",
             label: "Chỉnh sửa",
@@ -86,13 +86,12 @@ const Extension = () => {
         setModalVisible(true);
     };
     const handleSubmit = async (formData) => {
-        console.log(formData)
-        // for (let key in formData) {
-        //     if (formData[key] === "") {
-        //         toast.error("Vui lòng nhập đầy đủ thông tin.");
-        //         return;
-        //     }
-        // }
+        for (let key in formData) {
+            if (formData[key] === "" || (Array.isArray(formData[key]) && formData[key].length === 0)) {
+                toast.error("Vui lòng nhập đầy đủ thông tin.");
+                return;
+            }
+        }   
 
         const payload = {
             name: formData.name,

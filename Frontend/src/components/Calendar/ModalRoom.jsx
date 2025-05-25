@@ -18,7 +18,7 @@ const ModalRoom = (props) => {
   const fetchData = async () => {
     const checkin = formatDate(dataOrder.booking.checkin, "YYYY-MM-DD");
     const checkout = formatDate(dataOrder.booking.checkout, "YYYY-MM-DD");
-    const room = await roomService.getEmptyRoombyUser(checkin, checkout);
+    const room = await roomService.getEmptyRoombyUser(checkin, checkout, dataOrder.booking.adult_count);
 
     if (room) setSuggestedRooms(room.room_suggest);
     if (room) setEmptyRoom(room.room_empty);

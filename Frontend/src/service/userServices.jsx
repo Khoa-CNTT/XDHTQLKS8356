@@ -22,9 +22,9 @@ export const getUser = async() => {
      }
    }
  };
- export const getAllUser = async() => {
+ export const getAllUser = async(role) => {
   try {
-     const response = await apiConfig.get(`/admin/all_user`)
+     const response = await apiConfig.get(`/admin/all_user?type=${role}`)
      return response.data.user
   } catch (error) {
      console.log("Error getUser: " + error)

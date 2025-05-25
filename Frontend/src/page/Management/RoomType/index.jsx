@@ -100,12 +100,12 @@ const RoomType = () => {
         event.stopPropagation();
         try {
             const result = await roomService.deleteRoomType(row.id);
-        if(result.status == true){
-            toast.success(result.message);
-            fetchRooms();     
-        }else{
-            toast.error(result.message);
-        }
+            if(result.status == true){
+                toast.success(result.message);
+                fetchRooms();     
+            }else{
+                toast.error(result.message);
+            }
         } catch (error) {
             console.log(error)
         }
@@ -121,6 +121,7 @@ const RoomType = () => {
         event.stopPropagation();
         setIdRoomType(row.id)
         setModalExtention(true)
+        setSelectedExtention("")
     };
     const handleUpdateExtentionRoom = (event, row) => {
         event.stopPropagation();
@@ -139,6 +140,7 @@ const RoomType = () => {
             if(result.status === true){
                 toast.success(result.message);
                 setModalExtention(false);
+                fetchRooms();
             }else{
                 toast.error(result.message);
             }
@@ -154,19 +156,23 @@ const RoomType = () => {
                 return;
             }
         }
+        if (JSON.parse(formData.image).length < 2) {
+            toast.error("Vui lòng chọn ít nhất 2 ảnh.");
+            return;
+          }
         const payload = {
             adult_count: formData.adultCount,
             room_type: formData.name,
             square_meters: formData.squareMeters,
             price_per_night: formData.pricePerNight,
             image: formData.image,
+            description: formData.description
         }; 
         console.log("dữ liệu",payload)
         try {
             if (selectedRoom) {
                 try {
                     const result = await roomService.updateRoomType(selectedRoom.id, payload);
-                  
                     if(result.status == true){
                         toast.success(result.message);
                         setResetFormTrigger(true);

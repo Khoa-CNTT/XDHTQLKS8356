@@ -76,12 +76,12 @@ const Price = () => {
     
     const handleSubmit = async (formData) => {
         console.log(formData)
-        // for (let key in formData) {
-        //     if (formData[key] === "") {
-        //         toast.error("Vui lòng nhập đầy đủ thông tin.");
-        //         return;
-        //     }
-        // }
+        for (let key in formData) {
+            if (formData[key] === "") {
+                toast.error("Vui lòng nhập đầy đủ thông tin.");
+                return;
+            }
+        }
         const payload = formData.selectedPrice
                         ? {
                             start_date: formData.startDate,

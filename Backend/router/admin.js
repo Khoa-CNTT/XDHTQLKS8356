@@ -6,6 +6,7 @@ const { getAllBookingForAdmin, updateBooking } = require("../controller/booking"
 const { updateHotel, getHotel } = require("../controller/hotel");
 const { createPayment } = require("../controller/payment");
 const { createPricing, deletePricing, updatePricing, getPricing } = require("../controller/pricing");
+const { getReportRoom, getReportTime, getReportService } = require("../controller/report");
 const { createRoom, deleteRoom, updateRoom, getRoom, getRoomById, getStatusRoom } = require("../controller/room");
 const { createRoomDetail, deleteRoomDetail, updateRoomDetail, getRoomDetail, getAllRoomDetail } = require("../controller/room_detail");
 const { createServices, deleteServices, updateServices, getAllServices } = require("../controller/services");
@@ -71,4 +72,10 @@ adminRouter.get("/bookings", getAllBookingForAdmin);
 adminRouter.put("/booking/:id", updateBooking);
 adminRouter.post("/booking/payment", createPayment);
 
+
+
+//report
+adminRouter.get("/report/room", getReportRoom);
+adminRouter.get("/report/time", getReportTime);
+adminRouter.get("/report/service", getReportService);
 module.exports = adminRouter;

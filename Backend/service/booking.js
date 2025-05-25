@@ -73,7 +73,7 @@ const createBooking = async (id, data) => {
                 message : JSON.stringify(detail_booking)
             })
         }
-        //return booking.id 
+        return booking
     } catch (error) {
         console.log(error);
         return "error";
@@ -85,6 +85,7 @@ const createBooking = async (id, data) => {
 const getBookingById = async (id) => {
     try {
         const sql = `SELECT 
+                        u.fullname,
                         b.id AS booking_id,
                         b."status" AS booking_status,
                         b.created_at,
@@ -96,6 +97,7 @@ const getBookingById = async (id) => {
                         JSONB_AGG(
                             DISTINCT JSONB_BUILD_OBJECT(
                                     'room_type', r.room_type,
+                                    'booking_detail_id', bd.id, 
                                     'room_number', rd.room_number,
                                     'price', bd.price
                                 )
@@ -129,7 +131,7 @@ const getBookingById = async (id) => {
                     WHERE
                         b.id = ${id}
                     GROUP BY
-                        b.id, b."status", b.created_at, b.checkin, b.checkout;`
+                        u.fullname, b.id, b."status", b.created_at, b.checkin, b.checkout;`
 
         const report = await sequelize.query(sql, { type: Sequelize.QueryTypes.SELECT });
         

@@ -16,6 +16,7 @@ const { RangePicker } = DatePicker;
 const ModalBooking = (props) => {
   const { isModalOpen, setIsModalOpen } = props;
   const [openSearch, setOpenSearch] = useState(true);
+  const [paymentType, setPaymentType] = useState('cod')
   const [dataOrder, setDataOrder] = useState({
     booking: {
       checkin: dayjs(),
@@ -57,7 +58,13 @@ const ModalBooking = (props) => {
         })),
       };
       const bookingId = await bookingService.creatBookingRoom(data);
-      if (bookingId.status) {
+      const payment = await bookingService.payment({
+                  amount: data.booking.total_price,
+                  type: "booking",
+                  payment_gateway: paymentType==='qr'?'online':'cod',
+                  BookingId: bookingId.booking.id,
+                });
+      if (bookingId.status&&payment.status) {
         setDataOrder({
           booking: {
             checkin: dayjs(),
@@ -109,8 +116,8 @@ const ModalBooking = (props) => {
         )} */}
 
           {/* Tìm kiếm khách hàng */}
-          <div className='flex justify-between'>
-            <div>
+          <div className='flex justify-end'>
+            {/* <div>
               <label
                 for='search'
                 class='mb-2 text-sm font-medium text-gray-900 sr-only'
@@ -127,8 +134,8 @@ const ModalBooking = (props) => {
                   class='block ps-10 p-2  text-sm text-gray-900 border border-gray-300 rounded-lg  focus:ring-blue-500 focus:border-blue-500 '
                   placeholder='Tìm kiếm khách hàng'
                 />
-              </div>
-            </div>
+              </div> */}
+            {/* </div> */}
             <button
               onClick={() => setOpenSearch(true)}
               className='hover:bg-blue-600 ring-1 ring-blue-600 text-blue-600 hover:text-white font-medium rounded-lg px-4 py-2 '
@@ -295,19 +302,25 @@ const ModalBooking = (props) => {
           </table>
           <div className='flex items-end justify-between'>
             <div className='w-1/2'>
-              <label
-                for='message'
-                class='block mb-2 text-sm font-semibold text-gray-900'
-              >
-                Ghi chú:
+              <label className='flex items-center gap-2'>
+                <input
+                  type='radio'
+                  value='cod'
+                  checked={paymentType === "cod"}
+                  onChange={(e) => setPaymentType(e.target.value)}
+                />
+                Thanh toán tiền mặt
               </label>
-              <textarea
-                name='note'
-                id='message'
-                rows='4'
-                class='block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500'
-                placeholder='Nhập ghi chú ...'
-              ></textarea>
+
+              <label className='flex items-center gap-2'>
+                <input
+                  type='radio'
+                  value='qr'
+                  checked={paymentType === "wallet"}
+                  onChange={(e) => setPaymentType(e.target.value)}
+                />
+                Chuyển khoản 
+              </label>
             </div>
             <div className='flex justify-between items-start gap-14 text-gray-700 bg-gray-100 p-4 rounded-lg'>
               <p>Khách cần trả</p>

@@ -86,8 +86,21 @@ export const getBookingDetail  = async(id) => {
      }
    }
  };
+
+export const payment = async (data) => {
+   try {
+     const response = await apiConfig.post(`/admin/booking/payment`, data);
+     return response.data;
+   } catch (error) {
+     if (error.response) {
+       return error.response.data;
+     } else {
+       throw error;
+     }
+   }
+}
 export const bookingService = {
-   
+   payment,
    getSchedule,
    getBookingDetail,
    creatBookingRoom,

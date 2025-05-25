@@ -32,24 +32,9 @@ export const formatDate = (date, string) => {
 
 // 1 tháng 1 ngày
 export const getPreciseDuration = (checkin, checkout) => {
-  const start = dayjs(checkin);
+   const start = dayjs(checkin);
   const end = dayjs(checkout);
-
-  let months = end.diff(start, 'month');
-  const intermediate = start.add(months, 'month');
-  let days = end.diff(intermediate, 'day');
-
-  if (days < 0) {
-    months -= 1;
-    days = end.diff(start.add(months, 'month'), 'day');
-  }
-
-  const parts = [];
-  if (months > 0) parts.push(`${months} tháng`);
-  if (days > 0) parts.push(`${days} ngày`);
-  if (parts.length === 0) return '0 ngày';
-
-  return parts.join(' ');
+  return end.diff(start, 'day') + 1;
 };
 
 export const getUsedDuration = (checkin, checkout) => {

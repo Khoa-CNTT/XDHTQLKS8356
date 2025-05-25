@@ -41,11 +41,6 @@ const ModalDetail = (props) => {
     if (bookingId && bookingDetailId) fetchBooking();
   }, [bookingId, bookingDetailId]);
 
-  
-  const handleOk = () => {
-    setIsModalOpen(false);
-    navigate(`/admin/booking-details/${bookingId}`);
-  };
 
   return (
     <Modal
@@ -140,7 +135,7 @@ const ModalDetail = (props) => {
               </div>
               <div className='text-right font-semibold'>
                 <p>{booking.total_price}</p>
-                <p>{booking.total_price}</p>
+                <p>{booking.amount}</p>
               </div>
             </div>
           </div>

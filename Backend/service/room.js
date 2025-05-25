@@ -18,6 +18,7 @@ const suggestRooms = async (data) => {
                     r.id AS room_id,
                     rd.id AS room_detail_id,
                     r.room_type AS room_type, 
+                    r.image,
                     r.adult_count,
                     SUM(
                         COALESCE(
@@ -64,7 +65,7 @@ const getStatusRoom = async (data) => {
         const sql = `SELECT
                         b.id AS booking_id,
                         rd.room_number,
-                        r.id AS room_id,
+                        rd.id AS room_id,
                         u.fullname,
                         bd.id AS booking_detail_id,
                         CASE 
@@ -131,6 +132,7 @@ const getRoomEmpty = async (data) => {
                                             AND i.room_detail_id IS NULL
                                     ),
                                 'room_type', r.room_type,
+                                'image', r.image,
                                 'adult_count', r.adult_count,
                                 'total_price', (
                                     SELECT SUM(

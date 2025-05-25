@@ -86,6 +86,7 @@ const getBookingById = async (id) => {
     try {
         const sql = `SELECT 
                         b.id AS booking_id,
+                        u.fullname AS user_name,
                         b."status" AS booking_status,
                         b.created_at,
                         b.checkin,

@@ -9,7 +9,8 @@ const Room = sequelize.define("Room",
         room_type: DataTypes.TEXT,
         square_meters: DataTypes.INTEGER,
         price_per_night: DataTypes.INTEGER,
-        image : DataTypes.STRING
+        image : DataTypes.TEXT,
+        description : DataTypes.TEXT
     },
     {
         tableName: "room",

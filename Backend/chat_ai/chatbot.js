@@ -11,6 +11,7 @@ const chatbot = async (userQuestion) => {
 const bot = async (req, res) => {
     const ans = await chatbot(req.body.question);
     
+    //tin nhắn đếnđến
     await History_Chat.create({message : req.body.question, sender : "user", UserId : req.user.id});
 
     await History_Chat.create({message : ans, sender : "bot", UserId : req.user.id});

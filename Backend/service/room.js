@@ -168,7 +168,103 @@ const getRoomEmpty = async (data) => {
     }
 };
 
+const createRoom = async (data) => {
+    try {
+        const check = await Room.findOne({
+            where: {
+                room_type: data.room_type,
+            },
+        });
 
+        if (check) {
+            return -1;
+        }
+
+        await Room.create(data);
+    } catch (error) {
+        console.log(error);
+        return "error";
+    }
+};
+
+const getRoom = async (id) => {
+    try {
+        const sql = `SELECT 
+                        r.id,
+                        r.square_meters,
+                        r.room_type AS room_type,
+                        r.adult_count,
+                        r.price_per_night,
+                        r.image,
+                        COUNT(rd.id) AS room_count
+                    FROM 
+                        Room r
+                    LEFT JOIN 
+                        room_details rd ON rd."room_id" = r.id
+                    GROUP BY
+                        r.id`;
+
+        const room = await sequelize.query(sql, {
+            type: Sequelize.QueryTypes.SELECT,
+        });
+
+        return room;
+    } catch (error) {
+        console.log(error);
+        return "error";
+    }
+};
+
+
+const getRoomById = async (id) => {
+    try {
+        const room = await Room.findByPk(id);
+        return room;
+    } catch (error) {
+        console.log(error);
+        return "error";
+    }
+};
+
+const deleteRoom = async (id) => {
+    try {
+        const check = await Room_Details.findOne({
+            where : {
+                room_id : id
+            }
+        })
+        if(check){
+            return -1;
+        }
+        await Room.destroy({
+            where: {
+                id: id,
+            }
+        });
+    } catch (error) {
+        console.log(error);
+        return "error";
+    }
+};
+
+const updateRoom = async (id, data) => {
+    try {
+        const check = await Room.findOne({
+            where : {
+               id : { [Op.ne]  : id},
+               room_type : data.room_type 
+            }
+        })
+        if(check){
+            return -1;
+        }
+        const room = await Room.findByPk(id);
+        room.update(data);
+    } catch (error) {
+        console.log(error);
+        return "error";
+    }
+};
 
 module.exports = {
     createRoom,

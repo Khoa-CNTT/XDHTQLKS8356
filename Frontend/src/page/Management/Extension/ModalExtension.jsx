@@ -147,6 +147,7 @@ const ModalExtension = ({
               onChange={handleChange}
             />
           </div>
+<<<<<<< Updated upstream
           <div className='mb-3 flex items-center'>
             <label className='text-sm font-medium text-gray-700 text-nowrap w-40'>
               Loại tiện ích
@@ -176,6 +177,8 @@ const ModalExtension = ({
               </label>
             </div>
           </div>
+=======
+>>>>>>> Stashed changes
           <div className='mt-5 mb-3 pb-2 shadow-md rounded-md'>
             <div className='w-full '>
               <h3 className='font-medium text-gray-700 mb-4 bg-gray-100 p-3 rounded-t-md'>

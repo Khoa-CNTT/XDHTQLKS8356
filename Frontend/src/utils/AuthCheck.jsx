@@ -39,3 +39,29 @@ export const setToken = (token) => {
 export const getToken = () => {
   return Cookies.get('token')
 }
+
+export const setConversationId = (id) => {
+  Cookies.set('conversationId', id, {
+    expires: 1, 
+    path: '/',  
+    secure: true,
+    // sameSite: 'Strict' 
+  })
+}
+
+export const getConversation = () => {
+  return Cookies.get('conversationId')
+}
+
+export const setUser = (user) => {
+  Cookies.set('user', user, {
+    expires: 1, 
+    path: '/',  
+    secure: true,
+    // sameSite: 'Strict' 
+  })
+}
+
+export const getUser = () => {
+  return Cookies.get('user')
+}

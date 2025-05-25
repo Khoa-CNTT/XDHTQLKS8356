@@ -19,8 +19,9 @@ import { authService } from "../../../service/authService";
 import { messageService } from "../../../service/messageService";
 import { formatRelativeTime } from "../../../utils/FormatDate";
 import { socketConnect } from "../../../service/socket";
-import { getToken } from "../../../utils/AuthCheck";
+import { getToken, setConversationId, setUser } from "../../../utils/AuthCheck";
 import { data } from "react-router-dom";
+import { userServices } from "../../../service/userServices";
 
 const Chat = () => {
   const [search, setSearch] = useState("");
@@ -32,11 +33,26 @@ const Chat = () => {
   const [message, setMessage] = useState();
   const inputMessageRef = useRef(null);
   const activeChatUserRef = useRef();
+   const [infoUser, setInfoUser] = useState({
+      user: null,
+      token: null,
+    });
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const users = await messageService.getAllMessages();
         if (users.status) setListUsers(users.mess);
+        const token = getToken();
+        const user = await userServices.getUser();
+        if (user) {
+          setInfoUser({
+            user: user,
+            token: token,
+          });
+          //cookie
+          setUser(user);
+          setConversationId(id.user);
+        }
       } catch (error) {
         console.error("Failed to fetch users:", error);
       }
@@ -50,9 +66,10 @@ const Chat = () => {
     const fetchMessages = async () => {
       try {
         if (!activeChatUser || !activeChatUser.user_id) return;
-        // const data = await messageService.getMessages(activeChatUser.user_id);
-        const data = await messageService.getMessages(1);
-        setMessages(data.mess.reverse());
+        const data = await messageService.getMessages(
+          activeChatUser.conversation_id
+        );
+        if (data) setMessages(data);
       } catch (error) {
         console.error(error);
       }
@@ -70,7 +87,6 @@ const Chat = () => {
       try {
         const data = await authService.findUser(search);
         if (data.success) setUsers(data.user);
-
         console.log("data search: ", data.user);
       } catch (error) {
         console.error(error);
@@ -86,14 +102,8 @@ const Chat = () => {
     if (!message.trim()) return;
 
     try {
-      // const data = {
-      //   messageContent: message.trim(),
-      //   image: "test",
-      // };
-      // await messageService.sendMessage(activeChatUser.user_id, data);
-      const token = getToken();
-      if (!token) return;
-      else socketConnect.sendNewMessage(token, message);
+      console.log('1',infoUser.token, message, activeChatUser.conversation_id)
+      socketConnect.sendNewMessage(infoUser.token, message, activeChatUser.conversation_id);
       setMessage("");
     } catch (error) {
       console.error("Error sending message:", error);
@@ -116,38 +126,37 @@ const Chat = () => {
         message_time
       );
       console.log("active: ", activeChatUserRef.current?.user_id);
-      // if (
-      //   activeChatUserRef.current?.user_id === message.receiver_id ||
-      //   activeChatUserRef.current?.user_id === message.sender_id
-      // ) {
+      if (
+        activeChatUserRef.current?.conversation_id === conversationId 
+      ) {
       setMessages((prev) => [
         ...prev,
         {
           fullname: "",
-          image: "",
+          image: "https://www.elevenforum.com/attachments/images-jpeg-2-jpg.45643/",
           user_id: user_id,
           message_content: message_content,
           message_time: message_time,
         },
       ]);
-      // } else {
-      //   setListUsers((prev) => {
-      //     const newList = prev.map((user) =>
-      //       user.user_id === message.sender_id
-      //         ? {
-      //             ...user,
-      //             unreadCount: (user.unreadCount || 0) + 1,
-      //             message_content: message.messageContent,
-      //             message_time: message.messageTime,
-      //           }
-      //         : user
-      //     );
-      //     newList.sort(
-      //       (a, b) => new Date(b.message_time) - new Date(a.message_time)
-      //     );
-      //     return newList;
-      //   });
-      // }
+      } else {
+        setListUsers((prev) => {
+          const newList = prev.map((user) =>
+            user.conversation_id === conversationId
+              ? {
+                  ...user,
+                  unreadCount: (user.count_unread || 0) + 1,
+                  message_content: message_content,
+                  message_time: message_time,
+                }
+              : user
+          );
+          newList.sort(
+            (a, b) => new Date(b.message_time) - new Date(a.message_time)
+          );
+          return newList;
+        });
+      }
     };
 
     socketConnect.connectSocket();
@@ -157,13 +166,10 @@ const Chat = () => {
     };
   }, []);
   return (
-    <div className='h-full [&>div]:shadow [&>div]:rounded-xl [&>div]:bg-white'>
+    <div className='h-full box-border overflow-hidden [&>div]:shadow [&>div]:rounded-xl [&>div]:bg-white'>
       <MainContainer
         responsive
         style={{
-          height: "100%",
-          width: "100%",
-          boxSizing: "content-box",
         }}
       >
         <Sidebar position='left'>
@@ -185,14 +191,16 @@ const Chat = () => {
                     users.map((user, index) => (
                       <div
                         key={user.id}
-                        onClick={()=> {
-                          const u = listUsers?.find(i=>i.user_id===user.id)
-                          setActiveChatUser(u)
+                        onClick={() => {
+                          const u = listUsers?.find(
+                            (i) => i.user_id === user.id
+                          );
+                          setActiveChatUser(u);
                         }}
                         className='flex items-center gap-x-3 p-2 hover:bg-gray-100 rounded-lg cursor-pointer'
                       >
                         <img
-                          className='shrink-0 size-5 rounded-full'
+                          className='shrink-0 size-10 rounded-full'
                           src={user.image}
                           alt={user.fullname}
                         />
@@ -220,7 +228,7 @@ const Chat = () => {
                 lastSenderName={user.fullname}
                 lastActivityTime={formatRelativeTime(user.message_time)}
                 name={user.fullname}
-                unreadCnt={user.unreadCount}
+                unreadCnt={user.unreadCount||0}
                 onClick={() => setActiveChatUser(user)}
               >
                 <Avatar
@@ -233,7 +241,7 @@ const Chat = () => {
           </ConversationList>
         </Sidebar>
         {activeChatUser && (
-          <ChatContainer>
+          <ChatContainer style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
             <ConversationHeader>
               <ConversationHeader.Back />
               <Avatar
@@ -242,16 +250,16 @@ const Chat = () => {
               />
               <ConversationHeader.Content
               // info='Active 10 mins ago'
-              // userName='Zoe'
+              userName={activeChatUser.fullname}
               />
             </ConversationHeader>
 
-            <MessageList>
+            <MessageList style={{ flex: 1, overflow: "auto" }} autoScrollToBottomOnMount={true}>
               {messages?.map((message, i) => (
                 <Message
                   key={i}
                   model={{
-                    direction: message.user_id === 1 ? 1 : 0,
+                    direction: message.user_id === infoUser.user.id ? 1 : 0,
                     message: message.message_content,
                     position: "normal",
                     sender: message.user_id,

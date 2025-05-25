@@ -10,7 +10,7 @@ const ModalDetail = (props) => {
   const [roomDetail, setRoomDetail] = useState(bookingDetailId);
   const navigate = useNavigate();
   const status = {
-    booked: {
+    booker: {
       title: "Đã đặt trước",
       color: "#f5942766",
     },
@@ -22,7 +22,7 @@ const ModalDetail = (props) => {
       title: "Đã trả",
       color: "#8c867f66",
     },
-    pending: {
+    booked: {
       title: "Đang sử dụng",
       color: "#43ff6466",
     },

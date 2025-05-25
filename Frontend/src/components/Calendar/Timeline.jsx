@@ -31,7 +31,7 @@ const fomatDate = (date) => new Date(date).toLocaleDateString("en-CA");
 const Timeline = () => {
   const [selectedView, setView] = useState("month");
   const [status, setStatus] = useState({
-    booked: {
+    booker: {
       title: "Đã đặt trước",
       color: "#f5942766",
       isChecked: false,
@@ -46,7 +46,7 @@ const Timeline = () => {
       color: "#8c867f66",
       isChecked: false,
     },
-    pending: {
+    booked: {
       title: "Đang sử dụng",
       color: "#43ff6466",
       isChecked: false,
@@ -89,10 +89,9 @@ const Timeline = () => {
       : [];
     if (date) {
       const schedule = await bookingService.getSchedule(date.start, date.end, checkedKeys)
-      console.log(schedule)
-      if (schedule.status&&schedule?.room?.length > 0) {
+      if (schedule?.length > 0) {
         console.log(true)
-          setBookingSchedule(schedule.room.map(i => ({
+          setBookingSchedule(schedule.map(i => ({
               resource: i.room_detail_id,
               start: i.checkin,
               end: i.checkout,
@@ -102,89 +101,6 @@ const Timeline = () => {
               booking_detail_id: i.booking_detail_id
           })))
       } else setBookingSchedule([])
-      setBookingSchedule([
-        {
-          resource: 12,
-          start: "2024-11-25",
-          end: "2024-11-27",
-          text: 6,
-          color: status["completed"].color,
-          booking_id: 13,
-          booking_detail_id: 6,
-        },
-        {
-          resource: 13,
-          start: "2024-11-25",
-          end: "2024-11-27",
-          text: 7,
-          color: status["completed"].color,
-          booking_id: 3,
-          booking_detail_id: 7,
-        },
-        {
-          resource: 16,
-          start: "2024-11-25",
-          end: "2024-11-27",
-          text: 5,
-          color: status["completed"].color,
-          booking_id: 2,
-          booking_detail_id: 8,
-        },
-        {
-          resource: 14,
-          start: "2025-05-02",
-          end: "2025-05-05",
-          text: 21,
-          color: status["booked"].color,
-          booking_id: 10,
-          booking_detail_id: 21,
-        },
-        {
-          resource: 15,
-          start: "2025-05-03",
-          end: "2025-05-04",
-          text: 22,
-          color: status["cancelled"].color,
-          booking_id: 11,
-          booking_detail_id: 22,
-        },
-        {
-          resource: 17,
-          start: "2025-05-07",
-          end: "2025-05-10",
-          text: 23,
-          color: status["completed"].color,
-          booking_id: 12,
-          booking_detail_id: 23,
-        },
-        {
-          resource: 14,
-          start: "2025-05-10",
-          end: "2025-05-12",
-          text: "test",
-          color: status["pending"].color,
-          booking_id: 5,
-          booking_detail_id: 3,
-        },
-        {
-          resource: 13,
-          start: "2025-05-05",
-          end: "2025-05-07",
-          text: "5",
-          color: status["booked"].color,
-          booking_id: 6,
-          booking_detail_id: 16,
-        },
-        {
-          resource: 12,
-          start: "2025-05-05",
-          end: "2025-05-07",
-          text: "4",
-          color: status["booked"].color,
-          booking_id: 25,
-          booking_detail_id: 14,
-        },
-      ]);
     }
   };
 

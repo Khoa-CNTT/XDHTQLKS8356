@@ -7,7 +7,7 @@ export const getSchedule  = async(start, end, status) => {
    try {
       // const response = await apiConfig.get(`/admin/bookings?start='${start}'&end='${end}'`+ `${status.length>0 ? `&status=${fomatStatus}` : ''}`)
       const response = await apiConfig.get(`/admin/status_room?start='${start}'&end='${end}'`)
-      return response.data
+      return response.data.room
    } catch (error) {
       console.log("Error getSchedule: " + error)
       return []

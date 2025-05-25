@@ -6,6 +6,7 @@ import ChatCustomer from '../../page/Chat';
 import { AnimatePresence } from 'framer-motion';
 import PageTransitionWrapper from '../../components/PageTransition';
 import { isAuthenticated } from '../../utils/AuthCheck';
+import ChatBox from '../../page/Chat/ChatBox';
 
 const MainLayout = () => {
     const location = useLocation();
@@ -21,6 +22,7 @@ const MainLayout = () => {
                     </PageTransitionWrapper>
                 </AnimatePresence>
             </main>
+            {isAuthenticated() && <ChatBox/> }
             {isAuthenticated() && <ChatCustomer/> }
             <Footer />
         </div>

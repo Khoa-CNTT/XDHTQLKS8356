@@ -39,9 +39,9 @@ export const stopListenNewMessages = (callback) => {
 };
 
 // Gửi tin nhắn mới đến người nhận
-export const sendNewMessage = (token, message_content, image, conversationId) => {
+export const sendNewMessage = (token, message_content, conversationId) => {
   if(!token||!message_content) return
-  socket.emit("send_message", {token, message_content, image: '', conversationId: 1}); 
+  socket.emit("send_message", {token, message_content, conversationId}); 
 };
 
 

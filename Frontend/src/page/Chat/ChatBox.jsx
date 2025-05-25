@@ -26,77 +26,29 @@ import {
 } from "../../utils/AuthCheck";
 import { userServices } from "../../service/userServices";
 
-const ChatCustomer = () => {
+const ChatBox = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [input, setInput] = useState("");
   const inputRef = useRef(null);
-  const [conversation, setConversation] = useState();
-  const [infoUser, setInfoUser] = useState({
-    conversation: null,
-    user: null,
-    token: null,
-  });
+  const boxRef = useRef(null);
 
-  // Lấy tin nhắn khi component được mount
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const id = await messageService.getConversationId();
-        if (id.success) {
-          const token = getToken();
-          const user = await userServices.getUser();
-          if (user) {
-            setInfoUser({
-              conversation: id.user,
-              user: user,
-              token: token,
-            });
-            //cookie
-            setUser(user);
-            setConversationId(id.user);
-          }
-          const messages = await messageService.getMessages(id.user);
-          console.log("messages", messages);
-          if (messages) setMessages(messages);
-        }
+        const messages = await messageService.getChatBox();
+        console.log('chatbox', messages)
+        if (messages) setMessages(messages);
       } catch (error) {
         console.error(error);
-      }
-    };
-    if (isAuthenticated()) fetchMessages();
-  }, []);
+      }      
+    }
 
-  // Lắng nghe tin nhắn mới từ Socket.io
-  useEffect(() => {
-    const handleNewMessage = ({
-      conversationId,
-      user_id,
-      message_content,
-      message_time,
-    }) => {
-      console.log(conversationId, user_id, message_content, message_time);
-      setMessages((prev) => [
-        ...prev,
-        {
-          fullname: "A",
-          image:
-            "https://www.elevenforum.com/attachments/images-jpeg-2-jpg.45643/",
-          user_id: user_id,
-          message_content: message_content,
-          message_time: message_time,
-        },
-      ]);
-    };
-
-    // if (isAuthenticated()) {
-    socketConnect.connectSocket();
-    socketConnect.listenNewMessages(handleNewMessage);
-    // }
-
-    return () => {
-      socketConnect.stopListenNewMessages(handleNewMessage);
-    };
+     if (isAuthenticated()){
+        console.log(true)
+        fetchMessages();
+      } 
   }, []);
 
   // Scroll tự động tới tin nhắn mới nhất
@@ -108,13 +60,11 @@ const ChatCustomer = () => {
     if (!input.trim()) return;
 
     try {
-      console.log(infoUser.token, input, infoUser.conversation);
-      socketConnect.sendNewMessage(
-        infoUser.token,
-        input,
-        infoUser.conversation
-      );
-      setInput(""); // Xóa input sau khi gửi
+      setLoading(true);
+      const res = await messageService.sendChatBox({ question: input });
+      if(res) setMessages(prev=> [...prev, ...res])
+      setInput("");
+      setLoading(false);
     } catch (error) {
       console.error("Error sending message:", error);
     }
@@ -122,13 +72,14 @@ const ChatCustomer = () => {
   return (
     <div className='z-[100]'>
       <Icon
-        className='fixed top-[calc(100vh-80px)] right-8 text-blue-500 bg-blue-200/50 p-2 rounded-full'
-        icon='jam:messages-alt-f'
+        className='fixed top-[calc(100vh-160px)] right-8 text-blue-500 bg-blue-200/50 p-2 rounded-full'
+        icon='hugeicons:bot'
         width='60'
         height='60'
         onClick={() => setIsOpen((prev) => !prev)}
       />
       <div
+        ref={boxRef}
         className={`z-[101] h-[500px] w-[360px] rounded-xl overflow-hidden shadow-2xl ${
           isOpen ? `fixed bottom-22 right-8` : `hidden`
         }`}
@@ -136,7 +87,7 @@ const ChatCustomer = () => {
         <ChatContainer>
           <ConversationHeader className='!bg-blue-500/80 [&>div>div]:!bg-transparent'>
             <ConversationHeader.Content>
-              <div className='text-white font-bold'>Name Hotel</div>
+              <div className='text-white font-bold'>Chatbot</div>
             </ConversationHeader.Content>
             <ConversationHeader.Actions>
               <Icon
@@ -154,11 +105,11 @@ const ChatCustomer = () => {
               <Message
                 key={i}
                 model={{
-                  direction: message.user_id === infoUser.user.id ? 1 : 0 ,
-                  message: message.message_content,
+                  direction: message.sender === 'user' ? 1 : 0,
+                  message: message.message,
                   position: "normal",
-                  sender: message.user_id,
-                  sentTime: message.message_time,
+                  sender: message.sender,
+                  sentTime: message.created_at,
                 }}
               />
             ))}
@@ -177,4 +128,4 @@ const ChatCustomer = () => {
   );
 };
 
-export default ChatCustomer;
+export default ChatBox;
